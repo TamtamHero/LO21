@@ -27,10 +27,12 @@ protected:
     vector<Tache*> m_precedent;
     Tache(QString titre,QDateTime disponibilite,QDateTime echeance);
 
-    virtual ~Tache()=0;
+    Tache(const Tache& source);
+    Tache& operator=(const Tache& source);
 
 public:
-
+    QString getTitre() { return m_titre;}
+    virtual ~Tache()=0;
 
 };
 
@@ -43,19 +45,20 @@ protected:
 
 public:
     TacheUnitaire(QString titre,QDateTime disponibilite,QDateTime echeance,QTime duree,bool preemptable=false);
-    QTime getDuree() {return m_duree;}
+    QTime getDuree() const {return m_duree;}
     ~TacheUnitaire();
 };
 
-class TacheMultiple: public Tache
+class TacheComposite: public Tache
 {
 
 protected:
     vector<Tache *> m_sousTache;
 
 public:
-    TacheMultiple(QString titre,QDateTime disponibilite,QDateTime echeance);
-    ~TacheMultiple();
+    TacheComposite(QString titre,QDateTime disponibilite,QDateTime echeance);
+    void addSousTache(Tache * sousTache);
+    ~TacheComposite();
 };
 
 #endif // TACHE_H

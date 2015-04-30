@@ -11,7 +11,13 @@ int main(int argc, const char * argv[])
 
     QTextStream out(stdout);
 
-    out << t->getDuree().toString() << "lol";
+
+    TacheComposite tc("tache compo",t1,t2);
+
+
+    tc.addSousTache(t);
+
+    out << t->getDuree().toString();
 
     return 0;
 }
