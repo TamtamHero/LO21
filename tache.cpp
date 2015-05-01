@@ -32,7 +32,7 @@ TacheUnitaire::TacheUnitaire(QString titre,QDateTime disponibilite,QDateTime ech
 
 TacheUnitaire::~TacheUnitaire()
 {
-
+    this->setDuree(QTime::fromString("15:00:00"));
 }
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
@@ -45,6 +45,10 @@ TacheComposite::TacheComposite(QString titre,QDateTime disponibilite,QDateTime e
 
 void TacheComposite::addSousTache(Tache * sousTache)
 {
+    if(sousTache==this)
+    {
+        throw CalendarException("Tentative avortée d'auto-inclusion"); // A verifier: est-ce utile ?
+    }
     m_sousTache.push_back(sousTache);
 }
 
@@ -52,10 +56,9 @@ TacheComposite::~TacheComposite()
 {
     for(int i=0;i<m_sousTache.size();i++)
     {
-        delete(m_sousTache[i]);
+        delete(m_sousTache[i]);   // Est-ce la meilleure manière de détruire une tache composite ?
         m_sousTache[i]=0;
     }
-    cout << m_sousTache.size() << "lol";
 }
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-

@@ -46,6 +46,7 @@ protected:
 public:
     TacheUnitaire(QString titre,QDateTime disponibilite,QDateTime echeance,QTime duree,bool preemptable=false);
     QTime getDuree() const {return m_duree;}
+    void setDuree(QTime duree) {m_duree=duree;}
     ~TacheUnitaire();
 };
 
