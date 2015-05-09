@@ -1,4 +1,5 @@
 #include "projet.h"
+#include "qtache.h"
 
 Projet::Projet(QString titre, QDateTime disponibilite, QDateTime echeance):
     m_titre(titre),m_disponibilite(disponibilite),m_echeance(echeance)
@@ -16,5 +17,23 @@ Projet::Projet(QString titre, QDateTime disponibilite, QDateTime echeance):
 Projet::~Projet()
 {
 
+}
+
+void Projet::addSousTache(Tache * sousTache)
+{
+    m_decomposition.push_back(sousTache);
+}
+
+void Projet::Afficher(QStandardItemModel * modele)
+{
+    QTache *item;
+
+    for(vector<Tache *>::iterator it=this->m_decomposition.begin();it!=this->m_decomposition.end();++it)
+    {
+        item=new QTache((*it)->getTitre(),*it);
+        modele->appendRow(item);
+        item->getTache()->afficher(item);
+
+    }
 }
 

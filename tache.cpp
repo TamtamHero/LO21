@@ -19,46 +19,5 @@ Tache::~Tache()
 
 }
 
-//_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
-TacheUnitaire::TacheUnitaire(QString titre,QDateTime disponibilite,QDateTime echeance,QTime duree,bool preemptable):
-    Tache(titre,disponibilite,echeance),m_duree(duree),m_preemptable(preemptable)
-{
-    if(m_preemptable && m_duree>QTime::fromString("12:00:00"))
-    {
-        throw CalendarException("Tache unitaire trop longue ! (12H max.) ");
-    }
-}
-
-TacheUnitaire::~TacheUnitaire()
-{
-    this->setDuree(QTime::fromString("15:00:00"));
-}
-
-//_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-
-TacheComposite::TacheComposite(QString titre,QDateTime disponibilite,QDateTime echeance):
-    Tache(titre,disponibilite,echeance)
-{
-    // Useless pour l'instant, le constructeur de la classe mère Tache fait tout le travail.
-}
-
-void TacheComposite::addSousTache(Tache * sousTache)
-{
-    if(sousTache==this)
-    {
-        throw CalendarException("Tentative avortée d'auto-inclusion"); // A verifier: est-ce utile ?
-    }
-    m_sousTache.push_back(sousTache);
-}
-
-TacheComposite::~TacheComposite()
-{
-    for(int i=0;i<m_sousTache.size();i++)
-    {
-        delete(m_sousTache[i]);   // Est-ce la meilleure manière de détruire une tache composite ?
-        m_sousTache[i]=0;
-    }
-}
-
-//_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+//_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-

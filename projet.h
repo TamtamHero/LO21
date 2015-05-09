@@ -4,6 +4,8 @@
 #include <vector>
 #include <QString>
 #include <QDateTime>
+#include <QStandardItem>
+#include <QStandardItemModel>
 #include "tache.h"
 
 
@@ -20,7 +22,11 @@ protected:
 
 public:
     Projet(QString titre, QDateTime disponibilite, QDateTime echeance);
+    void addSousTache(Tache * sousTache);
     ~Projet();
+
+    void Afficher(QStandardItemModel * modele);
+    QString getTitre(){return m_titre;}
 };
 
 // A faire: ProjetManager

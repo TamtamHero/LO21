@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_6">
      <attribute name="title">
@@ -242,7 +242,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Nouvelle colonne</string>
+           <string>Dimanche</string>
           </property>
          </column>
         </widget>
@@ -414,21 +414,6 @@
      <attribute name="title">
       <string>Edition</string>
      </attribute>
-     <widget class="QTreeWidget" name="treeWidget">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>421</width>
-        <height>551</height>
-       </rect>
-      </property>
-      <column>
-       <property name="text">
-        <string notr="true">1</string>
-       </property>
-      </column>
-     </widget>
      <widget class="QPushButton" name="pushButton">
       <property name="geometry">
        <rect>
@@ -816,6 +801,16 @@
       </property>
       <property name="text">
        <string>Valider</string>
+      </property>
+     </widget>
+     <widget class="QTreeView" name="treeView">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>411</width>
+        <height>501</height>
+       </rect>
       </property>
      </widget>
     </widget>

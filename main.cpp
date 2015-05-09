@@ -8,11 +8,11 @@
 int main(int argc, char * argv[])
 {
     QApplication app(argc,argv);
-
+/*
     QDateTime t1=QDateTime::currentDateTime();
     QDateTime t2=QDateTime::currentDateTime().addDays(1);
     TacheUnitaire *t=new TacheUnitaire("tache 1",t1,t2,QTime::fromString("11:00:00"),true);
-   // TacheUnitaire t5("tache 1",t1,t2,QTime::fromString("11:00:00"),true);
+    TacheUnitaire t5("tache 1",t1,t2,QTime::fromString("11:00:00"),true);
 
     QTextStream out(stdout);
 
@@ -21,10 +21,12 @@ int main(int argc, char * argv[])
 
 
     tc->addSousTache(t);
-    delete tc;
+    tc->addSousTache(&t5);
+
 
     out << t->getDuree().toString() ;
 
+*/
 
 
     MainWindow fenetre;
