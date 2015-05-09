@@ -812,6 +812,9 @@
         <height>501</height>
        </rect>
       </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::EditKeyPressed</set>
+      </property>
      </widget>
     </widget>
    </widget>
