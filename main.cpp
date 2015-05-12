@@ -3,6 +3,9 @@
 #include <mainwindow.h>
 #include <QTextStream>
 #include <QApplication>
+#include <QMetaType>
+
+
 
 
 int main(int argc, char * argv[])

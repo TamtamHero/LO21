@@ -31,6 +31,7 @@ void Projet::Afficher(QStandardItemModel * modele)
     for(vector<Tache *>::iterator it=this->m_decomposition.begin();it!=this->m_decomposition.end();++it)
     {
         item=new QTache((*it)->getTitre(),*it);
+        item->setData(QVariant::fromValue((*it)),Qt::UserRole+1);
         modele->appendRow(item);
         item->getTache()->afficher(item);
 

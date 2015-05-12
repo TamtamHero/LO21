@@ -1,33 +1,41 @@
-#ifndef PROJECTMANAGER_H
-#define PROJECTMANAGER_H
+#ifndef MANAGER_H
+#define MANAGER_H
 
-#include "projet.h"
+#include <iostream>
+#include <vector>
 
-class ProjectManager
+#include <QStandardItemModel>
+#include <QVariant>
+
+
+Q_DECLARE_METATYPE(Projet *)
+
+template<typename Type> class Manager
 {
 private:
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_Single instance handling-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-    ProjectManager();
-    ~ProjectManager();
-    ProjectManager(const ProjectManager& copy);
-    ProjectManager& operator=(const ProjectManager& copy);
+    Manager();
+    ~Manager();
+    Manager(const Manager& copy);
+    Manager& operator=(const Manager& copy);
 
     struct Handler{
-            ProjectManager* m_instance;
+            Manager* m_instance;
             Handler():m_instance(0){}
             ~Handler(){ if (m_instance) delete m_instance; } // Destructor called at exit
         };
     static Handler m_handler;
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 
-    vector<Projet *> m_liste;
+    vector<Type *> m_liste;
 public:
 
-    static ProjectManager& getInstance();
+    static Manager<Type> &getInstance();
     static void freeInstance();
-    void addProject(Projet * projet);
+    void addElement(Type * element);
     void Afficher(QStandardItemModel * modele);
 
 };
 
-#endif // PROJECTMANAGER_H
+#include "manager.tpp"
+#endif // MANAGER_H

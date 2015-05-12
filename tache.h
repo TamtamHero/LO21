@@ -7,6 +7,9 @@
 #include <QStandardItem>
 
 #include "calendarexception.h"
+#include <QVariant>
+
+
 
 using namespace std;
 
@@ -31,5 +34,7 @@ public:
     virtual ~Tache()=0;
 
 };
+
+Q_DECLARE_METATYPE(Tache *)
 
 #endif // TACHE_H
