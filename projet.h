@@ -25,8 +25,10 @@ public:
     void addSousTache(Tache * sousTache);
     ~Projet();
 
-    void Afficher(QStandardItemModel * modele);
+    void afficher(QStandardItemModel * modele);
     QString getTitre(){return m_titre;}
+    QDateTime getDisponibility(){return m_disponibilite;}
+    QDateTime getDeadline(){return m_echeance;}
 };
 
 // A faire: ProjetManager

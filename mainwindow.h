@@ -21,6 +21,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void editing(Tache * task);
+    void editing(Projet * project);
+
 private:
     Ui::MainWindow *ui;
 
@@ -30,6 +33,7 @@ private:
 
 private slots:
     void selectionProjet();
+    void clickArbre(const QModelIndex&);
     void doubleclickArbre(QModelIndex);
 };
 

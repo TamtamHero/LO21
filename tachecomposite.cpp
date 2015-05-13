@@ -41,3 +41,5 @@ void TacheComposite::afficher(QStandardItem * parent)
 
     }
 }
+
+

@@ -414,7 +414,7 @@
      <attribute name="title">
       <string>Edition</string>
      </attribute>
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="tabWidget_editor">
       <property name="geometry">
        <rect>
         <x>450</x>
@@ -450,7 +450,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="comboBox">
+            <widget class="QComboBox" name="comboBox_project_type">
              <item>
               <property name="text">
                <string>Projet</string>
@@ -480,7 +480,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit"/>
+            <widget class="QLineEdit" name="lineEdit_project_title"/>
            </item>
           </layout>
          </item>
@@ -494,7 +494,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QDateTimeEdit" name="dateTimeEdit_2"/>
+            <widget class="QDateTimeEdit" name="dateTimeEdit_project_disponibility"/>
            </item>
           </layout>
          </item>
@@ -508,7 +508,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QDateTimeEdit" name="dateTimeEdit"/>
+            <widget class="QDateTimeEdit" name="dateTimeEdit_project_deadline"/>
            </item>
           </layout>
          </item>
@@ -539,7 +539,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="comboBox_2">
+            <widget class="QComboBox" name="comboBox_blendTask_type">
              <item>
               <property name="text">
                <string>Tache Composite</string>
@@ -569,7 +569,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_2"/>
+            <widget class="QLineEdit" name="lineEdit_blendTask_title"/>
            </item>
           </layout>
          </item>
@@ -583,7 +583,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QDateTimeEdit" name="dateTimeEdit_3"/>
+            <widget class="QDateTimeEdit" name="dateTimeEdit_blendTask_disponibility"/>
            </item>
           </layout>
          </item>
@@ -597,7 +597,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QDateTimeEdit" name="dateTimeEdit_4"/>
+            <widget class="QDateTimeEdit" name="dateTimeEdit_blendTask_deadline"/>
            </item>
           </layout>
          </item>
@@ -650,7 +650,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="comboBox_3">
+            <widget class="QComboBox" name="comboBox_uniqueTask_type">
              <item>
               <property name="text">
                <string>Tache Unitaire</string>
@@ -680,7 +680,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_3"/>
+            <widget class="QLineEdit" name="lineEdit_uniqueTask_title"/>
            </item>
           </layout>
          </item>
@@ -694,7 +694,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QDateTimeEdit" name="dateTimeEdit_5"/>
+            <widget class="QDateTimeEdit" name="dateTimeEdit_uniqueTask_disponibility"/>
            </item>
           </layout>
          </item>
@@ -708,7 +708,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QDateTimeEdit" name="dateTimeEdit_6"/>
+            <widget class="QDateTimeEdit" name="dateTimeEdit_uniqueTask_deadline"/>
            </item>
           </layout>
          </item>
@@ -744,7 +744,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QTimeEdit" name="timeEdit"/>
+            <widget class="QTimeEdit" name="timeEdit_uniqueTask_length"/>
            </item>
           </layout>
          </item>
@@ -758,7 +758,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="comboBox_4">
+            <widget class="QComboBox" name="comboBox_uniqueTask_preemptability">
              <item>
               <property name="text">
                <string>Non</string>
@@ -777,7 +777,7 @@
        </widget>
       </widget>
      </widget>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="pushButton_Editing_confirm">
       <property name="geometry">
        <rect>
         <x>650</x>
@@ -814,7 +814,7 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_20">
        <item>
-        <widget class="QPushButton" name="bouton_selection_projet">
+        <widget class="QPushButton" name="pushButon_Editing_projectSelection">
          <property name="text">
           <string>Selectionner un projet</string>
          </property>
@@ -834,7 +834,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="pushButton_Editing_edit">
          <property name="text">
           <string>Editer</string>
          </property>

@@ -1,5 +1,7 @@
 #include "projet.h"
 #include "qtache.h"
+#include "mainwindow.h"
+
 
 Projet::Projet(QString titre, QDateTime disponibilite, QDateTime echeance):
     m_titre(titre),m_disponibilite(disponibilite),m_echeance(echeance)
@@ -24,7 +26,7 @@ void Projet::addSousTache(Tache * sousTache)
     m_decomposition.push_back(sousTache);
 }
 
-void Projet::Afficher(QStandardItemModel * modele)
+void Projet::afficher(QStandardItemModel * modele)
 {
     QTache *item;
 
@@ -37,4 +39,5 @@ void Projet::Afficher(QStandardItemModel * modele)
 
     }
 }
+
 

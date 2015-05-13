@@ -5,11 +5,11 @@
 #include <QString>
 #include <QDateTime>
 #include <QStandardItem>
-
-#include "calendarexception.h"
 #include <QVariant>
 
+#include "calendarexception.h"
 
+enum tabValue{PROJECT,BLEND_TASK,UNIQUE_TASK};
 
 using namespace std;
 
@@ -29,6 +29,8 @@ protected:
 
 public:
     QString getTitre() { return m_titre;}
+    QDateTime getDisponibility(){return m_disponibilite;}
+    QDateTime getDeadline(){return m_echeance;}
     virtual void afficher(QStandardItem * parent)=0;
 
     virtual ~Tache()=0;
