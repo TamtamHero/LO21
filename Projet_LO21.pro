@@ -7,7 +7,8 @@ SOURCES += \
     qtache.cpp \
     tacheunitaire.cpp \
     tachecomposite.cpp \
-    manager.tpp
+    manager.tpp \
+    taskselectionwindow.cpp
 
 HEADERS += \
     tache.h \
@@ -18,7 +19,8 @@ HEADERS += \
     calendarexception.h \
     tacheunitaire.h \
     tachecomposite.h \
-    manager.h
+    manager.h \
+    taskselectionwindow.h
 
 FORMS += \
     mainwindow.ui

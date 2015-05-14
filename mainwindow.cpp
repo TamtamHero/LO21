@@ -11,7 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     modele(new QStandardItemModel),
     projectManager(Manager<Projet>::getInstance()),
-    programManager(Manager<Programmation>::getInstance())
+    programManager(Manager<Programmation>::getInstance()),
+    currentProject(NULL)
 {
     ui->setupUi(this);
 
@@ -45,9 +46,15 @@ MainWindow::MainWindow(QWidget *parent) :
     projectManager.addElement(projet2);
     selectionProjet();
 
-    QObject::connect(ui->pushButon_Editing_projectSelection, SIGNAL(clicked()), this, SLOT(selectionProjet()));
+    QObject::connect(ui->pushButon_editing_projectSelection, SIGNAL(clicked()), this, SLOT(selectionProjet()));
     QObject::connect(ui->treeView,SIGNAL(clicked(const QModelIndex&)),this,SLOT( clickArbre(const QModelIndex&)));
     QObject::connect(ui->treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleclickArbre(QModelIndex)));
+    QObject::connect(ui->toolButton_uniqueTask_attachedTo, SIGNAL(clicked()), this, SLOT(taskSelection()));
+    QObject::connect(ui->toolButton_blendTask_attachedTo, SIGNAL(clicked()), this, SLOT(taskSelection()));
+    QObject::connect(ui->toolButton_uniqueTask_prerequisite, SIGNAL(clicked()), this, SLOT(taskSelection()));
+    QObject::connect(ui->toolButton_blendTask_prerequisite, SIGNAL(clicked()), this, SLOT(taskSelection()));
+
+
 }
 
 MainWindow::~MainWindow()
@@ -62,6 +69,7 @@ void MainWindow::selectionProjet()
 {
     modele->clear();
     projectManager.Afficher(modele);
+    modele->setHorizontalHeaderLabels(QStringList("Sélectionnez un projet"));
     ui->treeView->setModel(modele);
 }
 
@@ -75,7 +83,7 @@ void MainWindow::clickArbre(const QModelIndex&)
         Projet* projet=indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>();
         editing(projet);
     }
-    else // Else, Task case
+    else // Else, Task* case
     {
         Tache* tache=indexElementSelectionne.data(Qt::UserRole+1).value<Tache *>();
         editing(tache);
@@ -89,9 +97,10 @@ void MainWindow::doubleclickArbre(QModelIndex)
 
     if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL) // Check if selected element is a Project
     {
-        Projet* projet=indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>();
+        currentProject=indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>();
         modele->clear();
-        projet->afficher(modele);
+        currentProject->afficher(modele);
+        modele->setHorizontalHeaderLabels(QStringList(currentProject->getTitre()));
         ui->treeView->setModel(modele);
     }
 
@@ -101,7 +110,7 @@ void MainWindow::editing(Tache * task)
 {
     if(dynamic_cast<TacheUnitaire*>(task)!=NULL) // Check if argument is a uniqueTask
     {
-        ui->tabWidget_editor->setCurrentIndex(UNIQUE_TASK);
+        ui->tabWidget_editing_editor->setCurrentIndex(UNIQUE_TASK);
         ui->comboBox_uniqueTask_type->setCurrentIndex(0);
         ui->lineEdit_uniqueTask_title->setText(task->getTitre());
         ui->dateTimeEdit_uniqueTask_disponibility->setDateTime(task->getDisponibility());
@@ -112,7 +121,7 @@ void MainWindow::editing(Tache * task)
     }
     else
     {
-        ui->tabWidget_editor->setCurrentIndex(BLEND_TASK);
+        ui->tabWidget_editing_editor->setCurrentIndex(BLEND_TASK);
         ui->comboBox_blendTask_type->setCurrentIndex(0);
         ui->lineEdit_blendTask_title->setText(task->getTitre());
         ui->dateTimeEdit_blendTask_disponibility->setDateTime(task->getDisponibility());
@@ -123,9 +132,18 @@ void MainWindow::editing(Tache * task)
 
 void MainWindow::editing(Projet * project)
 {
-    ui->tabWidget_editor->setCurrentIndex(PROJECT);
+    ui->tabWidget_editing_editor->setCurrentIndex(PROJECT);
     ui->comboBox_project_type->setCurrentIndex(0);
     ui->lineEdit_project_title->setText(project->getTitre());
     ui->dateTimeEdit_project_disponibility->setDateTime(project->getDisponibility());
     ui->dateTimeEdit_project_deadline->setDateTime(project->getDeadline());
+}
+
+void MainWindow::taskSelection()
+{
+    if(currentProject!=NULL)
+    {
+        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject);
+        selection->exec();
+    }
 }

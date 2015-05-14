@@ -8,6 +8,7 @@
 #include "projet.h"
 #include "manager.h"
 #include "programmation.h"
+#include "taskselectionwindow.h"
 
 namespace Ui {
 class MainWindow;
@@ -30,11 +31,13 @@ private:
     QStandardItemModel *modele;
     Manager<Projet> &projectManager;
     Manager<Programmation> &programManager;
+    Projet * currentProject;
 
 private slots:
     void selectionProjet();
     void clickArbre(const QModelIndex&);
     void doubleclickArbre(QModelIndex);
+    void taskSelection();
 };
 
 #endif // MAINWINDOW_H

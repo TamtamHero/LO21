@@ -414,17 +414,17 @@
      <attribute name="title">
       <string>Edition</string>
      </attribute>
-     <widget class="QTabWidget" name="tabWidget_editor">
+     <widget class="QTabWidget" name="tabWidget_editing_editor">
       <property name="geometry">
        <rect>
         <x>450</x>
         <y>10</y>
         <width>311</width>
-        <height>381</height>
+        <height>511</height>
        </rect>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -524,8 +524,8 @@
          <rect>
           <x>30</x>
           <y>10</y>
-          <width>253</width>
-          <height>241</height>
+          <width>278</width>
+          <height>267</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -610,6 +610,20 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QToolButton" name="toolButton_blendTask_prerequisite">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTextEdit" name="textEdit_blendTask_prerequisite">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item>
@@ -618,6 +632,20 @@
             <widget class="QLabel" name="label_10">
              <property name="text">
               <string>Rattaché à:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="toolButton_blendTask_attachedTo">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_blendTask_attachedTo">
+             <property name="readOnly">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -635,7 +663,7 @@
          <rect>
           <x>30</x>
           <y>10</y>
-          <width>253</width>
+          <width>256</width>
           <height>331</height>
          </rect>
         </property>
@@ -721,6 +749,20 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QToolButton" name="toolButton_uniqueTask_prerequisite">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTextEdit" name="textEdit_uniqueTask_prerequisite">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item>
@@ -729,6 +771,20 @@
             <widget class="QLabel" name="label_16">
              <property name="text">
               <string>Rattaché à:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="toolButton_uniqueTask_attachedTo">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_uniqueTask_attachedTo">
+             <property name="readOnly">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -777,19 +833,6 @@
        </widget>
       </widget>
      </widget>
-     <widget class="QPushButton" name="pushButton_Editing_confirm">
-      <property name="geometry">
-       <rect>
-        <x>650</x>
-        <y>400</y>
-        <width>113</width>
-        <height>32</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Valider</string>
-      </property>
-     </widget>
      <widget class="QTreeView" name="treeView">
       <property name="geometry">
        <rect>
@@ -800,21 +843,21 @@
        </rect>
       </property>
       <property name="editTriggers">
-       <set>QAbstractItemView::EditKeyPressed</set>
+       <set>QAbstractItemView::NoEditTriggers</set>
       </property>
      </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget">
+     <widget class="QWidget" name="horizontalLayoutWidget_2">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>520</y>
-        <width>411</width>
+        <width>741</width>
         <height>41</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_20">
+      <layout class="QHBoxLayout" name="horizontalLayout_23">
        <item>
-        <widget class="QPushButton" name="pushButon_Editing_projectSelection">
+        <widget class="QPushButton" name="pushButon_editing_projectSelection">
          <property name="text">
           <string>Selectionner un projet</string>
          </property>
@@ -834,7 +877,43 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_Editing_edit">
+        <spacer name="horizontalSpacer_7">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_editing_create">
+         <property name="text">
+          <string>Créer</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_editing_edit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>Editer</string>
          </property>

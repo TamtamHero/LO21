@@ -6,7 +6,7 @@
 
 #include <QStandardItemModel>
 #include <QVariant>
-
+#include "projet.h"
 
 Q_DECLARE_METATYPE(Projet *)
 
