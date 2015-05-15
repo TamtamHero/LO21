@@ -21,3 +21,12 @@ Tache::~Tache()
 
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+
+bool Tache::checkPrerequisite(Tache* task,Tache * previousTask)
+{
+    if(task->getDisponibility()>previousTask->getDeadline())
+    {
+        return false;
+    }
+    return true;
+}

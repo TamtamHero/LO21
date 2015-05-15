@@ -1,14 +1,16 @@
 #include "taskselectionwindow.h"
+#include <iostream>
 
 TaskSelectionWindow::TaskSelectionWindow(QWidget *parent,Projet * project):
     QDialog(parent),
-    modele(new QStandardItemModel()),
+    treeModel(new QStandardItemModel()),
     treeView(new QTreeView(this)),
-    pushButton_TaskSelection_selection(new QPushButton("select"))
+    pushButton_TaskSelection_selection(new QPushButton("select")),
+    selectedTask(NULL)
 {
-    project->afficher(modele);
-    modele->setHorizontalHeaderLabels(QStringList(project->getTitre()));
-    treeView->setModel(modele);
+    project->afficher(treeModel);
+    treeModel->setHorizontalHeaderLabels(QStringList(project->getTitre()));
+    treeView->setModel(treeModel);
     treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     QVBoxLayout *layout=new QVBoxLayout;
     layout->addWidget(treeView);
@@ -27,6 +29,6 @@ void TaskSelectionWindow::sendSelection()
 {
     QItemSelectionModel *selection = treeView->selectionModel();
     QModelIndex indexElementSelectionne = selection->currentIndex();
-    Tache* task=indexElementSelectionne.data(Qt::UserRole+1).value<Tache *>();
-    //Send task to *parent for treatment
+    selectedTask=indexElementSelectionne.data(Qt::UserRole+1).value<Tache *>();
+    this->close();
 }

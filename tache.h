@@ -31,8 +31,10 @@ public:
     QString getTitre() { return m_titre;}
     QDateTime getDisponibility(){return m_disponibilite;}
     QDateTime getDeadline(){return m_echeance;}
+    void setPrerequisite(Tache *);
     virtual void afficher(QStandardItem * parent)=0;
 
+    static bool checkPrerequisite(Tache* task,Tache * previousTask);
     virtual ~Tache()=0;
 
 };

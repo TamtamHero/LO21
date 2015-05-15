@@ -28,16 +28,22 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    QStandardItemModel *modele;
+    QStandardItemModel *treeModel;
+    QStandardItemModel *listModel;
     Manager<Projet> &projectManager;
     Manager<Programmation> &programManager;
     Projet * currentProject;
+    Tache * currentTask;
+
 
 private slots:
     void selectionProjet();
     void clickArbre(const QModelIndex&);
     void doubleclickArbre(QModelIndex);
-    void taskSelection();
+    void uniquePrerequisiteSelection();
+    void blendPrerequisiteSelection();
+    void uniqueAttachedToSelection();
+    void blendAttchedToSelection();
 };
 
 #endif // MAINWINDOW_H

@@ -26,7 +26,7 @@ void Projet::addSousTache(Tache * sousTache)
     m_decomposition.push_back(sousTache);
 }
 
-void Projet::afficher(QStandardItemModel * modele)
+void Projet::afficher(QStandardItemModel * treeModel)
 {
     QTache *item;
 
@@ -34,7 +34,7 @@ void Projet::afficher(QStandardItemModel * modele)
     {
         item=new QTache((*it)->getTitre(),*it);
         item->setData(QVariant::fromValue((*it)),Qt::UserRole+1);
-        modele->appendRow(item);
+        treeModel->appendRow(item);
         item->getTache()->afficher(item);
 
     }

@@ -419,7 +419,7 @@
        <rect>
         <x>450</x>
         <y>10</y>
-        <width>311</width>
+        <width>321</width>
         <height>511</height>
        </rect>
       </property>
@@ -618,11 +618,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QTextEdit" name="textEdit_blendTask_prerequisite">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
+            <widget class="QListView" name="listView_blendTask_prerequisite"/>
            </item>
           </layout>
          </item>
@@ -663,7 +659,7 @@
          <rect>
           <x>30</x>
           <y>10</y>
-          <width>256</width>
+          <width>271</width>
           <height>331</height>
          </rect>
         </property>
@@ -757,11 +753,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QTextEdit" name="textEdit_uniqueTask_prerequisite">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
+            <widget class="QListView" name="listView_uniqueTask_prerequisite"/>
            </item>
           </layout>
          </item>

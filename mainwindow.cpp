@@ -9,10 +9,12 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    modele(new QStandardItemModel),
+    treeModel(new QStandardItemModel),
+    listModel(new QStandardItemModel),
     projectManager(Manager<Projet>::getInstance()),
     programManager(Manager<Programmation>::getInstance()),
-    currentProject(NULL)
+    currentProject(NULL),
+    currentTask(NULL)
 {
     ui->setupUi(this);
 
@@ -20,8 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QDateTime t1=QDateTime::currentDateTime();
     QDateTime t2=QDateTime::currentDateTime().addDays(1);
+    QDateTime t3=QDateTime::currentDateTime().addDays(3);
+    QDateTime t4=QDateTime::currentDateTime().addDays(5);
     TacheUnitaire *t=new TacheUnitaire("tache 1",t1,t2,QTime::fromString("11:00:00"),true);
-    TacheUnitaire *t5=new TacheUnitaire("tache 5",t1,t2,QTime::fromString("11:00:00"),false);
+    TacheUnitaire *t5=new TacheUnitaire("tache 5",t3,t4,QTime::fromString("5:00:00"),false);
 
     TacheComposite *tc=new TacheComposite("tache compo",t1,t2);
     TacheComposite *tc2=new TacheComposite("tache compo 2",t1,t2);
@@ -38,8 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
     Projet *projet2=new Projet("projet 2",t1,t2);
     projet->addSousTache(tc);
     projet->addSousTache(tc2);
-  /*  projet->Afficher(modele);
-    // nécessité d'avoir ici un pointeur vers l'instance unique du projetManager: il appelle sa méthode affichage avec *modele ici.
+  /*  projet->Afficher(treeModel);
+    // nécessité d'avoir ici un pointeur vers l'instance unique du projetManager: il appelle sa méthode affichage avec *treeModel ici.
      */
 
     projectManager.addElement(projet);
@@ -49,10 +53,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->pushButon_editing_projectSelection, SIGNAL(clicked()), this, SLOT(selectionProjet()));
     QObject::connect(ui->treeView,SIGNAL(clicked(const QModelIndex&)),this,SLOT( clickArbre(const QModelIndex&)));
     QObject::connect(ui->treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleclickArbre(QModelIndex)));
-    QObject::connect(ui->toolButton_uniqueTask_attachedTo, SIGNAL(clicked()), this, SLOT(taskSelection()));
-    QObject::connect(ui->toolButton_blendTask_attachedTo, SIGNAL(clicked()), this, SLOT(taskSelection()));
-    QObject::connect(ui->toolButton_uniqueTask_prerequisite, SIGNAL(clicked()), this, SLOT(taskSelection()));
-    QObject::connect(ui->toolButton_blendTask_prerequisite, SIGNAL(clicked()), this, SLOT(taskSelection()));
+    QObject::connect(ui->toolButton_uniqueTask_attachedTo, SIGNAL(clicked()), this, SLOT(uniqueAttachedToSelection()));
+    QObject::connect(ui->toolButton_blendTask_attachedTo, SIGNAL(clicked()), this, SLOT(blendAttchedToSelection()));
+    QObject::connect(ui->toolButton_uniqueTask_prerequisite, SIGNAL(clicked()), this, SLOT(uniquePrerequisiteSelection()));
+    QObject::connect(ui->toolButton_blendTask_prerequisite, SIGNAL(clicked()), this, SLOT(blendPrerequisiteSelection()));
 
 
 }
@@ -67,10 +71,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::selectionProjet()
 {
-    modele->clear();
-    projectManager.Afficher(modele);
-    modele->setHorizontalHeaderLabels(QStringList("Sélectionnez un projet"));
-    ui->treeView->setModel(modele);
+    treeModel->clear();
+    projectManager.Afficher(treeModel);
+    treeModel->setHorizontalHeaderLabels(QStringList("Sélectionnez un projet"));
+    ui->treeView->setModel(treeModel);
 }
 
 void MainWindow::clickArbre(const QModelIndex&)
@@ -80,13 +84,13 @@ void MainWindow::clickArbre(const QModelIndex&)
 
     if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL) // Check if selected element is a Project
     {
-        Projet* projet=indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>();
-        editing(projet);
+        currentProject=indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>();
+        editing(currentProject);
     }
     else // Else, Task* case
     {
-        Tache* tache=indexElementSelectionne.data(Qt::UserRole+1).value<Tache *>();
-        editing(tache);
+        currentTask=indexElementSelectionne.data(Qt::UserRole+1).value<Tache *>();
+        editing(currentTask);
     }
 }
 
@@ -98,10 +102,10 @@ void MainWindow::doubleclickArbre(QModelIndex)
     if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL) // Check if selected element is a Project
     {
         currentProject=indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>();
-        modele->clear();
-        currentProject->afficher(modele);
-        modele->setHorizontalHeaderLabels(QStringList(currentProject->getTitre()));
-        ui->treeView->setModel(modele);
+        treeModel->clear();
+        currentProject->afficher(treeModel);
+        treeModel->setHorizontalHeaderLabels(QStringList(currentProject->getTitre()));
+        ui->treeView->setModel(treeModel);
     }
 
 }
@@ -139,11 +143,55 @@ void MainWindow::editing(Projet * project)
     ui->dateTimeEdit_project_deadline->setDateTime(project->getDeadline());
 }
 
-void MainWindow::taskSelection()
+
+void MainWindow::uniquePrerequisiteSelection()
 {
     if(currentProject!=NULL)
     {
         TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject);
         selection->exec();
+
+        if(Tache::checkPrerequisite(currentTask,selection->getSelectedTask())) //check if the selected task can be a prerequisite of current task
+        {
+            QTache *item;
+            item=new QTache(selection->getSelectedTask()->getTitre(),selection->getSelectedTask());
+            listModel->appendRow(item);
+            ui->listView_uniqueTask_prerequisite->setModel(listModel);
+        }
+    }
+}
+
+void MainWindow::blendPrerequisiteSelection()
+{
+    if(currentProject!=NULL)
+    {
+        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject);
+        selection->exec();
+
+        QTache *item;
+        item=new QTache(selection->getSelectedTask()->getTitre(),selection->getSelectedTask());
+        listModel->appendRow(item);
+        ui->listView_blendTask_prerequisite->setModel(listModel);
+    }
+}
+
+
+void MainWindow::uniqueAttachedToSelection()
+{
+    if(currentProject!=NULL)
+    {
+        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject);
+        selection->exec();
+        ui->lineEdit_uniqueTask_attachedTo->setText(selection->getSelectedTask()->getTitre());
+    }
+}
+
+void MainWindow::blendAttchedToSelection()
+{
+    if(currentProject!=NULL)
+    {
+        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject);
+        selection->exec();
+        ui->lineEdit_blendTask_attachedTo->setText(selection->getSelectedTask()->getTitre());
     }
 }

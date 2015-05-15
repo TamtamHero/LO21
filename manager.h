@@ -33,7 +33,7 @@ public:
     static Manager<Type> &getInstance();
     static void freeInstance();
     void addElement(Type * element);
-    void Afficher(QStandardItemModel * modele);
+    void Afficher(QStandardItemModel * treeModel);
 
 };
 

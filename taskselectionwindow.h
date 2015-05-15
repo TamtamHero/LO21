@@ -9,15 +9,19 @@
 
 class TaskSelectionWindow : public QDialog
 {
+    Q_OBJECT
 
 public:
     TaskSelectionWindow(QWidget *parent,Projet *project);
     ~TaskSelectionWindow();
 
+    Tache * getSelectedTask(){return selectedTask;}
+
 private:
-    QStandardItemModel *modele;
+    QStandardItemModel *treeModel;
     QTreeView *treeView;
     QPushButton *pushButton_TaskSelection_selection;
+    Tache *selectedTask;
 
 private slots:
     void sendSelection();
