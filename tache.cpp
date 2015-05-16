@@ -24,9 +24,15 @@ Tache::~Tache()
 
 bool Tache::checkPrerequisite(Tache* task,Tache * previousTask)
 {
-    if(task->getDisponibility()>previousTask->getDeadline())
+    if(task==previousTask)
     {
-        return false;
+        throw CalendarException("Une tache ne peut pas se composer d'elle même ou se précéder");
     }
+    else if(task->getDisponibility()>=previousTask->getDeadline())
+    {
+        throw CalendarException("La date de disponibilité de la tache est postérieure à la tache qu'elle compose");
+    }
+    //Cas d'une tache mère
     return true;
+
 }

@@ -24,6 +24,7 @@ public:
 
     void editing(Tache * task);
     void editing(Projet * project);
+    Tache * getCurrentTask(){return currentTask;}
 
 private:
     Ui::MainWindow *ui;
@@ -43,7 +44,7 @@ private slots:
     void uniquePrerequisiteSelection();
     void blendPrerequisiteSelection();
     void uniqueAttachedToSelection();
-    void blendAttchedToSelection();
+    void blendAttachedToSelection();
 };
 
 #endif // MAINWINDOW_H

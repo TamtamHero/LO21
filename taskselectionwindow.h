@@ -5,7 +5,9 @@
 #include <QTreeView>
 #include <QPushButton>
 #include "projet.h"
-#include "QVBoxLayout"
+#include "mainwindow.h"
+#include <QVBoxLayout>
+#include <QMessageBox>
 
 class TaskSelectionWindow : public QDialog
 {

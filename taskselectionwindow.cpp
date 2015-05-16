@@ -30,5 +30,16 @@ void TaskSelectionWindow::sendSelection()
     QItemSelectionModel *selection = treeView->selectionModel();
     QModelIndex indexElementSelectionne = selection->currentIndex();
     selectedTask=indexElementSelectionne.data(Qt::UserRole+1).value<Tache *>();
-    this->close();
+    try
+    {
+        if(Tache::checkPrerequisite(dynamic_cast<MainWindow*>(parent())->getCurrentTask(),selectedTask)) //check if the selected task can be a prerequisite of current task
+        {
+            this->close();
+        }
+    }
+    catch(CalendarException error)
+    {
+        selectedTask=NULL;
+        QMessageBox::warning(this, "Erreur", error.getInfo());
+    }
 }

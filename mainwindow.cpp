@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->treeView,SIGNAL(clicked(const QModelIndex&)),this,SLOT( clickArbre(const QModelIndex&)));
     QObject::connect(ui->treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleclickArbre(QModelIndex)));
     QObject::connect(ui->toolButton_uniqueTask_attachedTo, SIGNAL(clicked()), this, SLOT(uniqueAttachedToSelection()));
-    QObject::connect(ui->toolButton_blendTask_attachedTo, SIGNAL(clicked()), this, SLOT(blendAttchedToSelection()));
+    QObject::connect(ui->toolButton_blendTask_attachedTo, SIGNAL(clicked()), this, SLOT(blendAttachedToSelection()));
     QObject::connect(ui->toolButton_uniqueTask_prerequisite, SIGNAL(clicked()), this, SLOT(uniquePrerequisiteSelection()));
     QObject::connect(ui->toolButton_blendTask_prerequisite, SIGNAL(clicked()), this, SLOT(blendPrerequisiteSelection()));
 
@@ -151,7 +151,7 @@ void MainWindow::uniquePrerequisiteSelection()
         TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject);
         selection->exec();
 
-        if(Tache::checkPrerequisite(currentTask,selection->getSelectedTask())) //check if the selected task can be a prerequisite of current task
+        if(selection->getSelectedTask()!=NULL)
         {
             QTache *item;
             item=new QTache(selection->getSelectedTask()->getTitre(),selection->getSelectedTask());
@@ -168,10 +168,13 @@ void MainWindow::blendPrerequisiteSelection()
         TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject);
         selection->exec();
 
-        QTache *item;
-        item=new QTache(selection->getSelectedTask()->getTitre(),selection->getSelectedTask());
-        listModel->appendRow(item);
-        ui->listView_blendTask_prerequisite->setModel(listModel);
+        if(selection->getSelectedTask()!=NULL)
+        {
+            QTache *item;
+            item=new QTache(selection->getSelectedTask()->getTitre(),selection->getSelectedTask());
+            listModel->appendRow(item);
+            ui->listView_blendTask_prerequisite->setModel(listModel);
+        }
     }
 }
 
@@ -182,16 +185,24 @@ void MainWindow::uniqueAttachedToSelection()
     {
         TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject);
         selection->exec();
-        ui->lineEdit_uniqueTask_attachedTo->setText(selection->getSelectedTask()->getTitre());
+
+        if(selection->getSelectedTask()!=NULL)
+        {
+            ui->lineEdit_uniqueTask_attachedTo->setText(selection->getSelectedTask()->getTitre());
+        }
     }
 }
 
-void MainWindow::blendAttchedToSelection()
+void MainWindow::blendAttachedToSelection()
 {
     if(currentProject!=NULL)
     {
         TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject);
         selection->exec();
+
+        if(selection->getSelectedTask()!=NULL)
+        {
         ui->lineEdit_blendTask_attachedTo->setText(selection->getSelectedTask()->getTitre());
+        }
     }
 }
