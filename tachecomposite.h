@@ -10,13 +10,14 @@ class TacheComposite: public Tache
 {
 
 protected:
-    vector<Tache *> m_sousTache;
+    vector<Tache *> m_element;
 
 public:
     TacheComposite(QString titre,QDateTime disponibilite,QDateTime echeance);
-    void addSousTache(Tache * sousTache);
+    void addElement(Tache * element);
+    vector<Tache *>& getElement(){return m_element;}
     void afficher(QStandardItem * parent);
-    ~TacheComposite();
+    virtual ~TacheComposite();
 };
 
 #endif // TACHECOMPOSITE_H

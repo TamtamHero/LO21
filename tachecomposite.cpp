@@ -8,30 +8,31 @@ TacheComposite::TacheComposite(QString titre,QDateTime disponibilite,QDateTime e
 
 TacheComposite::~TacheComposite()
 {
-    for(int i=0;i<m_sousTache.size();i++)
+    for(unsigned long i=0;i<m_element.size();i++)
     {
-        delete(m_sousTache[i]);   // Est-ce la meilleure manière de détruire une tache composite ?
-        m_sousTache[i]=0;
+        delete(m_element[i]);   // Est-ce la meilleure manière de détruire une tache composite ?``
+        m_element[i]=0;
     }
 }
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
 
-void TacheComposite::addSousTache(Tache * sousTache)
+void TacheComposite::addElement(Tache * element)
 {
-    if(sousTache==this)
+    if(element==this)
     {
         throw CalendarException("Tentative avortée d'auto-inclusion"); // A verifier: est-ce utile ?
     }
-    m_sousTache.push_back(sousTache);
+    m_element.push_back(element);
+    element->setParent(this);
 }
 
 void TacheComposite::afficher(QStandardItem * parent)
 {
     QTache *item;
 
-    for(vector<Tache *>::iterator it=this->m_sousTache.begin();it!=this->m_sousTache.end();++it)
+    for(vector<Tache *>::iterator it=this->m_element.begin();it!=this->m_element.end();++it)
     {
         //item=new QTache(*it);
         item=new QTache((*it)->getTitre(),*it);

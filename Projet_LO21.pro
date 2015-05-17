@@ -8,7 +8,8 @@ SOURCES += \
     tacheunitaire.cpp \
     tachecomposite.cpp \
     manager.tpp \
-    taskselectionwindow.cpp
+    taskselectionwindow.cpp \
+    validationwindow.cpp
 
 HEADERS += \
     tache.h \
@@ -20,7 +21,8 @@ HEADERS += \
     tacheunitaire.h \
     tachecomposite.h \
     manager.h \
-    taskselectionwindow.h
+    taskselectionwindow.h \
+    validationwindow.h
 
 FORMS += \
     mainwindow.ui

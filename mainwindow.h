@@ -9,6 +9,7 @@
 #include "manager.h"
 #include "programmation.h"
 #include "taskselectionwindow.h"
+#include "validationwindow.h"
 
 namespace Ui {
 class MainWindow;
@@ -39,6 +40,7 @@ private:
 
 private slots:
     void selectionProjet();
+    void deleteSelection();
     void clickArbre(const QModelIndex&);
     void doubleclickArbre(QModelIndex);
     void uniquePrerequisiteSelection();

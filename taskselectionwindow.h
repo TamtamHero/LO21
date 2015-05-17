@@ -9,12 +9,14 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 
+enum selectedTaskType{PREREQUISITE,ATTACHEDTO};
+
 class TaskSelectionWindow : public QDialog
 {
     Q_OBJECT
 
 public:
-    TaskSelectionWindow(QWidget *parent,Projet *project);
+    TaskSelectionWindow(QWidget *parent,Projet *project,selectedTaskType type);
     ~TaskSelectionWindow();
 
     Tache * getSelectedTask(){return selectedTask;}
@@ -24,6 +26,7 @@ private:
     QTreeView *treeView;
     QPushButton *pushButton_TaskSelection_selection;
     Tache *selectedTask;
+    selectedTaskType m_type;
 
 private slots:
     void sendSelection();

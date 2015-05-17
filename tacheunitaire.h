@@ -19,7 +19,7 @@ public:
     void setDuree(QTime duree) {m_duree=duree;}
     void afficher(QStandardItem * parent);
 
-    ~TacheUnitaire();
+    virtual ~TacheUnitaire();
 };
 
 #endif // TACHEUNITAIRE_H

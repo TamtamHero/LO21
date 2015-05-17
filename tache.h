@@ -21,20 +21,25 @@ protected:
     QDateTime m_disponibilite;
     QDateTime m_echeance;
     int m_status;
-    vector<Tache*> m_precedent;
+    Tache* m_parent;
+    vector<Tache*> m_prerequisite;
     Tache(QString titre,QDateTime disponibilite,QDateTime echeance);
 
     Tache(const Tache& source);
     Tache& operator=(const Tache& source);
 
 public:
+    void setParent(Tache * parent){m_parent=parent;}
+    Tache* getParent() { return m_parent;}
     QString getTitre() { return m_titre;}
     QDateTime getDisponibility(){return m_disponibilite;}
     QDateTime getDeadline(){return m_echeance;}
-    void setPrerequisite(Tache *);
+    vector<Tache*>& getPrerequisite(){return m_prerequisite;}
+    void addPrerequisite(Tache * prerequisite);
     virtual void afficher(QStandardItem * parent)=0;
 
-    static bool checkPrerequisite(Tache* task,Tache * previousTask);
+    static bool checkPrerequisite(Tache* task,Tache * prerequisiteTask);
+    static bool checkAttachedTo(Tache* task,Tache * motherTask);
     virtual ~Tache()=0;
 
 };

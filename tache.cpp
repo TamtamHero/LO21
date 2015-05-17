@@ -2,7 +2,7 @@
 #include <iostream>
 
 Tache::Tache(QString titre,QDateTime disponibilite,QDateTime echeance):
-    m_titre(titre), m_disponibilite(disponibilite), m_echeance(echeance), m_status(0)
+    m_titre(titre), m_disponibilite(disponibilite), m_echeance(echeance), m_status(0), m_parent(NULL)
 {
     if(echeance < QDateTime::currentDateTime())
     {
@@ -21,18 +21,39 @@ Tache::~Tache()
 
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-
-bool Tache::checkPrerequisite(Tache* task,Tache * previousTask)
+void Tache::addPrerequisite(Tache *prerequisite)
 {
-    if(task==previousTask)
+    if(prerequisite==this)
     {
-        throw CalendarException("Une tache ne peut pas se composer d'elle même ou se précéder");
+        throw CalendarException("Tentative avortée d'auto-inclusion");
     }
-    else if(task->getDisponibility()>=previousTask->getDeadline())
+    m_prerequisite.push_back(prerequisite);
+}
+
+
+bool Tache::checkPrerequisite(Tache* task, Tache * prerequisiteTask)
+{
+    if(task==prerequisiteTask)
+    {
+        throw CalendarException("Une tache ne peut être son propre prérequis");
+    }
+    //A FAIRE:Cas d'une tache mère en prérequis d'une de ses tache fille, et inversement, nom déjà utilisé
+    return true;
+
+}
+
+
+bool Tache::checkAttachedTo(Tache* task, Tache * motherTask)
+{
+    if(task==motherTask)
+    {
+        throw CalendarException("Une tache ne peut pas être rattachée à elle même");
+    }
+    else if(task->getDisponibility()>=motherTask->getDeadline())
     {
         throw CalendarException("La date de disponibilité de la tache est postérieure à la tache qu'elle compose");
     }
-    //Cas d'une tache mère
+    //A FAIRE:Cas d'une tache mère en prérequis d'une de ses tache fille, et inversement, nom déjà utilisé
     return true;
 
 }

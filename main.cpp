@@ -22,8 +22,8 @@ int main(int argc, char * argv[])
     TacheComposite *tc=new TacheComposite("tache compo",t1,t2);
 
 
-    tc->addSousTache(t);
-    tc->addSousTache(&t5);
+    tc->addElement(t);
+    tc->addElement(&t5);
 
 
     out << t->getDuree().toString() ;

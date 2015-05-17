@@ -414,502 +414,517 @@
      <attribute name="title">
       <string>Edition</string>
      </attribute>
-     <widget class="QTabWidget" name="tabWidget_editing_editor">
+     <widget class="QWidget" name="verticalLayoutWidget_5">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>10</y>
-        <width>321</width>
-        <height>511</height>
+        <x>9</x>
+        <y>9</y>
+        <width>401</width>
+        <height>561</height>
        </rect>
       </property>
-      <property name="currentIndex">
-       <number>1</number>
-      </property>
-      <widget class="QWidget" name="tab">
-       <attribute name="title">
-        <string>Projet</string>
-       </attribute>
-       <widget class="QWidget" name="verticalLayoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>10</y>
-          <width>253</width>
-          <height>161</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QTreeView" name="treeView">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_23">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>Type: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboBox_project_type">
-             <item>
-              <property name="text">
-               <string>Projet</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Tache Composite</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Tache Unitaire</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QPushButton" name="pushButton_editing_projectSelection">
+           <property name="text">
+            <string>Selectionner un projet</string>
+           </property>
+          </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string>Titre: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit_project_title"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>Disponibilité: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QDateTimeEdit" name="dateTimeEdit_project_disponibility"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>Echéance: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QDateTimeEdit" name="dateTimeEdit_project_deadline"/>
-           </item>
-          </layout>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="tab_2">
-       <attribute name="title">
-        <string>Tache Composite</string>
-       </attribute>
-       <widget class="QWidget" name="verticalLayoutWidget_2">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>10</y>
-          <width>278</width>
-          <height>267</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
-           <item>
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>Type: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboBox_blendTask_type">
-             <item>
-              <property name="text">
-               <string>Tache Composite</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Tache Unitaire</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Projet</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
-           <item>
-            <widget class="QLabel" name="label_6">
-             <property name="text">
-              <string>Titre: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit_blendTask_title"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
-           <item>
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string>Disponibilité: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QDateTimeEdit" name="dateTimeEdit_blendTask_disponibility"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_8">
-           <item>
-            <widget class="QLabel" name="label_8">
-             <property name="text">
-              <string>Echéance: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QDateTimeEdit" name="dateTimeEdit_blendTask_deadline"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_9">
-           <item>
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string>Prérequis: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QToolButton" name="toolButton_blendTask_prerequisite">
-             <property name="text">
-              <string>...</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QListView" name="listView_blendTask_prerequisite"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_10">
-           <item>
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string>Rattaché à:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QToolButton" name="toolButton_blendTask_attachedTo">
-             <property name="text">
-              <string>...</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit_blendTask_attachedTo">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="tab_3">
-       <attribute name="title">
-        <string>Tache Unitaire</string>
-       </attribute>
-       <widget class="QWidget" name="verticalLayoutWidget_3">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>10</y>
-          <width>271</width>
-          <height>331</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_11">
-           <item>
-            <widget class="QLabel" name="label_11">
-             <property name="text">
-              <string>Type: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboBox_uniqueTask_type">
-             <item>
-              <property name="text">
-               <string>Tache Unitaire</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Tache Composite</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Projet</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_12">
-           <item>
-            <widget class="QLabel" name="label_12">
-             <property name="text">
-              <string>Titre: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit_uniqueTask_title"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_13">
-           <item>
-            <widget class="QLabel" name="label_13">
-             <property name="text">
-              <string>Disponibilité: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QDateTimeEdit" name="dateTimeEdit_uniqueTask_disponibility"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_14">
-           <item>
-            <widget class="QLabel" name="label_14">
-             <property name="text">
-              <string>Echéance: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QDateTimeEdit" name="dateTimeEdit_uniqueTask_deadline"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_15">
-           <item>
-            <widget class="QLabel" name="label_15">
-             <property name="text">
-              <string>Prérequis: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QToolButton" name="toolButton_uniqueTask_prerequisite">
-             <property name="text">
-              <string>...</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QListView" name="listView_uniqueTask_prerequisite"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_16">
-           <item>
-            <widget class="QLabel" name="label_16">
-             <property name="text">
-              <string>Rattaché à:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QToolButton" name="toolButton_uniqueTask_attachedTo">
-             <property name="text">
-              <string>...</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit_uniqueTask_attachedTo">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_17">
-           <item>
-            <widget class="QLabel" name="label_17">
-             <property name="text">
-              <string>Durée: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QTimeEdit" name="timeEdit_uniqueTask_length"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_18">
-           <item>
-            <widget class="QLabel" name="label_18">
-             <property name="text">
-              <string>Préemptable:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboBox_uniqueTask_preemptability">
-             <item>
-              <property name="text">
-               <string>Non</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Oui</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-      </widget>
+       </item>
+      </layout>
      </widget>
-     <widget class="QTreeView" name="treeView">
+     <widget class="QWidget" name="verticalLayoutWidget_6">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>411</width>
-        <height>501</height>
+        <x>430</x>
+        <y>0</y>
+        <width>341</width>
+        <height>571</height>
        </rect>
       </property>
-      <property name="editTriggers">
-       <set>QAbstractItemView::NoEditTriggers</set>
-      </property>
-     </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_2">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>520</y>
-        <width>741</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_23">
+      <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
-        <widget class="QPushButton" name="pushButon_editing_projectSelection">
-         <property name="text">
-          <string>Selectionner un projet</string>
+        <widget class="QTabWidget" name="tabWidget_editing_editor">
+         <property name="currentIndex">
+          <number>2</number>
          </property>
+         <widget class="QWidget" name="tab">
+          <attribute name="title">
+           <string>Projet</string>
+          </attribute>
+          <widget class="QWidget" name="verticalLayoutWidget">
+           <property name="geometry">
+            <rect>
+             <x>30</x>
+             <y>10</y>
+             <width>253</width>
+             <height>161</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Type: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="comboBox_project_type">
+                <item>
+                 <property name="text">
+                  <string>Projet</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Tache Composite</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Tache Unitaire</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>Titre: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEdit_project_title"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Disponibilité: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDateTimeEdit" name="dateTimeEdit_project_disponibility"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Echéance: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDateTimeEdit" name="dateTimeEdit_project_deadline"/>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="tab_2">
+          <attribute name="title">
+           <string>Tache Composite</string>
+          </attribute>
+          <widget class="QWidget" name="verticalLayoutWidget_2">
+           <property name="geometry">
+            <rect>
+             <x>30</x>
+             <y>10</y>
+             <width>278</width>
+             <height>267</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Type: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="comboBox_blendTask_type">
+                <item>
+                 <property name="text">
+                  <string>Tache Composite</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Tache Unitaire</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Projet</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>Titre: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEdit_blendTask_title"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <item>
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>Disponibilité: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDateTimeEdit" name="dateTimeEdit_blendTask_disponibility"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <item>
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>Echéance: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDateTimeEdit" name="dateTimeEdit_blendTask_deadline"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <item>
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>Prérequis: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="toolButton_blendTask_prerequisite">
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QListView" name="listView_blendTask_prerequisite"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_10">
+              <item>
+               <widget class="QLabel" name="label_10">
+                <property name="text">
+                 <string>Rattaché à:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="toolButton_blendTask_attachedTo">
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEdit_blendTask_attachedTo">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="tab_3">
+          <attribute name="title">
+           <string>Tache Unitaire</string>
+          </attribute>
+          <widget class="QWidget" name="verticalLayoutWidget_3">
+           <property name="geometry">
+            <rect>
+             <x>30</x>
+             <y>10</y>
+             <width>271</width>
+             <height>331</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_11">
+              <item>
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>Type: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="comboBox_uniqueTask_type">
+                <item>
+                 <property name="text">
+                  <string>Tache Unitaire</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Tache Composite</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Projet</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_12">
+              <item>
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>Titre: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEdit_uniqueTask_title"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_13">
+              <item>
+               <widget class="QLabel" name="label_13">
+                <property name="text">
+                 <string>Disponibilité: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDateTimeEdit" name="dateTimeEdit_uniqueTask_disponibility"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_14">
+              <item>
+               <widget class="QLabel" name="label_14">
+                <property name="text">
+                 <string>Echéance: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDateTimeEdit" name="dateTimeEdit_uniqueTask_deadline"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_15">
+              <item>
+               <widget class="QLabel" name="label_15">
+                <property name="text">
+                 <string>Prérequis: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="toolButton_uniqueTask_prerequisite">
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QListView" name="listView_uniqueTask_prerequisite"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_16">
+              <item>
+               <widget class="QLabel" name="label_16">
+                <property name="text">
+                 <string>Rattaché à:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="toolButton_uniqueTask_attachedTo">
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEdit_uniqueTask_attachedTo">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_17">
+              <item>
+               <widget class="QLabel" name="label_17">
+                <property name="text">
+                 <string>Durée: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTimeEdit" name="timeEdit_uniqueTask_length"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_18">
+              <item>
+               <widget class="QLabel" name="label_18">
+                <property name="text">
+                 <string>Préemptable:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="comboBox_uniqueTask_preemptability">
+                <item>
+                 <property name="text">
+                  <string>Non</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Oui</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </widget>
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_7">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_editing_create">
-         <property name="text">
-          <string>Créer</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_6">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_editing_edit">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>Editer</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_20">
+         <item>
+          <widget class="QPushButton" name="pushButton_editing_create">
+           <property name="text">
+            <string>Créer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_editing_edit">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Editer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_editing_delete">
+           <property name="text">
+            <string>Supprimer</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

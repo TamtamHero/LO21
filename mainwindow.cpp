@@ -26,31 +26,37 @@ MainWindow::MainWindow(QWidget *parent) :
     QDateTime t4=QDateTime::currentDateTime().addDays(5);
     TacheUnitaire *t=new TacheUnitaire("tache 1",t1,t2,QTime::fromString("11:00:00"),true);
     TacheUnitaire *t5=new TacheUnitaire("tache 5",t3,t4,QTime::fromString("5:00:00"),false);
+    TacheUnitaire *t66=new TacheUnitaire("tache 66",t1,t2,QTime::fromString("11:00:00"),true);
+    TacheUnitaire *t77=new TacheUnitaire("tache 77",t3,t4,QTime::fromString("5:00:00"),false);
 
     TacheComposite *tc=new TacheComposite("tache compo",t1,t2);
     TacheComposite *tc2=new TacheComposite("tache compo 2",t1,t2);
 
 
-    tc->addSousTache(t);
-    tc->addSousTache(t5);
+    tc->addElement(t);
+    tc->addElement(t5);
 
 
-    tc2->addSousTache(t);
-    tc2->addSousTache(t5);
+    tc2->addElement(t66);
+    t66->addPrerequisite(t77);
+    tc2->addElement(t77);
+    tc2->addPrerequisite(tc);
 
     Projet *projet=new Projet("projet 1",t1,t2);
     Projet *projet2=new Projet("projet 2",t1,t2);
-    projet->addSousTache(tc);
-    projet->addSousTache(tc2);
+    projet->addElement(tc);
+    projet->addElement(tc2);
   /*  projet->Afficher(treeModel);
     // nécessité d'avoir ici un pointeur vers l'instance unique du projetManager: il appelle sa méthode affichage avec *treeModel ici.
      */
 
     projectManager.addElement(projet);
     projectManager.addElement(projet2);
+
     selectionProjet();
 
-    QObject::connect(ui->pushButon_editing_projectSelection, SIGNAL(clicked()), this, SLOT(selectionProjet()));
+    QObject::connect(ui->pushButton_editing_projectSelection, SIGNAL(clicked()), this, SLOT(selectionProjet()));
+    QObject::connect(ui->pushButton_editing_delete, SIGNAL(clicked()), this, SLOT(deleteSelection()));
     QObject::connect(ui->treeView,SIGNAL(clicked(const QModelIndex&)),this,SLOT( clickArbre(const QModelIndex&)));
     QObject::connect(ui->treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleclickArbre(QModelIndex)));
     QObject::connect(ui->toolButton_uniqueTask_attachedTo, SIGNAL(clicked()), this, SLOT(uniqueAttachedToSelection()));
@@ -112,6 +118,8 @@ void MainWindow::doubleclickArbre(QModelIndex)
 
 void MainWindow::editing(Tache * task)
 {
+    QTache *item;
+
     if(dynamic_cast<TacheUnitaire*>(task)!=NULL) // Check if argument is a uniqueTask
     {
         ui->tabWidget_editing_editor->setCurrentIndex(UNIQUE_TASK);
@@ -121,6 +129,18 @@ void MainWindow::editing(Tache * task)
         ui->dateTimeEdit_uniqueTask_deadline->setDateTime(task->getDeadline());
         ui->timeEdit_uniqueTask_length->setTime(dynamic_cast<TacheUnitaire*>(task)->getDuree());
         ui->comboBox_uniqueTask_preemptability->setCurrentIndex(dynamic_cast<TacheUnitaire*>(task)->getPreemptability());
+        if(task->getParent()!=NULL)
+        {
+            ui->lineEdit_uniqueTask_attachedTo->setText(task->getParent()->getTitre());
+        }
+
+        listModel->clear();
+        for(vector<Tache*>::iterator it=task->getPrerequisite().begin(); it!=task->getPrerequisite().end(); ++it)
+        {
+            item=new QTache((*it)->getTitre(),*it);
+            listModel->appendRow(item);
+            ui->listView_uniqueTask_prerequisite->setModel(listModel);
+        }
 
     }
     else
@@ -130,7 +150,18 @@ void MainWindow::editing(Tache * task)
         ui->lineEdit_blendTask_title->setText(task->getTitre());
         ui->dateTimeEdit_blendTask_disponibility->setDateTime(task->getDisponibility());
         ui->dateTimeEdit_blendTask_deadline->setDateTime(task->getDeadline());
+        if(task->getParent()!=NULL)
+        {
+            ui->lineEdit_blendTask_attachedTo->setText(task->getParent()->getTitre());
+        }
 
+        listModel->clear();
+        for(vector<Tache*>::iterator it=task->getPrerequisite().begin(); it!=task->getPrerequisite().end(); ++it)
+        {
+            item=new QTache((*it)->getTitre(),*it);
+            listModel->appendRow(item);
+            ui->listView_blendTask_prerequisite->setModel(listModel);
+        }
     }
 }
 
@@ -148,7 +179,7 @@ void MainWindow::uniquePrerequisiteSelection()
 {
     if(currentProject!=NULL)
     {
-        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject);
+        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject,PREREQUISITE);
         selection->exec();
 
         if(selection->getSelectedTask()!=NULL)
@@ -165,7 +196,7 @@ void MainWindow::blendPrerequisiteSelection()
 {
     if(currentProject!=NULL)
     {
-        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject);
+        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject,PREREQUISITE);
         selection->exec();
 
         if(selection->getSelectedTask()!=NULL)
@@ -183,7 +214,7 @@ void MainWindow::uniqueAttachedToSelection()
 {
     if(currentProject!=NULL)
     {
-        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject);
+        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject,ATTACHEDTO);
         selection->exec();
 
         if(selection->getSelectedTask()!=NULL)
@@ -197,12 +228,39 @@ void MainWindow::blendAttachedToSelection()
 {
     if(currentProject!=NULL)
     {
-        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject);
+        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject,ATTACHEDTO);
         selection->exec();
 
         if(selection->getSelectedTask()!=NULL)
         {
         ui->lineEdit_blendTask_attachedTo->setText(selection->getSelectedTask()->getTitre());
+        }
+    }
+}
+
+void MainWindow::deleteSelection()
+{
+    QItemSelectionModel *selection = ui->treeView->selectionModel();
+    QModelIndex indexElementSelectionne = selection->currentIndex();
+
+    if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL) // Check if selected element is a Project
+    {
+        currentProject=indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>();
+        validationWindow result(this,"Êtes-vous sur de vouloir supprimer le projet\"" + currentProject->getTitre() +"\" et les taches qui le composent?");
+        result.exec();
+        if(result.getValidation())
+        {
+            //delete project
+        }
+    }
+    else if(dynamic_cast<Tache*>(indexElementSelectionne.data(Qt::UserRole+1).value<Tache*>())!=NULL)
+    {
+        currentTask=indexElementSelectionne.data(Qt::UserRole+1).value<Tache*>();
+        validationWindow result(this,"Êtes-vous sur de vouloir supprimer la Tache \"" + currentTask->getTitre() +"\" ?");
+        result.exec();
+        if(result.getValidation())
+        {
+            currentProject->deleteElement(currentTask);
         }
     }
 }
