@@ -46,9 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     Projet *projet2=new Projet("projet 2",t1,t2);
     projet->addElement(tc);
     projet->addElement(tc2);
-  /*  projet->Afficher(treeModel);
-    // nécessité d'avoir ici un pointeur vers l'instance unique du projetManager: il appelle sa méthode affichage avec *treeModel ici.
-     */
+
 
     projectManager.addElement(projet);
     projectManager.addElement(projet2);
@@ -92,11 +90,12 @@ void MainWindow::clickArbre(const QModelIndex&)
         currentProject=indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>();
         editorView(currentProject);
     }
-    else  // Else, Task* case
+    else if(dynamic_cast<Tache*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache *>())!=NULL) // Else, Task* case
     {
         currentTask=indexElementSelectionne.data(Qt::UserRole+2).value<Tache *>();
         editorView(currentTask);
     }
+
 }
 
 void MainWindow::doubleclickArbre(QModelIndex)
@@ -112,7 +111,6 @@ void MainWindow::doubleclickArbre(QModelIndex)
         treeModel->setHorizontalHeaderLabels(QStringList(currentProject->getTitre()));
         ui->treeView->setModel(treeModel);
     }
-
 }
 
 void MainWindow::editorView(Tache * task)
@@ -122,7 +120,6 @@ void MainWindow::editorView(Tache * task)
     if(dynamic_cast<TacheUnitaire*>(task)!=NULL) // Check if argument is a uniqueTask
     {
         ui->tabWidget_editing_editor->setCurrentIndex(UNIQUE_TASK);
-        ui->comboBox_uniqueTask_type->setCurrentIndex(0);
         ui->lineEdit_uniqueTask_title->setText(task->getTitre());
         ui->dateTimeEdit_uniqueTask_disponibility->setDateTime(task->getDisponibility());
         ui->dateTimeEdit_uniqueTask_deadline->setDateTime(task->getDeadline());
@@ -145,7 +142,6 @@ void MainWindow::editorView(Tache * task)
     else if(dynamic_cast<TacheComposite*>(task)!=NULL)
     {
         ui->tabWidget_editing_editor->setCurrentIndex(BLEND_TASK);
-        ui->comboBox_blendTask_type->setCurrentIndex(0);
         ui->lineEdit_blendTask_title->setText(task->getTitre());
         ui->dateTimeEdit_blendTask_disponibility->setDateTime(task->getDisponibility());
         ui->dateTimeEdit_blendTask_deadline->setDateTime(task->getDeadline());
@@ -165,14 +161,13 @@ void MainWindow::editorView(Tache * task)
     }
     else
     {
-        cout << "you're fucked";
+        throw CalendarException("Erreur dans la fonction MainWindow::editorView : type inconnu");
     }
 }
 
 void MainWindow::editorView(Projet * project)
 {
     ui->tabWidget_editing_editor->setCurrentIndex(PROJECT);
-    ui->comboBox_project_type->setCurrentIndex(0);
     ui->lineEdit_project_title->setText(project->getTitre());
     ui->dateTimeEdit_project_disponibility->setDateTime(project->getDisponibility());
     ui->dateTimeEdit_project_deadline->setDateTime(project->getDeadline());
@@ -301,9 +296,4 @@ void MainWindow::edit()
         currentTask->setDeadline(ui->dateTimeEdit_blendTask_deadline->dateTime());
         treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre());
     }
-    else
-    {
-        cout << "coucou";
-    }
-
 }

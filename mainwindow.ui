@@ -470,7 +470,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget_editing_editor">
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tab">
           <attribute name="title">
@@ -486,36 +486,6 @@
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout">
-              <item>
-               <widget class="QLabel" name="label">
-                <property name="text">
-                 <string>Type: </string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="comboBox_project_type">
-                <item>
-                 <property name="text">
-                  <string>Projet</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Tache Composite</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Tache Unitaire</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-             </layout>
-            </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_2">
               <item>
@@ -575,36 +545,6 @@
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_5">
-              <item>
-               <widget class="QLabel" name="label_5">
-                <property name="text">
-                 <string>Type: </string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="comboBox_blendTask_type">
-                <item>
-                 <property name="text">
-                  <string>Tache Composite</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Tache Unitaire</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Projet</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-             </layout>
-            </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_6">
               <item>
@@ -710,36 +650,6 @@
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_3">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_11">
-              <item>
-               <widget class="QLabel" name="label_11">
-                <property name="text">
-                 <string>Type: </string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="comboBox_uniqueTask_type">
-                <item>
-                 <property name="text">
-                  <string>Tache Unitaire</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Tache Composite</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Projet</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-             </layout>
-            </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_12">
               <item>
