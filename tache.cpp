@@ -37,6 +37,16 @@ bool Tache::checkPrerequisite(Tache* task, Tache * prerequisiteTask)
     {
         throw CalendarException("Une tache ne peut être son propre prérequis");
     }
+
+    Tache* ptr_task=task->getParent();
+    while(ptr_task!=NULL)
+    {
+        if(ptr_task==prerequisiteTask)
+        {
+            throw CalendarException("Une tache ne peut pas avoir une tache parente en prérequis");
+        }
+        ptr_task=ptr_task->getParent();
+    }
     //A FAIRE:Cas d'une tache mère en prérequis d'une de ses tache fille, et inversement, nom déjà utilisé
     return true;
 

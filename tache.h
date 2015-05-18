@@ -31,9 +31,12 @@ protected:
 public:
     void setParent(Tache * parent){m_parent=parent;}
     Tache* getParent() { return m_parent;}
-    QString getTitre() { return m_titre;}
+    QString getTitre(){return m_titre;}
+    void setTitle(QString title){m_titre=title;}
     QDateTime getDisponibility(){return m_disponibilite;}
+    void setDisponibility(QDateTime disponibility){m_disponibilite=disponibility;}
     QDateTime getDeadline(){return m_echeance;}
+    void setDeadline(QDateTime deadline){m_echeance=deadline;}
     vector<Tache*>& getPrerequisite(){return m_prerequisite;}
     void addPrerequisite(Tache * prerequisite);
     virtual void afficher(QStandardItem * parent)=0;
