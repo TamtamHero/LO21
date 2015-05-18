@@ -106,7 +106,7 @@ void Projet::afficher(QStandardItemModel * treeModel)
     for(vector<Tache *>::iterator it=this->m_decomposition.begin();it!=this->m_decomposition.end();++it)
     {
         item=new QStandardItem((*it)->getTitre());
-        item->setData(QVariant::fromValue((*it)),Qt::UserRole+1);
+        item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
         treeModel->appendRow(item);
         (*it)->afficher(item);
 

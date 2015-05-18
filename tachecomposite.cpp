@@ -36,7 +36,7 @@ void TacheComposite::afficher(QStandardItem * parent)
     {
         //item=new QTache(*it);
         item=new QStandardItem((*it)->getTitre());
-        item->setData(QVariant::fromValue((*it)),Qt::UserRole+1);
+        item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
         parent->appendRow(item);
         (*it)->afficher(item);
 

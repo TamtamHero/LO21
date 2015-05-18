@@ -2,6 +2,7 @@
 #define TACHEUNITAIRE_H
 
 #include "tache.h"
+#include <QVariant>
 
 
 class TacheUnitaire: public Tache

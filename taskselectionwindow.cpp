@@ -32,7 +32,7 @@ void TaskSelectionWindow::sendSelection()
 {
     QItemSelectionModel *selection = treeView->selectionModel();
     QModelIndex indexElementSelectionne = selection->currentIndex();
-    selectedTask=indexElementSelectionne.data(Qt::UserRole+1).value<Tache *>();
+    selectedTask=indexElementSelectionne.data(Qt::UserRole+2).value<Tache *>();
     try
     {
         switch (m_type)

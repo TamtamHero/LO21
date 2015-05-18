@@ -92,9 +92,9 @@ void MainWindow::clickArbre(const QModelIndex&)
         currentProject=indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>();
         editorView(currentProject);
     }
-    else // Else, Task* case
+    else  // Else, Task* case
     {
-        currentTask=indexElementSelectionne.data(Qt::UserRole+1).value<Tache *>();
+        currentTask=indexElementSelectionne.data(Qt::UserRole+2).value<Tache *>();
         editorView(currentTask);
     }
 }
@@ -142,7 +142,7 @@ void MainWindow::editorView(Tache * task)
         }
 
     }
-    else
+    else if(dynamic_cast<TacheComposite*>(task)!=NULL)
     {
         ui->tabWidget_editing_editor->setCurrentIndex(BLEND_TASK);
         ui->comboBox_blendTask_type->setCurrentIndex(0);
@@ -158,10 +158,14 @@ void MainWindow::editorView(Tache * task)
         for(vector<Tache*>::iterator it=task->getPrerequisite().begin(); it!=task->getPrerequisite().end(); ++it)
         {
             item=new QStandardItem((*it)->getTitre());
-            item->setData(QVariant::fromValue((*it)),Qt::UserRole+1);
+            item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
             listModel->appendRow(item);
             ui->listView_blendTask_prerequisite->setModel(listModel);
         }
+    }
+    else
+    {
+        cout << "you're fucked";
     }
 }
 
@@ -186,7 +190,7 @@ void MainWindow::uniquePrerequisiteSelection()
         {
             QStandardItem *item;
             item=new QStandardItem(selection->getSelectedTask()->getTitre());
-            item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+1);
+            item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
             listModel->appendRow(item);
             ui->listView_uniqueTask_prerequisite->setModel(listModel);
         }
@@ -204,7 +208,7 @@ void MainWindow::blendPrerequisiteSelection()
         {
             QStandardItem *item;
             item=new QStandardItem(selection->getSelectedTask()->getTitre());
-            item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+1);
+            item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
             listModel->appendRow(item);
             ui->listView_blendTask_prerequisite->setModel(listModel);
         }
@@ -279,15 +283,27 @@ void MainWindow::edit()
     if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL) // Check if selected element is a Project
     {
         currentProject->setTitle(ui->lineEdit_project_title->text());
-
-        //treeModel->dataChanged(QModelIndex(),QModelIndex());
+        currentProject->setDisponibility(ui->dateTimeEdit_project_disponibility->dateTime());
+        currentProject->setDeadline(ui->dateTimeEdit_project_deadline->dateTime());
+        treeModel->itemFromIndex(indexElementSelectionne)->setText(currentProject->getTitre());
     }
-    else if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+1).value<TacheUnitaire*>())!=NULL)
+    else if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
     {
-
+        currentTask->setTitle(ui->lineEdit_uniqueTask_title->text());
+        currentTask->setDisponibility(ui->dateTimeEdit_uniqueTask_disponibility->dateTime());
+        currentTask->setDeadline(ui->dateTimeEdit_uniqueTask_deadline->dateTime());
+        treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre());
     }
-    else if(dynamic_cast<TacheComposite*>(indexElementSelectionne.data(Qt::UserRole+1).value<TacheComposite*>())!=NULL)
+    else if(dynamic_cast<TacheComposite*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
     {
-
+        currentTask->setTitle(ui->lineEdit_blendTask_title->text());
+        currentTask->setDisponibility(ui->dateTimeEdit_blendTask_disponibility->dateTime());
+        currentTask->setDeadline(ui->dateTimeEdit_blendTask_deadline->dateTime());
+        treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre());
     }
+    else
+    {
+        cout << "coucou";
+    }
+
 }
