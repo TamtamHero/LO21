@@ -32,6 +32,7 @@ public:
 
     static Manager<Type> &getInstance();
     static void freeInstance();
+    vector<Type *>& getList(){return m_liste;}
     void addElement(Type * element);
     void Afficher(QStandardItemModel * treeModel);
 

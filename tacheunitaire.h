@@ -2,7 +2,6 @@
 #define TACHEUNITAIRE_H
 
 #include "tache.h"
-#include "qtache.h"
 
 
 class TacheUnitaire: public Tache
@@ -21,5 +20,7 @@ public:
 
     virtual ~TacheUnitaire();
 };
+
+Q_DECLARE_METATYPE(TacheUnitaire *)
 
 #endif // TACHEUNITAIRE_H

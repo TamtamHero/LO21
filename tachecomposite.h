@@ -2,7 +2,6 @@
 #define TACHECOMPOSITE_H
 
 #include "tache.h"
-#include "qtache.h"
 #include <QVariant>
 
 
@@ -19,5 +18,7 @@ public:
     void afficher(QStandardItem * parent);
     virtual ~TacheComposite();
 };
+
+Q_DECLARE_METATYPE(TacheComposite *)
 
 #endif // TACHECOMPOSITE_H

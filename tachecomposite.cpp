@@ -30,15 +30,15 @@ void TacheComposite::addElement(Tache * element)
 
 void TacheComposite::afficher(QStandardItem * parent)
 {
-    QTache *item;
+    QStandardItem *item;
 
     for(vector<Tache *>::iterator it=this->m_element.begin();it!=this->m_element.end();++it)
     {
         //item=new QTache(*it);
-        item=new QTache((*it)->getTitre(),*it);
+        item=new QStandardItem((*it)->getTitre());
         item->setData(QVariant::fromValue((*it)),Qt::UserRole+1);
         parent->appendRow(item);
-        item->getTache()->afficher(item);
+        (*it)->afficher(item);
 
     }
 }

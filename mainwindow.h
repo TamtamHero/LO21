@@ -23,8 +23,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void editing(Tache * task);
-    void editing(Projet * project);
+    void editorView(Tache * task);
+    void editorView(Projet * project);
     Tache * getCurrentTask(){return currentTask;}
 
 private:
@@ -47,6 +47,7 @@ private slots:
     void blendPrerequisiteSelection();
     void uniqueAttachedToSelection();
     void blendAttachedToSelection();
+    void edit();
 };
 
 #endif // MAINWINDOW_H

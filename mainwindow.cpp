@@ -63,8 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->toolButton_blendTask_attachedTo, SIGNAL(clicked()), this, SLOT(blendAttachedToSelection()));
     QObject::connect(ui->toolButton_uniqueTask_prerequisite, SIGNAL(clicked()), this, SLOT(uniquePrerequisiteSelection()));
     QObject::connect(ui->toolButton_blendTask_prerequisite, SIGNAL(clicked()), this, SLOT(blendPrerequisiteSelection()));
-
-
+    QObject::connect(ui->pushButton_editing_edit, SIGNAL(clicked()), this, SLOT(edit()));
 }
 
 MainWindow::~MainWindow()
@@ -91,12 +90,12 @@ void MainWindow::clickArbre(const QModelIndex&)
     if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL) // Check if selected element is a Project
     {
         currentProject=indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>();
-        editing(currentProject);
+        editorView(currentProject);
     }
     else // Else, Task* case
     {
         currentTask=indexElementSelectionne.data(Qt::UserRole+1).value<Tache *>();
-        editing(currentTask);
+        editorView(currentTask);
     }
 }
 
@@ -116,9 +115,9 @@ void MainWindow::doubleclickArbre(QModelIndex)
 
 }
 
-void MainWindow::editing(Tache * task)
+void MainWindow::editorView(Tache * task)
 {
-    QTache *item;
+    QStandardItem *item;
 
     if(dynamic_cast<TacheUnitaire*>(task)!=NULL) // Check if argument is a uniqueTask
     {
@@ -137,7 +136,7 @@ void MainWindow::editing(Tache * task)
         listModel->clear();
         for(vector<Tache*>::iterator it=task->getPrerequisite().begin(); it!=task->getPrerequisite().end(); ++it)
         {
-            item=new QTache((*it)->getTitre(),*it);
+            item=new QStandardItem((*it)->getTitre());
             listModel->appendRow(item);
             ui->listView_uniqueTask_prerequisite->setModel(listModel);
         }
@@ -158,14 +157,15 @@ void MainWindow::editing(Tache * task)
         listModel->clear();
         for(vector<Tache*>::iterator it=task->getPrerequisite().begin(); it!=task->getPrerequisite().end(); ++it)
         {
-            item=new QTache((*it)->getTitre(),*it);
+            item=new QStandardItem((*it)->getTitre());
+            item->setData(QVariant::fromValue((*it)),Qt::UserRole+1);
             listModel->appendRow(item);
             ui->listView_blendTask_prerequisite->setModel(listModel);
         }
     }
 }
 
-void MainWindow::editing(Projet * project)
+void MainWindow::editorView(Projet * project)
 {
     ui->tabWidget_editing_editor->setCurrentIndex(PROJECT);
     ui->comboBox_project_type->setCurrentIndex(0);
@@ -184,8 +184,9 @@ void MainWindow::uniquePrerequisiteSelection()
 
         if(selection->getSelectedTask()!=NULL)
         {
-            QTache *item;
-            item=new QTache(selection->getSelectedTask()->getTitre(),selection->getSelectedTask());
+            QStandardItem *item;
+            item=new QStandardItem(selection->getSelectedTask()->getTitre());
+            item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+1);
             listModel->appendRow(item);
             ui->listView_uniqueTask_prerequisite->setModel(listModel);
         }
@@ -201,8 +202,9 @@ void MainWindow::blendPrerequisiteSelection()
 
         if(selection->getSelectedTask()!=NULL)
         {
-            QTache *item;
-            item=new QTache(selection->getSelectedTask()->getTitre(),selection->getSelectedTask());
+            QStandardItem *item;
+            item=new QStandardItem(selection->getSelectedTask()->getTitre());
+            item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+1);
             listModel->appendRow(item);
             ui->listView_blendTask_prerequisite->setModel(listModel);
         }
@@ -245,22 +247,47 @@ void MainWindow::deleteSelection()
 
     if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL) // Check if selected element is a Project
     {
-        currentProject=indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>();
         validationWindow result(this,"Êtes-vous sur de vouloir supprimer le projet\"" + currentProject->getTitre() +"\" et les taches qui le composent?");
         result.exec();
         if(result.getValidation())
         {
-            //delete project
+            vector<Projet*>& projectList=projectManager.getList();
+            projectList.erase(std::remove(projectList.begin(),projectList.end(),currentProject),projectList.end());
+            delete currentProject;
+            currentProject=NULL;
         }
+        treeModel->removeRow(indexElementSelectionne.row(),indexElementSelectionne.parent());
     }
     else if(dynamic_cast<Tache*>(indexElementSelectionne.data(Qt::UserRole+1).value<Tache*>())!=NULL)
     {
-        currentTask=indexElementSelectionne.data(Qt::UserRole+1).value<Tache*>();
         validationWindow result(this,"Êtes-vous sur de vouloir supprimer la Tache \"" + currentTask->getTitre() +"\" ?");
         result.exec();
         if(result.getValidation())
         {
             currentProject->deleteElement(currentTask);
+            currentTask=NULL;
         }
+        treeModel->removeRow(indexElementSelectionne.row(),indexElementSelectionne.parent());
+    }
+}
+
+void MainWindow::edit()
+{
+    QItemSelectionModel *selection = ui->treeView->selectionModel();
+    QModelIndex indexElementSelectionne = selection->currentIndex();
+
+    if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL) // Check if selected element is a Project
+    {
+        currentProject->setTitle(ui->lineEdit_project_title->text());
+
+        //treeModel->dataChanged(QModelIndex(),QModelIndex());
+    }
+    else if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+1).value<TacheUnitaire*>())!=NULL)
+    {
+
+    }
+    else if(dynamic_cast<TacheComposite*>(indexElementSelectionne.data(Qt::UserRole+1).value<TacheComposite*>())!=NULL)
+    {
+
     }
 }

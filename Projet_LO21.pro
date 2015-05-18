@@ -4,7 +4,6 @@ SOURCES += \
     projet.cpp \
     programmation.cpp \
     mainwindow.cpp \
-    qtache.cpp \
     tacheunitaire.cpp \
     tachecomposite.cpp \
     manager.tpp \
@@ -16,7 +15,6 @@ HEADERS += \
     projet.h \
     programmation.h \
     mainwindow.h \
-    qtache.h \
     calendarexception.h \
     tacheunitaire.h \
     tachecomposite.h \

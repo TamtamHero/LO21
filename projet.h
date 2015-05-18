@@ -22,18 +22,23 @@ protected:
     Projet(const Projet& source);
     Projet& operator=(const Projet& source);
 
+    void fillDeadList(Tache * element);
+    void cleanPrerequisite(Tache * element);
+
 public:
     Projet(QString titre, QDateTime disponibilite, QDateTime echeance);
     ~Projet();
 
     void addElement(Tache * element);
     void deleteElement(Tache * element);
-    void fillDeadList(Tache * element);
-    void cleanPrerequisite(Tache * element);
     void afficher(QStandardItemModel * treeModel);
     QString getTitre(){return m_titre;}
+    void setTitle(QString title){m_titre=title;}
     QDateTime getDisponibility(){return m_disponibilite;}
+    void setDisponibility(QDateTime disponibility){m_disponibilite=disponibility;}
     QDateTime getDeadline(){return m_echeance;}
+    void setDeadline(QDateTime deadline){m_echeance=deadline;}
+
 };
 
 // A faire: ProjetManager
