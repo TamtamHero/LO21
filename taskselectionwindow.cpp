@@ -6,6 +6,7 @@ TaskSelectionWindow::TaskSelectionWindow(QWidget *parent,Projet * project,select
     treeModel(new QStandardItemModel()),
     treeView(new QTreeView(this)),
     pushButton_TaskSelection_selection(new QPushButton("select")),
+    pushButton_TaskSelection_notAttached(NULL),
     selectedTask(NULL),
     m_type(type)
 {
@@ -13,10 +14,18 @@ TaskSelectionWindow::TaskSelectionWindow(QWidget *parent,Projet * project,select
     treeModel->setHorizontalHeaderLabels(QStringList(project->getTitre()));
     treeView->setModel(treeModel);
     treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    QVBoxLayout *layout=new QVBoxLayout;
-    layout->addWidget(treeView);
-    layout->addWidget(pushButton_TaskSelection_selection);
-    this->setLayout(layout);
+    QVBoxLayout *vLayout=new QVBoxLayout;
+    QHBoxLayout *hLayout=new QHBoxLayout;
+    hLayout->addWidget(pushButton_TaskSelection_selection);
+    if(m_type==ATTACHEDTO)
+    {
+        pushButton_TaskSelection_notAttached=new QPushButton("Not attached");
+        hLayout->addWidget(pushButton_TaskSelection_notAttached);
+        QObject::connect(pushButton_TaskSelection_notAttached,SIGNAL(clicked()),this,SLOT(sendNotAttached()));
+    }
+    vLayout->addWidget(treeView);
+    vLayout->addLayout(hLayout);
+    this->setLayout(vLayout);
 
     QObject::connect(pushButton_TaskSelection_selection,SIGNAL(clicked()),this,SLOT(sendSelection()));
 }
@@ -61,4 +70,10 @@ void TaskSelectionWindow::sendSelection()
         selectedTask=NULL;
         QMessageBox::warning(this, "Erreur", error.getInfo());
     }
+}
+
+void TaskSelectionWindow::sendNotAttached()
+{
+    selectedTask=NULL;
+    this->close();
 }

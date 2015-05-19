@@ -23,12 +23,11 @@ Tache::~Tache()
 //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 void Tache::addPrerequisite(Tache *prerequisite)
 {
-    if(prerequisite==this)
-    {
-        throw CalendarException("Tentative avortée d'auto-inclusion");
-    }
+    checkPrerequisite(this,prerequisite);
     m_prerequisite.push_back(prerequisite);
 }
+
+//_-_-_-_-_-_-_-_-_-STATIC_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
 
 bool Tache::checkPrerequisite(Tache* task, Tache * prerequisiteTask)
@@ -36,6 +35,10 @@ bool Tache::checkPrerequisite(Tache* task, Tache * prerequisiteTask)
     if(task==prerequisiteTask)
     {
         throw CalendarException("Une tache ne peut être son propre prérequis");
+    }
+    else if(task->getDisponibility()<=prerequisiteTask->getDisponibility())
+    {
+        throw CalendarException("La date de disponibilité de la tache est antérieure ou égale à celle de la tache qu'elle est censé précéder");
     }
 
     Tache* ptr_task=task->getParent();
@@ -60,9 +63,21 @@ bool Tache::checkAttachedTo(Tache* task, Tache * motherTask)
     }
     else if(task->getDisponibility()>=motherTask->getDeadline())
     {
-        throw CalendarException("La date de disponibilité de la tache est postérieure à la tache qu'elle compose");
+        throw CalendarException("La date de disponibilité de la tache est postérieure ou égale à la tache qu'elle compose");
     }
-    //A FAIRE:Cas d'une tache mère en prérequis d'une de ses tache fille, et inversement, nom déjà utilisé
+    //A FAIRE: nom déjà utilisé ?
     return true;
 
+}
+
+//_-_-_-_-_-_-_-_OPERATOR OVERLOADS-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+
+
+bool operator<(Tache& a,Tache& b)
+{
+    if(a.getDeadline()<=b.getDeadline())
+    {
+        return true;
+    }
+    return false;
 }

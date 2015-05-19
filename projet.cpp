@@ -26,6 +26,7 @@ Projet::~Projet()
 void Projet::addElement(Tache * element)
 {
     m_decomposition.push_back(element);
+    std::sort(m_decomposition.begin(),m_decomposition.end());
 }
 
 void Projet::fillDeadList(Tache * element)

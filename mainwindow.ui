@@ -23,6 +23,12 @@
       <height>611</height>
      </rect>
     </property>
+    <property name="minimumSize">
+     <size>
+      <width>781</width>
+      <height>611</height>
+     </size>
+    </property>
     <property name="currentIndex">
      <number>1</number>
     </property>
@@ -466,11 +472,17 @@
         <height>571</height>
        </rect>
       </property>
+      <property name="minimumSize">
+       <size>
+        <width>341</width>
+        <height>571</height>
+       </size>
+      </property>
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
         <widget class="QTabWidget" name="tabWidget_editing_editor">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab">
           <attribute name="title">
@@ -541,7 +553,7 @@
              <x>30</x>
              <y>10</y>
              <width>278</width>
-             <height>267</height>
+             <height>319</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -625,9 +637,18 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="lineEdit_blendTask_attachedTo">
-                <property name="readOnly">
-                 <bool>true</bool>
+               <widget class="QListView" name="listView_blendTask_attachedTo">
+                <property name="minimumSize">
+                 <size>
+                  <width>160</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>160</width>
+                  <height>20</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -645,7 +666,7 @@
             <rect>
              <x>30</x>
              <y>10</y>
-             <width>271</width>
+             <width>278</width>
              <height>331</height>
             </rect>
            </property>
@@ -730,9 +751,18 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="lineEdit_uniqueTask_attachedTo">
-                <property name="readOnly">
-                 <bool>true</bool>
+               <widget class="QListView" name="listView_uniqueTask_attachedTo">
+                <property name="minimumSize">
+                 <size>
+                  <width>160</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>160</width>
+                  <height>20</height>
+                 </size>
                 </property>
                </widget>
               </item>

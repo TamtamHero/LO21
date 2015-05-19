@@ -31,7 +31,8 @@ private:
     Ui::MainWindow *ui;
 
     QStandardItemModel *treeModel;
-    QStandardItemModel *listModel;
+    QStandardItemModel *listModel_prerequisite;
+    QStandardItemModel *listModel_attachedTo;
     Manager<Projet> &projectManager;
     Manager<Programmation> &programManager;
     Projet * currentProject;

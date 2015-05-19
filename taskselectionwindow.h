@@ -25,11 +25,13 @@ private:
     QStandardItemModel *treeModel;
     QTreeView *treeView;
     QPushButton *pushButton_TaskSelection_selection;
+    QPushButton *pushButton_TaskSelection_notAttached;
     Tache *selectedTask;
     selectedTaskType m_type;
 
 private slots:
     void sendSelection();
+    void sendNotAttached();
 };
 
 #endif // TASKSELECTIONWINDOW_H

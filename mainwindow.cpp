@@ -10,7 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     treeModel(new QStandardItemModel),
-    listModel(new QStandardItemModel),
+    listModel_prerequisite(new QStandardItemModel),
+    listModel_attachedTo(new QStandardItemModel),
     projectManager(Manager<Projet>::getInstance()),
     programManager(Manager<Programmation>::getInstance()),
     currentProject(NULL),
@@ -24,8 +25,14 @@ MainWindow::MainWindow(QWidget *parent) :
     QDateTime t2=QDateTime::currentDateTime().addDays(1);
     QDateTime t3=QDateTime::currentDateTime().addDays(3);
     QDateTime t4=QDateTime::currentDateTime().addDays(5);
+    QDateTime temps5=QDateTime::currentDateTime().addDays(4);
+    QDateTime temps6=QDateTime::currentDateTime().addDays(6);
+    QDateTime temps7=QDateTime::currentDateTime().addDays(5);
+    QDateTime temps8=QDateTime::currentDateTime().addDays(7);
     TacheUnitaire *t=new TacheUnitaire("tache 1",t1,t2,QTime::fromString("11:00:00"),true);
     TacheUnitaire *t5=new TacheUnitaire("tache 5",t3,t4,QTime::fromString("5:00:00"),false);
+    TacheUnitaire *t7=new TacheUnitaire("tache 7",temps5,temps6,QTime::fromString("5:00:00"),false);
+    TacheUnitaire *t9=new TacheUnitaire("tache 9",temps7,temps8,QTime::fromString("5:00:00"),false);
     TacheUnitaire *t66=new TacheUnitaire("tache 66",t1,t2,QTime::fromString("11:00:00"),true);
     TacheUnitaire *t77=new TacheUnitaire("tache 77",t3,t4,QTime::fromString("5:00:00"),false);
 
@@ -35,12 +42,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     tc->addElement(t);
     tc->addElement(t5);
+    tc->addElement(t7);
+    tc->addElement(t9);
 
 
     tc2->addElement(t66);
-    t66->addPrerequisite(t77);
     tc2->addElement(t77);
-    tc2->addPrerequisite(tc);
 
     Projet *projet=new Projet("projet 1",t1,t2);
     Projet *projet2=new Projet("projet 2",t1,t2);
@@ -127,15 +134,18 @@ void MainWindow::editorView(Tache * task)
         ui->comboBox_uniqueTask_preemptability->setCurrentIndex(dynamic_cast<TacheUnitaire*>(task)->getPreemptability());
         if(task->getParent()!=NULL)
         {
-            ui->lineEdit_uniqueTask_attachedTo->setText(task->getParent()->getTitre());
+            item=new QStandardItem(task->getParent()->getTitre());
+            listModel_attachedTo->clear();
+            listModel_attachedTo->appendRow(item);
+            ui->listView_uniqueTask_attachedTo->setModel(listModel_attachedTo);
         }
 
-        listModel->clear();
+        listModel_prerequisite->clear();
         for(vector<Tache*>::iterator it=task->getPrerequisite().begin(); it!=task->getPrerequisite().end(); ++it)
         {
             item=new QStandardItem((*it)->getTitre());
-            listModel->appendRow(item);
-            ui->listView_uniqueTask_prerequisite->setModel(listModel);
+            listModel_prerequisite->appendRow(item);
+            ui->listView_uniqueTask_prerequisite->setModel(listModel_prerequisite);
         }
 
     }
@@ -147,16 +157,19 @@ void MainWindow::editorView(Tache * task)
         ui->dateTimeEdit_blendTask_deadline->setDateTime(task->getDeadline());
         if(task->getParent()!=NULL)
         {
-            ui->lineEdit_blendTask_attachedTo->setText(task->getParent()->getTitre());
+            item=new QStandardItem(task->getParent()->getTitre());
+            listModel_attachedTo->clear();
+            listModel_attachedTo->appendRow(item);
+            ui->listView_blendTask_attachedTo->setModel(listModel_attachedTo);
         }
 
-        listModel->clear();
+        listModel_prerequisite->clear();
         for(vector<Tache*>::iterator it=task->getPrerequisite().begin(); it!=task->getPrerequisite().end(); ++it)
         {
             item=new QStandardItem((*it)->getTitre());
             item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
-            listModel->appendRow(item);
-            ui->listView_blendTask_prerequisite->setModel(listModel);
+            listModel_prerequisite->appendRow(item);
+            ui->listView_blendTask_prerequisite->setModel(listModel_prerequisite);
         }
     }
     else
@@ -186,8 +199,8 @@ void MainWindow::uniquePrerequisiteSelection()
             QStandardItem *item;
             item=new QStandardItem(selection->getSelectedTask()->getTitre());
             item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
-            listModel->appendRow(item);
-            ui->listView_uniqueTask_prerequisite->setModel(listModel);
+            listModel_prerequisite->appendRow(item);
+            ui->listView_uniqueTask_prerequisite->setModel(listModel_prerequisite);
         }
     }
 }
@@ -204,8 +217,8 @@ void MainWindow::blendPrerequisiteSelection()
             QStandardItem *item;
             item=new QStandardItem(selection->getSelectedTask()->getTitre());
             item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
-            listModel->appendRow(item);
-            ui->listView_blendTask_prerequisite->setModel(listModel);
+            listModel_prerequisite->appendRow(item);
+            ui->listView_blendTask_prerequisite->setModel(listModel_prerequisite);
         }
     }
 }
@@ -218,10 +231,17 @@ void MainWindow::uniqueAttachedToSelection()
         TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject,ATTACHEDTO);
         selection->exec();
 
+        QStandardItem *item=new QStandardItem("");
         if(selection->getSelectedTask()!=NULL)
         {
-            ui->lineEdit_uniqueTask_attachedTo->setText(selection->getSelectedTask()->getTitre());
+            delete item;
+            item=new QStandardItem(selection->getSelectedTask()->getTitre());
         }
+        item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
+        listModel_attachedTo->clear();
+        listModel_attachedTo->appendRow(item);
+        ui->listView_uniqueTask_attachedTo->setModel(listModel_attachedTo);
+
     }
 }
 
@@ -232,10 +252,17 @@ void MainWindow::blendAttachedToSelection()
         TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject,ATTACHEDTO);
         selection->exec();
 
+        QStandardItem *item=new QStandardItem("");
         if(selection->getSelectedTask()!=NULL)
         {
-        ui->lineEdit_blendTask_attachedTo->setText(selection->getSelectedTask()->getTitre());
+            delete item;
+            item=new QStandardItem(selection->getSelectedTask()->getTitre());
         }
+        item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
+        listModel_attachedTo->clear();
+        listModel_attachedTo->appendRow(item);
+        ui->listView_blendTask_attachedTo->setModel(listModel_attachedTo);
+
     }
 }
 
@@ -280,20 +307,59 @@ void MainWindow::edit()
         currentProject->setTitle(ui->lineEdit_project_title->text());
         currentProject->setDisponibility(ui->dateTimeEdit_project_disponibility->dateTime());
         currentProject->setDeadline(ui->dateTimeEdit_project_deadline->dateTime());
-        treeModel->itemFromIndex(indexElementSelectionne)->setText(currentProject->getTitre());
+        treeModel->itemFromIndex(indexElementSelectionne)->setText(currentProject->getTitre()); //Update the view
     }
     else if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
     {
         currentTask->setTitle(ui->lineEdit_uniqueTask_title->text());
         currentTask->setDisponibility(ui->dateTimeEdit_uniqueTask_disponibility->dateTime());
         currentTask->setDeadline(ui->dateTimeEdit_uniqueTask_deadline->dateTime());
-        treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre());
+        for(int i=0;listModel_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
+        std::sort(currentTask->getPrerequisite().begin(),currentTask->getPrerequisite().end());
+
+
+        if(dynamic_cast<TacheComposite*>(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache *>())!=NULL) // Linking new parent with son
+        {
+            TacheComposite * ptr_newParent=static_cast<TacheComposite*>(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache *>());
+            if(ptr_newParent->getTitre()!=currentTask->getParent()->getTitre())
+            {
+                if(dynamic_cast<TacheComposite*>(currentTask->getParent())!=NULL)
+                {
+                    vector<Tache*>& list=static_cast<TacheComposite*>(currentTask->getParent())->getElement(); // Erasing son from parent
+                    list.erase(std::remove(list.begin(),list.end(),currentTask),list.end());
+                }
+
+                currentTask->setParent(ptr_newParent);
+                ptr_newParent->getElement().push_back(currentTask);
+                std::sort(ptr_newParent->getElement().begin(),ptr_newParent->getElement().end());
+            }
+        }
+        else if(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache *>()==NULL) // Case where the task becomes an apex
+        {
+            if(dynamic_cast<TacheComposite*>(currentTask->getParent())!=NULL)
+            {
+                vector<Tache*>& list=static_cast<TacheComposite*>(currentTask->getParent())->getElement(); // Erasing son from parent
+                list.erase(std::remove(list.begin(),list.end(),currentTask),list.end());
+            }
+
+            currentTask->setParent(NULL);
+            currentProject->addElement(currentTask);
+        }
+
+        treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre()); //Update the view
+
+
     }
     else if(dynamic_cast<TacheComposite*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
     {
         currentTask->setTitle(ui->lineEdit_blendTask_title->text());
         currentTask->setDisponibility(ui->dateTimeEdit_blendTask_disponibility->dateTime());
         currentTask->setDeadline(ui->dateTimeEdit_blendTask_deadline->dateTime());
-        treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre());
+        for(int i=0;listModel_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
+        std::sort(currentTask->getPrerequisite().begin(),currentTask->getPrerequisite().end());
+
+
+
+        treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre()); //Update the view
     }
 }

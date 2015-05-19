@@ -47,6 +47,8 @@ public:
 
 };
 
+bool operator<(Tache& a,Tache& b);
+
 Q_DECLARE_METATYPE(Tache *)
 
 #endif // TACHE_H
