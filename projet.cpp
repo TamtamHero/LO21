@@ -29,6 +29,12 @@ void Projet::addElement(Tache * element)
     std::sort(m_decomposition.begin(),m_decomposition.end());
 }
 
+void Projet::removeElement(Tache * element)
+{
+    m_decomposition.erase(std::remove(m_decomposition.begin(),m_decomposition.end(),element),m_decomposition.end());
+    std::sort(m_decomposition.begin(),m_decomposition.end());
+}
+
 void Projet::fillDeadList(Tache * element)
 {
     m_deadList.push_back(element);

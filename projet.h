@@ -30,6 +30,7 @@ public:
     ~Projet();
 
     void addElement(Tache * element);
+    void removeElement(Tache * element);
     void deleteElement(Tache * element);
     void afficher(QStandardItemModel * treeModel);
     QString getTitre(){return m_titre;}

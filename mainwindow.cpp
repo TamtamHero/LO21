@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     TacheUnitaire *t66=new TacheUnitaire("tache 66",t1,t2,QTime::fromString("11:00:00"),true);
     TacheUnitaire *t77=new TacheUnitaire("tache 77",t3,t4,QTime::fromString("5:00:00"),false);
 
-    TacheComposite *tc=new TacheComposite("tache compo",t1,t2);
+    TacheComposite *tc=new TacheComposite("tache compo",t3,t4);
     TacheComposite *tc2=new TacheComposite("tache compo 2",t1,t2);
 
 
@@ -236,10 +236,14 @@ void MainWindow::uniqueAttachedToSelection()
         {
             delete item;
             item=new QStandardItem(selection->getSelectedTask()->getTitre());
+            item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
+            listModel_attachedTo->clear();
+            listModel_attachedTo->appendRow(item);
         }
-        item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
-        listModel_attachedTo->clear();
-        listModel_attachedTo->appendRow(item);
+        else
+        {
+            listModel_attachedTo->clear();
+        }
         ui->listView_uniqueTask_attachedTo->setModel(listModel_attachedTo);
 
     }
@@ -257,10 +261,14 @@ void MainWindow::blendAttachedToSelection()
         {
             delete item;
             item=new QStandardItem(selection->getSelectedTask()->getTitre());
+            item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
+            listModel_attachedTo->clear();
+            listModel_attachedTo->appendRow(item);
         }
-        item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
-        listModel_attachedTo->clear();
-        listModel_attachedTo->appendRow(item);
+        else
+        {
+            listModel_attachedTo->clear();
+        }
         ui->listView_blendTask_attachedTo->setModel(listModel_attachedTo);
 
     }
@@ -281,10 +289,10 @@ void MainWindow::deleteSelection()
             projectList.erase(std::remove(projectList.begin(),projectList.end(),currentProject),projectList.end());
             delete currentProject;
             currentProject=NULL;
+            treeModel->removeRow(indexElementSelectionne.row(),indexElementSelectionne.parent());
         }
-        treeModel->removeRow(indexElementSelectionne.row(),indexElementSelectionne.parent());
     }
-    else if(dynamic_cast<Tache*>(indexElementSelectionne.data(Qt::UserRole+1).value<Tache*>())!=NULL)
+    else if(dynamic_cast<Tache*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
     {
         validationWindow result(this,"Êtes-vous sur de vouloir supprimer la Tache \"" + currentTask->getTitre() +"\" ?");
         result.exec();
@@ -292,8 +300,8 @@ void MainWindow::deleteSelection()
         {
             currentProject->deleteElement(currentTask);
             currentTask=NULL;
+            treeModel->removeRow(indexElementSelectionne.row(),indexElementSelectionne.parent());
         }
-        treeModel->removeRow(indexElementSelectionne.row(),indexElementSelectionne.parent());
     }
 }
 
@@ -309,57 +317,62 @@ void MainWindow::edit()
         currentProject->setDeadline(ui->dateTimeEdit_project_deadline->dateTime());
         treeModel->itemFromIndex(indexElementSelectionne)->setText(currentProject->getTitre()); //Update the view
     }
-    else if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
+    else // If it's not a Project, it's a Task
     {
-        currentTask->setTitle(ui->lineEdit_uniqueTask_title->text());
-        currentTask->setDisponibility(ui->dateTimeEdit_uniqueTask_disponibility->dateTime());
-        currentTask->setDeadline(ui->dateTimeEdit_uniqueTask_deadline->dateTime());
-        for(int i=0;listModel_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
-        std::sort(currentTask->getPrerequisite().begin(),currentTask->getPrerequisite().end());
-
-
-        if(dynamic_cast<TacheComposite*>(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache *>())!=NULL) // Linking new parent with son
+        if(listModel_attachedTo->item(0)!=0) // Linking new parent with son
         {
             TacheComposite * ptr_newParent=static_cast<TacheComposite*>(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache *>());
-            if(ptr_newParent->getTitre()!=currentTask->getParent()->getTitre())
-            {
-                if(dynamic_cast<TacheComposite*>(currentTask->getParent())!=NULL)
-                {
-                    vector<Tache*>& list=static_cast<TacheComposite*>(currentTask->getParent())->getElement(); // Erasing son from parent
-                    list.erase(std::remove(list.begin(),list.end(),currentTask),list.end());
-                }
-
-                currentTask->setParent(ptr_newParent);
-                ptr_newParent->getElement().push_back(currentTask);
-                std::sort(ptr_newParent->getElement().begin(),ptr_newParent->getElement().end());
-            }
-        }
-        else if(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache *>()==NULL) // Case where the task becomes an apex
-        {
-            if(dynamic_cast<TacheComposite*>(currentTask->getParent())!=NULL)
+            if(dynamic_cast<TacheComposite*>(currentTask->getParent())!=ptr_newParent && currentTask->getParent()!=NULL)
             {
                 vector<Tache*>& list=static_cast<TacheComposite*>(currentTask->getParent())->getElement(); // Erasing son from parent
                 list.erase(std::remove(list.begin(),list.end(),currentTask),list.end());
             }
+            else if(dynamic_cast<TacheComposite*>(currentTask->getParent())!=ptr_newParent && currentTask->getParent()==NULL)
+            {
+                currentProject->removeElement(currentTask); // Erasing son from Project
+                currentTask->setParent(ptr_newParent);
+                ptr_newParent->addElement(currentTask);
+            }
+        }
+        else if(listModel_attachedTo->item(0)==0) // Case where the task becomes an apex
+        {
+             if(currentTask->getParent()!=NULL)
+             {
+                 vector<Tache*>& list=static_cast<TacheComposite*>(currentTask->getParent())->getElement(); // Erasing son from parent
+                 list.erase(std::remove(list.begin(),list.end(),currentTask),list.end());
+             }
+             else
+             {
+                 currentProject->removeElement(currentTask); // Erasing son from Project
+             }
 
-            currentTask->setParent(NULL);
-            currentProject->addElement(currentTask);
+             currentTask->setParent(NULL);
+             currentProject->addElement(currentTask);
+             treeModel->removeRow(indexElementSelectionne.row(),indexElementSelectionne.parent());
         }
 
-        treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre()); //Update the view
+        if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
+        {
+            currentTask->setTitle(ui->lineEdit_uniqueTask_title->text());
+            currentTask->setDisponibility(ui->dateTimeEdit_uniqueTask_disponibility->dateTime());
+            currentTask->setDeadline(ui->dateTimeEdit_uniqueTask_deadline->dateTime());
+            for(int i=0;listModel_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
+            std::sort(currentTask->getPrerequisite().begin(),currentTask->getPrerequisite().end());
+
+            treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre()); //Update the view
 
 
-    }
-    else if(dynamic_cast<TacheComposite*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
-    {
-        currentTask->setTitle(ui->lineEdit_blendTask_title->text());
-        currentTask->setDisponibility(ui->dateTimeEdit_blendTask_disponibility->dateTime());
-        currentTask->setDeadline(ui->dateTimeEdit_blendTask_deadline->dateTime());
-        for(int i=0;listModel_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
-        std::sort(currentTask->getPrerequisite().begin(),currentTask->getPrerequisite().end());
+        }
+        else if(dynamic_cast<TacheComposite*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
+        {
+            currentTask->setTitle(ui->lineEdit_blendTask_title->text());
+            currentTask->setDisponibility(ui->dateTimeEdit_blendTask_disponibility->dateTime());
+            currentTask->setDeadline(ui->dateTimeEdit_blendTask_deadline->dateTime());
+            for(int i=0;listModel_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
+            std::sort(currentTask->getPrerequisite().begin(),currentTask->getPrerequisite().end());
 
 
-
-        treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre()); //Update the view
+            treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre()); //Update the view
+        }
     }
 }

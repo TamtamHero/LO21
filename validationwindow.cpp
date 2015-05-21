@@ -19,7 +19,7 @@ validationWindow::validationWindow(QWidget *parent,QString info):
     this->setLayout(vlayout);
 
     QObject::connect(m_ok,SIGNAL(clicked()),this,SLOT(setValidation()));
-    QObject::connect(m_cancel,SIGNAL(clicked()),this,SLOT(setValidation()));
+    QObject::connect(m_cancel,SIGNAL(clicked()),this,SLOT(setCancel()));
 }
 
 validationWindow::~validationWindow()
