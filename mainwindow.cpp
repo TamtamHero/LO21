@@ -135,6 +135,7 @@ void MainWindow::editorView(Tache * task)
         if(task->getParent()!=NULL)
         {
             item=new QStandardItem(task->getParent()->getTitre());
+            item->setData(QVariant::fromValue(task->getParent()),Qt::UserRole+2);
             listModel_attachedTo->clear();
             listModel_attachedTo->appendRow(item);
             ui->listView_uniqueTask_attachedTo->setModel(listModel_attachedTo);
@@ -158,6 +159,7 @@ void MainWindow::editorView(Tache * task)
         if(task->getParent()!=NULL)
         {
             item=new QStandardItem(task->getParent()->getTitre());
+            item->setData(QVariant::fromValue(task->getParent()),Qt::UserRole+2);
             listModel_attachedTo->clear();
             listModel_attachedTo->appendRow(item);
             ui->listView_blendTask_attachedTo->setModel(listModel_attachedTo);
@@ -321,18 +323,18 @@ void MainWindow::edit()
     {
         if(listModel_attachedTo->item(0)!=0) // Linking new parent with son
         {
-            TacheComposite * ptr_newParent=static_cast<TacheComposite*>(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache *>());
-            if(dynamic_cast<TacheComposite*>(currentTask->getParent())!=ptr_newParent && currentTask->getParent()!=NULL)
+            TacheComposite * ptr_newParent=dynamic_cast<TacheComposite*>(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache *>());
+            if(currentTask->getParent()!=NULL)
             {
                 vector<Tache*>& list=static_cast<TacheComposite*>(currentTask->getParent())->getElement(); // Erasing son from parent
                 list.erase(std::remove(list.begin(),list.end(),currentTask),list.end());
             }
-            else if(dynamic_cast<TacheComposite*>(currentTask->getParent())!=ptr_newParent && currentTask->getParent()==NULL)
+            else if(currentTask->getParent()==NULL)
             {
                 currentProject->removeElement(currentTask); // Erasing son from Project
-                currentTask->setParent(ptr_newParent);
-                ptr_newParent->addElement(currentTask);
             }
+            currentTask->setParent(ptr_newParent);
+            ptr_newParent->addElement(currentTask);
         }
         else if(listModel_attachedTo->item(0)==0) // Case where the task becomes an apex
         {
@@ -348,7 +350,6 @@ void MainWindow::edit()
 
              currentTask->setParent(NULL);
              currentProject->addElement(currentTask);
-             treeModel->removeRow(indexElementSelectionne.row(),indexElementSelectionne.parent());
         }
 
         if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)

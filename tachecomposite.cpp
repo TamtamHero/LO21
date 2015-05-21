@@ -35,7 +35,6 @@ void TacheComposite::afficher(QStandardItem * parent)
 
     for(vector<Tache *>::iterator it=this->m_element.begin();it!=this->m_element.end();++it)
     {
-        //item=new QTache(*it);
         item=new QStandardItem((*it)->getTitre());
         item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
         parent->appendRow(item);
