@@ -9,7 +9,7 @@
 
 #include "calendarexception.h"
 
-enum tabValue{PROJECT,BLEND_TASK,UNIQUE_TASK};
+enum tabValue{EDIT,CREATION};
 
 using namespace std;
 

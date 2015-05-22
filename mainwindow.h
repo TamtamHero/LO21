@@ -46,10 +46,8 @@ private slots:
     void deleteSelection();
     void clickArbre(const QModelIndex&);
     void doubleclickArbre(QModelIndex);
-    void uniquePrerequisiteSelection();
-    void blendPrerequisiteSelection();
-    void uniqueAttachedToSelection();
-    void blendAttachedToSelection();
+    void prerequisiteSelection();
+    void attachedToSelection();
     void edit();
     void creation(QString type);
 

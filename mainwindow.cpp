@@ -61,14 +61,12 @@ MainWindow::MainWindow(QWidget *parent) :
     selectionProjet();
 
     QObject::connect(ui->pushButton_editing_projectSelection, SIGNAL(clicked()), this, SLOT(selectionProjet()));
-    QObject::connect(ui->pushButton_editing_delete, SIGNAL(clicked()), this, SLOT(deleteSelection()));
+    QObject::connect(ui->pushButton_edit_delete, SIGNAL(clicked()), this, SLOT(deleteSelection()));
     QObject::connect(ui->treeView,SIGNAL(clicked(const QModelIndex&)),this,SLOT( clickArbre(const QModelIndex&)));
     QObject::connect(ui->treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleclickArbre(QModelIndex)));
-    QObject::connect(ui->toolButton_uniqueTask_attachedTo, SIGNAL(clicked()), this, SLOT(uniqueAttachedToSelection()));
-    QObject::connect(ui->toolButton_blendTask_attachedTo, SIGNAL(clicked()), this, SLOT(blendAttachedToSelection()));
-    QObject::connect(ui->toolButton_uniqueTask_prerequisite, SIGNAL(clicked()), this, SLOT(uniquePrerequisiteSelection()));
-    QObject::connect(ui->toolButton_blendTask_prerequisite, SIGNAL(clicked()), this, SLOT(blendPrerequisiteSelection()));
-    QObject::connect(ui->pushButton_editing_edit, SIGNAL(clicked()), this, SLOT(edit()));
+    QObject::connect(ui->toolButton_edit_attachedTo, SIGNAL(clicked()), this, SLOT(attachedToSelection()));
+    QObject::connect(ui->toolButton_edit_prerequisite, SIGNAL(clicked()), this, SLOT(prerequisiteSelection()));
+    QObject::connect(ui->pushButton_edit_edit, SIGNAL(clicked()), this, SLOT(edit()));
 
     QObject::connect(ui->comboBox_creation, SIGNAL(currentTextChanged(QString)),this, SLOT(creation(QString) ));
 }
@@ -124,77 +122,69 @@ void MainWindow::doubleclickArbre(QModelIndex)
 
 void MainWindow::editorView(Tache * task)
 {
+    ui->tabWidget_editing_editor->setCurrentIndex(EDIT);
+    ui->lineEdit_edit_title->setText(task->getTitre());
+    ui->dateTimeEdit_edit_disponibility->setDateTime(task->getDisponibility());
+    ui->dateTimeEdit_edit_deadline->setDateTime(task->getDeadline());
+
     QStandardItem *item;
 
-    if(dynamic_cast<TacheUnitaire*>(task)!=NULL) // Check if argument is a uniqueTask
+    listModel_attachedTo->clear();
+    if(task->getParent()!=NULL)
     {
-        ui->tabWidget_editing_editor->setCurrentIndex(UNIQUE_TASK);
-        ui->lineEdit_uniqueTask_title->setText(task->getTitre());
-        ui->dateTimeEdit_uniqueTask_disponibility->setDateTime(task->getDisponibility());
-        ui->dateTimeEdit_uniqueTask_deadline->setDateTime(task->getDeadline());
-        ui->timeEdit_uniqueTask_length->setTime(dynamic_cast<TacheUnitaire*>(task)->getDuree());
-        ui->comboBox_uniqueTask_preemptability->setCurrentIndex(dynamic_cast<TacheUnitaire*>(task)->getPreemptability());
-
-        listModel_attachedTo->clear();
-        if(task->getParent()!=NULL)
-        {
-            item=new QStandardItem(task->getParent()->getTitre());
-            item->setData(QVariant::fromValue(task->getParent()),Qt::UserRole+2);
-            listModel_attachedTo->appendRow(item);
-            ui->listView_uniqueTask_attachedTo->setModel(listModel_attachedTo);
-        }
-
-        listModel_prerequisite->clear();
-        for(vector<Tache*>::iterator it=task->getPrerequisite().begin(); it!=task->getPrerequisite().end(); ++it)
-        {
-            item=new QStandardItem((*it)->getTitre());
-            item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
-            listModel_prerequisite->appendRow(item);
-            ui->listView_uniqueTask_prerequisite->setModel(listModel_prerequisite);
-        }
-
+        item=new QStandardItem(task->getParent()->getTitre());
+        item->setData(QVariant::fromValue(task->getParent()),Qt::UserRole+2);
+        listModel_attachedTo->appendRow(item);
+        ui->listView_edit_attachedTo->setModel(listModel_attachedTo);
     }
-    else if(dynamic_cast<TacheComposite*>(task)!=NULL)
+
+    listModel_prerequisite->clear();
+    for(vector<Tache*>::iterator it=task->getPrerequisite().begin(); it!=task->getPrerequisite().end(); ++it)
     {
-        ui->tabWidget_editing_editor->setCurrentIndex(BLEND_TASK);
-        ui->lineEdit_blendTask_title->setText(task->getTitre());
-        ui->dateTimeEdit_blendTask_disponibility->setDateTime(task->getDisponibility());
-        ui->dateTimeEdit_blendTask_deadline->setDateTime(task->getDeadline());
-
-        listModel_attachedTo->clear();
-        if(task->getParent()!=NULL)
-        {
-            item=new QStandardItem(task->getParent()->getTitre());
-            item->setData(QVariant::fromValue(task->getParent()),Qt::UserRole+2);
-            listModel_attachedTo->appendRow(item);
-            ui->listView_blendTask_attachedTo->setModel(listModel_attachedTo);
-        }
-
-        listModel_prerequisite->clear();
-        for(vector<Tache*>::iterator it=task->getPrerequisite().begin(); it!=task->getPrerequisite().end(); ++it)
-        {
-            item=new QStandardItem((*it)->getTitre());
-            item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
-            listModel_prerequisite->appendRow(item);
-            ui->listView_blendTask_prerequisite->setModel(listModel_prerequisite);
-        }
+        item=new QStandardItem((*it)->getTitre());
+        item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
+        listModel_prerequisite->appendRow(item);
+        ui->listView_edit_prerequisite->setModel(listModel_prerequisite);
     }
-    else
+
+    ui->comboBox_edit_type->setCurrentIndex(1);
+    ui->listView_edit_attachedTo->setEnabled(true);
+    ui->toolButton_edit_attachedTo->setEnabled(true);
+    ui->listView_edit_prerequisite->setEnabled(true);
+    ui->toolButton_edit_prerequisite->setEnabled(true);
+    ui->timeEdit_edit_length->setEnabled(false);
+    ui->comboBox_edit_preemptability->setEnabled(false);
+
+
+    if(dynamic_cast<TacheUnitaire*>(task)!=NULL) // If uniqueTask, more display
     {
-        throw CalendarException("Erreur dans la fonction MainWindow::editorView : type inconnu");
+        ui->comboBox_edit_type->setCurrentIndex(2);
+
+        ui->timeEdit_edit_length->setTime(dynamic_cast<TacheUnitaire*>(task)->getDuree());
+        ui->comboBox_edit_preemptability->setCurrentIndex(dynamic_cast<TacheUnitaire*>(task)->getPreemptability());
+
+        ui->timeEdit_edit_length->setEnabled(true);
+        ui->comboBox_edit_preemptability->setEnabled(true);
     }
 }
 
 void MainWindow::editorView(Projet * project)
 {
-    ui->tabWidget_editing_editor->setCurrentIndex(PROJECT);
-    ui->lineEdit_project_title->setText(project->getTitre());
-    ui->dateTimeEdit_project_disponibility->setDateTime(project->getDisponibility());
-    ui->dateTimeEdit_project_deadline->setDateTime(project->getDeadline());
+    ui->comboBox_edit_type->setCurrentIndex(0);
+    ui->tabWidget_editing_editor->setCurrentIndex(EDIT);
+    ui->lineEdit_edit_title->setText(project->getTitre());
+    ui->dateTimeEdit_edit_disponibility->setDateTime(project->getDisponibility());
+    ui->dateTimeEdit_edit_deadline->setDateTime(project->getDeadline());
+
+    ui->listView_edit_attachedTo->setEnabled(false);
+    ui->toolButton_edit_attachedTo->setEnabled(false);
+    ui->listView_edit_prerequisite->setEnabled(false);
+    ui->toolButton_edit_prerequisite->setEnabled(false);
+    ui->timeEdit_edit_length->setEnabled(false);
+    ui->comboBox_edit_preemptability->setEnabled(false);
 }
 
-
-void MainWindow::uniquePrerequisiteSelection()
+void MainWindow::prerequisiteSelection()
 {
     if(currentProject!=NULL)
     {
@@ -207,31 +197,13 @@ void MainWindow::uniquePrerequisiteSelection()
             item=new QStandardItem(selection->getSelectedTask()->getTitre());
             item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
             listModel_prerequisite->appendRow(item);
-            ui->listView_uniqueTask_prerequisite->setModel(listModel_prerequisite);
-        }
-    }
-}
-
-void MainWindow::blendPrerequisiteSelection()
-{
-    if(currentProject!=NULL)
-    {
-        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject,PREREQUISITE);
-        selection->exec();
-
-        if(selection->getSelectedTask()!=NULL)
-        {
-            QStandardItem *item;
-            item=new QStandardItem(selection->getSelectedTask()->getTitre());
-            item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
-            listModel_prerequisite->appendRow(item);
-            ui->listView_blendTask_prerequisite->setModel(listModel_prerequisite);
+            ui->listView_edit_prerequisite->setModel(listModel_prerequisite);
         }
     }
 }
 
 
-void MainWindow::uniqueAttachedToSelection()
+void MainWindow::attachedToSelection()
 {
     if(currentProject!=NULL)
     {
@@ -251,32 +223,7 @@ void MainWindow::uniqueAttachedToSelection()
         {
             listModel_attachedTo->clear();
         }
-        ui->listView_uniqueTask_attachedTo->setModel(listModel_attachedTo);
-
-    }
-}
-
-void MainWindow::blendAttachedToSelection()
-{
-    if(currentProject!=NULL)
-    {
-        TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject,ATTACHEDTO);
-        selection->exec();
-
-        QStandardItem *item=new QStandardItem("");
-        if(selection->getSelectedTask()!=NULL)
-        {
-            delete item;
-            item=new QStandardItem(selection->getSelectedTask()->getTitre());
-            item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
-            listModel_attachedTo->clear();
-            listModel_attachedTo->appendRow(item);
-        }
-        else
-        {
-            listModel_attachedTo->clear();
-        }
-        ui->listView_blendTask_attachedTo->setModel(listModel_attachedTo);
+        ui->listView_edit_attachedTo->setModel(listModel_attachedTo);
 
     }
 }
@@ -286,7 +233,7 @@ void MainWindow::deleteSelection()
     QItemSelectionModel *selection = ui->treeView->selectionModel();
     QModelIndex indexElementSelectionne = selection->currentIndex();
 
-    if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL) // Check if selected element is a Project
+    if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL && currentProject!=NULL) // Check if selected element is a Project
     {
         validationWindow result(this,"Êtes-vous sur de vouloir supprimer le projet\"" + currentProject->getTitre() +"\" et les taches qui le composent?");
         result.exec();
@@ -299,7 +246,7 @@ void MainWindow::deleteSelection()
             treeModel->removeRow(indexElementSelectionne.row(),indexElementSelectionne.parent());
         }
     }
-    else if(dynamic_cast<Tache*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
+    else if(dynamic_cast<Tache*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL && currentTask!=NULL)
     {
         validationWindow result(this,"Êtes-vous sur de vouloir supprimer la Tache \"" + currentTask->getTitre() +"\" ?");
         result.exec();
@@ -317,14 +264,14 @@ void MainWindow::edit()
     QItemSelectionModel *selection = ui->treeView->selectionModel();
     QModelIndex indexElementSelectionne = selection->currentIndex();
 
-    if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL) // Check if selected element is a Project
+    if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL && currentProject!=NULL) // Check if selected element is a Project
     {
-        currentProject->setTitle(ui->lineEdit_project_title->text());
-        currentProject->setDisponibility(ui->dateTimeEdit_project_disponibility->dateTime());
-        currentProject->setDeadline(ui->dateTimeEdit_project_deadline->dateTime());
+        currentProject->setTitle(ui->lineEdit_edit_title->text());
+        currentProject->setDisponibility(ui->dateTimeEdit_edit_disponibility->dateTime());
+        currentProject->setDeadline(ui->dateTimeEdit_edit_deadline->dateTime());
         treeModel->itemFromIndex(indexElementSelectionne)->setText(currentProject->getTitre()); //Update the view
     }
-    else // If it's not a Project, it's a Task
+    else if(currentTask!=NULL) // If it's not a Project, it's a Task
     {
         if(listModel_attachedTo->item(0)!=0 && listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache*>()!=currentTask->getParent()) // Linking new parent with son
         {
@@ -351,27 +298,17 @@ void MainWindow::edit()
 
         //_-_-_-_-_-_-_-_-_-_-_-END OF ATTACHING TREATMENT-_-_-_-_-_-_-_-_--_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
+        currentTask->setTitle(ui->lineEdit_edit_title->text());
+        currentTask->setDisponibility(ui->dateTimeEdit_edit_disponibility->dateTime());
+        currentTask->setDeadline(ui->dateTimeEdit_edit_deadline->dateTime());
+        for(int i=0;listModel_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
+        std::sort(currentTask->getPrerequisite().begin(),currentTask->getPrerequisite().end());
+
         if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
         {
-            currentTask->setTitle(ui->lineEdit_uniqueTask_title->text());
-            currentTask->setDisponibility(ui->dateTimeEdit_uniqueTask_disponibility->dateTime());
-            currentTask->setDeadline(ui->dateTimeEdit_uniqueTask_deadline->dateTime());
-            for(int i=0;listModel_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
-            std::sort(currentTask->getPrerequisite().begin(),currentTask->getPrerequisite().end());
-
-            //treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre()); //Update the view
-
-        }
-        else if(dynamic_cast<TacheComposite*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
-        {
-            currentTask->setTitle(ui->lineEdit_blendTask_title->text());
-            currentTask->setDisponibility(ui->dateTimeEdit_blendTask_disponibility->dateTime());
-            currentTask->setDeadline(ui->dateTimeEdit_blendTask_deadline->dateTime());
-            for(int i=0;listModel_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
-            std::sort(currentTask->getPrerequisite().begin(),currentTask->getPrerequisite().end());
-
-
-            //treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre());
+            TacheUnitaire *ptr_task=dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>());
+            ptr_task->setDuree(ui->timeEdit_edit_length->time());
+            ptr_task->setPreemptability(ui->comboBox_edit_preemptability->currentText()=="Oui");
         }
 
         updateTreeView(treeModel,ui->treeView);

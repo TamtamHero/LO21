@@ -17,6 +17,7 @@ public:
     QTime getDuree() const {return m_duree;}
     bool getPreemptability(){return m_preemptable;}
     void setDuree(QTime duree) {m_duree=duree;}
+    void setPreemptability(bool choice){m_preemptable=choice;}
     void afficher(QStandardItem * parent);
 
     virtual ~TacheUnitaire();
