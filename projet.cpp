@@ -26,7 +26,7 @@ Projet::~Projet()
 void Projet::addElement(Tache * element)
 {
     m_decomposition.push_back(element);
-    std::sort(m_decomposition.begin(),m_decomposition.end());
+    std::sort(m_decomposition.begin(),m_decomposition.end(),Tache::taskCompare());
 }
 
 void Projet::removeElement(Tache * element)

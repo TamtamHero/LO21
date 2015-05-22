@@ -25,7 +25,7 @@ void TacheComposite::addElement(Tache * element)
         throw CalendarException("Tentative avortée d'auto-inclusion"); // A verifier: est-ce utile ?
     }
     m_element.push_back(element);
-    std::sort(m_element.begin(),m_element.end());
+    std::sort(m_element.begin(),m_element.end(),taskCompare());
     element->setParent(this);
 }
 

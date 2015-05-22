@@ -30,12 +30,12 @@ protected:
 
 public:
     void setParent(Tache * parent){m_parent=parent;}
-    Tache* getParent() { return m_parent;}
-    QString getTitre(){return m_titre;}
+    Tache* getParent()const{ return m_parent;}
+    QString getTitre()const{return m_titre;}
     void setTitle(QString title){m_titre=title;}
-    QDateTime getDisponibility(){return m_disponibilite;}
+    QDateTime getDisponibility()const{return m_disponibilite;}
     void setDisponibility(QDateTime disponibility){m_disponibilite=disponibility;}
-    QDateTime getDeadline(){return m_echeance;}
+    QDateTime getDeadline() const{return m_echeance;}
     void setDeadline(QDateTime deadline){m_echeance=deadline;}
     vector<Tache*>& getPrerequisite(){return m_prerequisite;}
     void addPrerequisite(Tache * prerequisite);
@@ -43,11 +43,20 @@ public:
 
     static bool checkPrerequisite(Tache* task,Tache * prerequisiteTask);
     static bool checkAttachedTo(Tache* task,Tache * motherTask);
+    bool operator < (const Tache& b) const;
+
+    struct taskCompare
+    {
+          bool operator()(const Tache* l, const Tache* r)
+          {
+            return *l < *r;
+          }
+    };
+
     virtual ~Tache()=0;
 
 };
 
-bool operator<(Tache& a,Tache& b);
 
 Q_DECLARE_METATYPE(Tache *)
 

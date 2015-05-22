@@ -70,12 +70,13 @@ bool Tache::checkAttachedTo(Tache* task, Tache * motherTask)
 
 }
 
+
 //_-_-_-_-_-_-_-_OPERATOR OVERLOADS-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
 
-bool operator<(Tache& a,Tache& b)
+bool Tache::operator<(const Tache &b) const
 {
-    if(a.getDeadline()<=b.getDeadline())
+    if(this->getDeadline()<=b.getDeadline())
     {
         return true;
     }
