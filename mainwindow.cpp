@@ -69,6 +69,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->toolButton_uniqueTask_prerequisite, SIGNAL(clicked()), this, SLOT(uniquePrerequisiteSelection()));
     QObject::connect(ui->toolButton_blendTask_prerequisite, SIGNAL(clicked()), this, SLOT(blendPrerequisiteSelection()));
     QObject::connect(ui->pushButton_editing_edit, SIGNAL(clicked()), this, SLOT(edit()));
+
+    QObject::connect(ui->comboBox_creation, SIGNAL(currentTextChanged(QString)),this, SLOT(creation(QString) ));
 }
 
 MainWindow::~MainWindow()
@@ -401,3 +403,40 @@ void MainWindow::updateTreeView(QStandardItemModel *model,QTreeView *view)
         }
     }
 }
+
+void MainWindow::creation(QString type)
+{
+    if(type=="Projet")
+    {
+        ui->listView_creationprerequisite->setEnabled(false);
+        ui->listView_creation_attachedTo->setEnabled(false);
+        ui->toolButton_creation_attachedTo->setEnabled(false);
+        ui->toolButton_creation_prerequisite->setEnabled(false);
+        ui->timeEdit_creation_length->setEnabled(false);
+        ui->comboBox_creation_preemptability->setEnabled(false);
+    }
+    else if(type=="Tache Composite")
+    {
+        ui->listView_creationprerequisite->setEnabled(true);
+        ui->listView_creation_attachedTo->setEnabled(true);
+        ui->toolButton_creation_attachedTo->setEnabled(true);
+        ui->toolButton_creation_prerequisite->setEnabled(true);
+        ui->timeEdit_creation_length->setEnabled(false);
+        ui->comboBox_creation_preemptability->setEnabled(false);
+    }
+    else if(type=="Tache Unitaire")
+    {
+        ui->listView_creationprerequisite->setEnabled(true);
+        ui->listView_creation_attachedTo->setEnabled(true);
+        ui->toolButton_creation_attachedTo->setEnabled(true);
+        ui->toolButton_creation_prerequisite->setEnabled(true);
+        ui->timeEdit_creation_length->setEnabled(true);
+        ui->comboBox_creation_preemptability->setEnabled(true);
+    }
+}
+
+
+
+
+
+

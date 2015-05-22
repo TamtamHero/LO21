@@ -41,7 +41,6 @@ private:
     void updateTreeView(QStandardItemModel *model, QTreeView *view);
 
 
-
 private slots:
     void selectionProjet();
     void deleteSelection();
@@ -52,6 +51,8 @@ private slots:
     void uniqueAttachedToSelection();
     void blendAttachedToSelection();
     void edit();
+    void creation(QString type);
+
 };
 
 #endif // MAINWINDOW_H
