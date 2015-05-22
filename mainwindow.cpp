@@ -132,11 +132,12 @@ void MainWindow::editorView(Tache * task)
         ui->dateTimeEdit_uniqueTask_deadline->setDateTime(task->getDeadline());
         ui->timeEdit_uniqueTask_length->setTime(dynamic_cast<TacheUnitaire*>(task)->getDuree());
         ui->comboBox_uniqueTask_preemptability->setCurrentIndex(dynamic_cast<TacheUnitaire*>(task)->getPreemptability());
+
+        listModel_attachedTo->clear();
         if(task->getParent()!=NULL)
         {
             item=new QStandardItem(task->getParent()->getTitre());
             item->setData(QVariant::fromValue(task->getParent()),Qt::UserRole+2);
-            listModel_attachedTo->clear();
             listModel_attachedTo->appendRow(item);
             ui->listView_uniqueTask_attachedTo->setModel(listModel_attachedTo);
         }
@@ -145,6 +146,7 @@ void MainWindow::editorView(Tache * task)
         for(vector<Tache*>::iterator it=task->getPrerequisite().begin(); it!=task->getPrerequisite().end(); ++it)
         {
             item=new QStandardItem((*it)->getTitre());
+            item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
             listModel_prerequisite->appendRow(item);
             ui->listView_uniqueTask_prerequisite->setModel(listModel_prerequisite);
         }
@@ -156,11 +158,12 @@ void MainWindow::editorView(Tache * task)
         ui->lineEdit_blendTask_title->setText(task->getTitre());
         ui->dateTimeEdit_blendTask_disponibility->setDateTime(task->getDisponibility());
         ui->dateTimeEdit_blendTask_deadline->setDateTime(task->getDeadline());
+
+        listModel_attachedTo->clear();
         if(task->getParent()!=NULL)
         {
             item=new QStandardItem(task->getParent()->getTitre());
             item->setData(QVariant::fromValue(task->getParent()),Qt::UserRole+2);
-            listModel_attachedTo->clear();
             listModel_attachedTo->appendRow(item);
             ui->listView_blendTask_attachedTo->setModel(listModel_attachedTo);
         }
@@ -321,7 +324,7 @@ void MainWindow::edit()
     }
     else // If it's not a Project, it's a Task
     {
-        if(listModel_attachedTo->item(0)!=0) // Linking new parent with son
+        if(listModel_attachedTo->item(0)!=0 && listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache*>()!=currentTask->getParent()) // Linking new parent with son
         {
             TacheComposite * ptr_newParent=dynamic_cast<TacheComposite*>(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache *>());
             if(currentTask->getParent()!=NULL)
@@ -329,28 +332,22 @@ void MainWindow::edit()
                 vector<Tache*>& list=static_cast<TacheComposite*>(currentTask->getParent())->getElement(); // Erasing son from parent
                 list.erase(std::remove(list.begin(),list.end(),currentTask),list.end());
             }
-            else if(currentTask->getParent()==NULL)
+            else
             {
                 currentProject->removeElement(currentTask); // Erasing son from Project
             }
             currentTask->setParent(ptr_newParent);
             ptr_newParent->addElement(currentTask);
         }
-        else if(listModel_attachedTo->item(0)==0) // Case where the task becomes an apex
+        else if(listModel_attachedTo->item(0)==0 && currentTask->getParent()!=NULL) // Case where the task becomes an apex
         {
-             if(currentTask->getParent()!=NULL)
-             {
-                 vector<Tache*>& list=static_cast<TacheComposite*>(currentTask->getParent())->getElement(); // Erasing son from parent
-                 list.erase(std::remove(list.begin(),list.end(),currentTask),list.end());
-             }
-             else
-             {
-                 currentProject->removeElement(currentTask); // Erasing son from Project
-             }
-
+             vector<Tache*>& list=static_cast<TacheComposite*>(currentTask->getParent())->getElement(); // Erasing son from parent
+             list.erase(std::remove(list.begin(),list.end(),currentTask),list.end());
              currentTask->setParent(NULL);
              currentProject->addElement(currentTask);
         }
+
+        //_-_-_-_-_-_-_-_-_-_-_-END OF ATTACHING TREATMENT-_-_-_-_-_-_-_-_--_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
         if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
         {
@@ -360,8 +357,7 @@ void MainWindow::edit()
             for(int i=0;listModel_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
             std::sort(currentTask->getPrerequisite().begin(),currentTask->getPrerequisite().end());
 
-            treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre()); //Update the view
-
+            //treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre()); //Update the view
 
         }
         else if(dynamic_cast<TacheComposite*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
@@ -373,7 +369,35 @@ void MainWindow::edit()
             std::sort(currentTask->getPrerequisite().begin(),currentTask->getPrerequisite().end());
 
 
-            treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre()); //Update the view
+            //treeModel->itemFromIndex(indexElementSelectionne)->setText(currentTask->getTitre());
+        }
+
+        updateTreeView(treeModel,ui->treeView);
+    }
+}
+
+
+void MainWindow::updateTreeView(QStandardItemModel *model,QTreeView *view)
+{
+    QList<Tache*> expandedList;
+    QModelIndexList indexList=model->match(model->index(0,0),Qt::FontRole,model->item(0)->data(Qt::FontRole));
+    foreach(QModelIndex index,indexList)
+    {
+        if(view->isExpanded(index))
+        {
+            expandedList.append(index.data(Qt::UserRole+2).value<Tache*>());
+        }
+    }
+
+    model->clear();
+    currentProject->afficher(model);
+
+    foreach (Tache* expandedTask,expandedList)
+    {
+        QModelIndexList item=model->match(model->index(0,0),Qt::UserRole+2,QVariant::fromValue(expandedTask));
+        if(!item.isEmpty())
+        {
+            view->setExpanded(item.first(),true);
         }
     }
 }

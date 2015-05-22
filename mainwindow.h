@@ -38,6 +38,9 @@ private:
     Projet * currentProject;
     Tache * currentTask;
 
+    void updateTreeView(QStandardItemModel *model, QTreeView *view);
+
+
 
 private slots:
     void selectionProjet();
