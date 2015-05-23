@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QMessageBox>
 
 #include "projet.h"
 #include "manager.h"
@@ -49,7 +50,8 @@ private slots:
     void prerequisiteSelection();
     void attachedToSelection();
     void edit();
-    void creation(QString type);
+    void creationView(QString type);
+    void createElement();
 
 };
 

@@ -25,6 +25,7 @@ void Tache::addPrerequisite(Tache *prerequisite)
 {
     checkPrerequisite(this,prerequisite);
     m_prerequisite.push_back(prerequisite);
+    std::sort(m_prerequisite.begin(),m_prerequisite.end(),taskCompare());
 }
 
 //_-_-_-_-_-_-_-_-_-STATIC_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-

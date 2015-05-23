@@ -66,9 +66,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleclickArbre(QModelIndex)));
     QObject::connect(ui->toolButton_edit_attachedTo, SIGNAL(clicked()), this, SLOT(attachedToSelection()));
     QObject::connect(ui->toolButton_edit_prerequisite, SIGNAL(clicked()), this, SLOT(prerequisiteSelection()));
+    QObject::connect(ui->toolButton_creation_attachedTo, SIGNAL(clicked()), this, SLOT(attachedToSelection()));
+    QObject::connect(ui->toolButton_creation_prerequisite, SIGNAL(clicked()), this, SLOT(prerequisiteSelection()));
     QObject::connect(ui->pushButton_edit_edit, SIGNAL(clicked()), this, SLOT(edit()));
+    QObject::connect(ui->comboBox_creation, SIGNAL(currentTextChanged(QString)),this, SLOT(creationView(QString) ));
+    QObject::connect(ui->pushButton_creation_create,SIGNAL(clicked()),this,SLOT(createElement()));
 
-    QObject::connect(ui->comboBox_creation, SIGNAL(currentTextChanged(QString)),this, SLOT(creation(QString) ));
 }
 
 MainWindow::~MainWindow()
@@ -81,6 +84,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::selectionProjet()
 {
+    currentProject=NULL;
     treeModel->clear();
     projectManager.Afficher(treeModel);
     treeModel->setHorizontalHeaderLabels(QStringList("Sélectionnez un projet"));
@@ -302,7 +306,6 @@ void MainWindow::edit()
         currentTask->setDisponibility(ui->dateTimeEdit_edit_disponibility->dateTime());
         currentTask->setDeadline(ui->dateTimeEdit_edit_deadline->dateTime());
         for(int i=0;listModel_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
-        std::sort(currentTask->getPrerequisite().begin(),currentTask->getPrerequisite().end());
 
         if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
         {
@@ -318,6 +321,13 @@ void MainWindow::edit()
 
 void MainWindow::updateTreeView(QStandardItemModel *model,QTreeView *view)
 {
+    if(model->item(0)==0)
+    {
+        model->clear();
+        currentProject->afficher(model);
+        return; //If no item in the view, then no expand list needed;
+    }
+
     QList<Tache*> expandedList;
     QModelIndexList indexList=model->match(model->index(0,0),Qt::FontRole,model->item(0)->data(Qt::FontRole));
     foreach(QModelIndex index,indexList)
@@ -341,7 +351,7 @@ void MainWindow::updateTreeView(QStandardItemModel *model,QTreeView *view)
     }
 }
 
-void MainWindow::creation(QString type)
+void MainWindow::creationView(QString type)
 {
     if(type=="Projet")
     {
@@ -370,9 +380,85 @@ void MainWindow::creation(QString type)
         ui->timeEdit_creation_length->setEnabled(true);
         ui->comboBox_creation_preemptability->setEnabled(true);
     }
+
+    ui->dateTimeEdit_creation_disponibility->setDateTime(QDateTime::currentDateTime());
+    ui->dateTimeEdit_creation_deadline->setDateTime(QDateTime::currentDateTime().addDays(1));
 }
 
+void MainWindow::createElement()
+{
+    if(ui->comboBox_creation->currentText()=="Projet")
+    {
+        if(ui->lineEdit_creation_title->text()=="")
+        {
+            QMessageBox::warning(this,"Attention","Veuillez donner un titre au nouveau projet");
+            return;
+        }
+        else if(ui->dateTimeEdit_creation_deadline->dateTime()<=QDateTime::currentDateTime())
+        {
+            QMessageBox::warning(this,"Attention","L'échéance du projet doit être située dans le futur");
+            return;
+        }
+        Projet *newProject=new Projet(ui->lineEdit_creation_title->text(),ui->dateTimeEdit_creation_disponibility->dateTime(),ui->dateTimeEdit_creation_deadline->dateTime());
+        projectManager.addElement(newProject);
+        selectionProjet();
+        return;
+    }
 
+    if(currentProject!=NULL)
+    {
+        if(ui->lineEdit_creation_title->text()=="")
+        {
+            QMessageBox::warning(this,"Attention","Veuillez donner un titre à la nouvelle tache");
+            return;
+        }
+        else if(ui->dateTimeEdit_creation_deadline->dateTime()<=QDateTime::currentDateTime())
+        {
+            QMessageBox::warning(this,"Attention","L'échéance de la tache doit être située dans le futur");
+            return;
+        }
+
+        if(ui->comboBox_creation->currentText()=="Tache Composite")
+        {
+            TacheComposite *newTask=new TacheComposite(ui->lineEdit_creation_title->text(),ui->dateTimeEdit_creation_disponibility->dateTime(),ui->dateTimeEdit_creation_deadline->dateTime());
+            for(int i=0;listModel_prerequisite->item(i)!=0;newTask->addPrerequisite(listModel_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
+
+            if(listModel_attachedTo->item(0)!=0 && dynamic_cast<TacheComposite*>(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache*>())!=NULL)
+            {
+                newTask->setParent(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache*>());
+                dynamic_cast<TacheComposite*>(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache*>())->addElement(newTask);
+            }
+            else if(listModel_attachedTo->item(0)==0)
+            {
+                currentProject->addElement(newTask);
+            }
+        }
+        else
+        {
+            TacheUnitaire *newTask=new TacheUnitaire(ui->lineEdit_creation_title->text(),ui->dateTimeEdit_creation_disponibility->dateTime(),ui->dateTimeEdit_creation_deadline->dateTime(),ui->timeEdit_creation_length->time(),ui->comboBox_creation_preemptability->currentText()=="Oui");
+            for(int i=0;listModel_prerequisite->item(i)!=0;newTask->addPrerequisite(listModel_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
+
+            if(listModel_attachedTo->item(0)!=0 && dynamic_cast<TacheComposite*>(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache*>())!=NULL)
+            {
+                newTask->setParent(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache*>());
+                dynamic_cast<TacheComposite*>(listModel_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache*>())->addElement(newTask);
+            }
+            else if(listModel_attachedTo->item(0)==0)
+            {
+                currentProject->addElement(newTask);
+            }
+        }
+
+
+    }
+    else
+    {
+        QMessageBox::warning(this,"Attention","Attention, veillez à être à l'interieur d'un projet pour créer une nouvelle tache !");
+        return;
+    }
+
+    updateTreeView(treeModel,ui->treeView);
+}
 
 
 
