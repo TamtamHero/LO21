@@ -148,13 +148,18 @@ void MainWindow::editorView(Tache * task)
     }
 
     listModel_edit_prerequisite->clear();
-    for(vector<Tache*>::iterator it=task->getPrerequisite().begin(); it!=task->getPrerequisite().end(); ++it)
+    for(Tache *ptr=task;ptr!=NULL;ptr=ptr->getParent())
     {
-        item=new QStandardItem((*it)->getTitre());
-        item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
-        listModel_edit_prerequisite->appendRow(item);
-        ui->listView_edit_prerequisite->setModel(listModel_edit_prerequisite);
+        for(vector<Tache*>::iterator it=ptr->getPrerequisite().begin(); it!=ptr->getPrerequisite().end(); ++it)
+        {
+            item=new QStandardItem((*it)->getTitre());
+            item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
+            if(ptr!=task) item->setBackground(Qt::gray);
+            listModel_edit_prerequisite->appendRow(item);
+        }
     }
+    ui->listView_edit_prerequisite->setModel(listModel_edit_prerequisite); //verif si c'est out de chaque boucle similaire
+
 
     ui->comboBox_edit_type->setCurrentIndex(1);
     ui->listView_edit_attachedTo->setEnabled(true);
@@ -165,7 +170,7 @@ void MainWindow::editorView(Tache * task)
     ui->comboBox_edit_preemptability->setEnabled(false);
 
 
-    if(dynamic_cast<TacheUnitaire*>(task)!=NULL) // If uniqueTask, more display
+    if(dynamic_cast<TacheUnitaire*>(task)!=NULL) // If editing uniqueTask, more display
     {
         ui->comboBox_edit_type->setCurrentIndex(2);
 
@@ -352,8 +357,14 @@ void MainWindow::edit()
         currentTask->setDisponibility(ui->dateTimeEdit_edit_disponibility->dateTime());
         currentTask->setDeadline(ui->dateTimeEdit_edit_deadline->dateTime());
 
-        for(int i=currentTask->getPrerequisite().size();listModel_edit_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_edit_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
-
+        currentTask->getPrerequisite().clear();
+        for(int i=0;listModel_edit_prerequisite->item(i)!=0;i++)
+        {
+            if(listModel_edit_prerequisite->item(i)->background().color()!=Qt::gray)
+            {
+                currentTask->addPrerequisite(listModel_edit_prerequisite->item(i)->data(Qt::UserRole+2).value<Tache *>());
+            }
+        }
         if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
         {
             TacheUnitaire *ptr_task=dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>());

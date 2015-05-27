@@ -5,6 +5,7 @@
 #include <QStandardItem>
 #include <QStandardItemModel>
 #include <QMessageBox>
+#include <QBrush>
 
 #include "projet.h"
 #include "manager.h"

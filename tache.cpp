@@ -21,6 +21,7 @@ Tache::~Tache()
 
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+
 void Tache::addPrerequisite(Tache *prerequisite)
 {
     checkPrerequisite(this,prerequisite);
