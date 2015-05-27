@@ -219,11 +219,9 @@ void MainWindow::editAttachedToSelection()
         TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject,ATTACHEDTO);
         selection->exec();
 
-        QStandardItem *item=new QStandardItem("");
         if(selection->getSelectedTask()!=NULL)
         {
-            delete item;
-            item=new QStandardItem(selection->getSelectedTask()->getTitre());
+            QStandardItem * item=new QStandardItem(selection->getSelectedTask()->getTitre());
             item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
             listModel_edit_attachedTo->clear();
             listModel_edit_attachedTo->appendRow(item);
@@ -263,11 +261,9 @@ void MainWindow::creationAttachedToSelection()
         TaskSelectionWindow *selection=new TaskSelectionWindow(this,currentProject,ATTACHEDTO);
         selection->exec();
 
-        QStandardItem *item=new QStandardItem("");
         if(selection->getSelectedTask()!=NULL)
         {
-            delete item;
-            item=new QStandardItem(selection->getSelectedTask()->getTitre());
+            QStandardItem *item=new QStandardItem(selection->getSelectedTask()->getTitre());
             item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
             listModel_creation_attachedTo->clear();
             listModel_creation_attachedTo->appendRow(item);
@@ -355,7 +351,8 @@ void MainWindow::edit()
         currentTask->setTitle(ui->lineEdit_edit_title->text());
         currentTask->setDisponibility(ui->dateTimeEdit_edit_disponibility->dateTime());
         currentTask->setDeadline(ui->dateTimeEdit_edit_deadline->dateTime());
-        for(int i=0;listModel_edit_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_edit_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
+
+        for(int i=currentTask->getPrerequisite().size();listModel_edit_prerequisite->item(i)!=0;currentTask->addPrerequisite(listModel_edit_prerequisite->item(i++)->data(Qt::UserRole+2).value<Tache *>()));
 
         if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
         {
@@ -409,6 +406,7 @@ void MainWindow::creationView(QString type)
         ui->listView_creation_attachedTo->setEnabled(false);
         ui->toolButton_creation_attachedTo->setEnabled(false);
         ui->toolButton_creation_prerequisite->setEnabled(false);
+        ui->toolButton_creation_undo->setEnabled(false);
         ui->timeEdit_creation_length->setEnabled(false);
         ui->comboBox_creation_preemptability->setEnabled(false);
     }
@@ -418,6 +416,7 @@ void MainWindow::creationView(QString type)
         ui->listView_creation_attachedTo->setEnabled(true);
         ui->toolButton_creation_attachedTo->setEnabled(true);
         ui->toolButton_creation_prerequisite->setEnabled(true);
+        ui->toolButton_creation_undo->setEnabled(true);
         ui->timeEdit_creation_length->setEnabled(false);
         ui->comboBox_creation_preemptability->setEnabled(false);
     }
@@ -427,6 +426,7 @@ void MainWindow::creationView(QString type)
         ui->listView_creation_attachedTo->setEnabled(true);
         ui->toolButton_creation_attachedTo->setEnabled(true);
         ui->toolButton_creation_prerequisite->setEnabled(true);
+        ui->toolButton_creation_undo->setEnabled(true);
         ui->timeEdit_creation_length->setEnabled(true);
         ui->comboBox_creation_preemptability->setEnabled(true);
     }
@@ -524,7 +524,7 @@ void MainWindow::prerequisiteCreationUndo()
 {
     int i;
     for(i=0;listModel_creation_prerequisite->item(i)!=0;i++);
-    if(--i!=0)
+    if(i--!=0)
     {
         listModel_creation_prerequisite->removeRow(i);
     }
