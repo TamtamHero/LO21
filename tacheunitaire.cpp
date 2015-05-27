@@ -1,4 +1,5 @@
 #include "tacheunitaire.h"
+#include <iostream>
 
 TacheUnitaire::TacheUnitaire(QString titre,QDateTime disponibilite,QDateTime echeance,QTime duree,bool preemptable):
     Tache(titre,disponibilite,echeance),m_duree(duree),m_preemptable(preemptable)
