@@ -482,7 +482,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget_editing_editor">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tab_3">
           <attribute name="title">
@@ -807,7 +807,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QListView" name="listView_creationprerequisite">
+               <widget class="QListView" name="listView_creation_prerequisite">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -958,9 +958,6 @@
             </item>
            </layout>
           </widget>
-          <zorder>verticalLayoutWidget_8</zorder>
-          <zorder>horizontalSpacer_7</zorder>
-          <zorder>verticalLayoutWidget_8</zorder>
          </widget>
         </widget>
        </item>

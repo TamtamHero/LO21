@@ -32,8 +32,10 @@ private:
     Ui::MainWindow *ui;
 
     QStandardItemModel *treeModel;
-    QStandardItemModel *listModel_prerequisite;
-    QStandardItemModel *listModel_attachedTo;
+    QStandardItemModel *listModel_edit_prerequisite;
+    QStandardItemModel *listModel_edit_attachedTo;
+    QStandardItemModel *listModel_creation_prerequisite;
+    QStandardItemModel *listModel_creation_attachedTo;
     Manager<Projet> &projectManager;
     Manager<Programmation> &programManager;
     Projet * currentProject;
@@ -47,11 +49,14 @@ private slots:
     void deleteSelection();
     void clickArbre(const QModelIndex&);
     void doubleclickArbre(QModelIndex);
-    void prerequisiteSelection();
-    void attachedToSelection();
+    void editPrerequisiteSelection();
+    void editAttachedToSelection();
+    void creationPrerequisiteSelection();
+    void creationAttachedToSelection();
     void edit();
     void creationView(QString type);
     void createElement();
+    void switchEditTab(){currentTask=NULL;}
 
 };
 

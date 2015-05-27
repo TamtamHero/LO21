@@ -33,13 +33,17 @@ void Tache::addPrerequisite(Tache *prerequisite)
 
 bool Tache::checkPrerequisite(Tache* task, Tache * prerequisiteTask)
 {
+    if(task==NULL)
+    {
+        return true; //Creation case
+    }
     if(task==prerequisiteTask)
     {
         throw CalendarException("Une tache ne peut être son propre prérequis");
     }
     else if(task->getDisponibility()<=prerequisiteTask->getDisponibility())
     {
-        throw CalendarException("La date de disponibilité de la tache est antérieure ou égale à celle de la tache qu'elle est censé précéder");
+        throw CalendarException("La date de disponibilité de la nouvelle tache doit être postérieure aux disponibilités des taches qui la précède");
     }
 
     Tache* ptr_task=task->getParent();
@@ -58,6 +62,10 @@ bool Tache::checkPrerequisite(Tache* task, Tache * prerequisiteTask)
 
 bool Tache::checkAttachedTo(Tache* task, Tache * motherTask)
 {
+    if(task==NULL)
+    {
+        return true; //Creation case
+    }
     if(task==motherTask)
     {
         throw CalendarException("Une tache ne peut pas être rattachée à elle même");
