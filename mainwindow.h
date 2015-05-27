@@ -57,6 +57,8 @@ private slots:
     void creationView(QString type);
     void createElement();
     void switchEditTab(){currentTask=NULL;}
+    void prerequisiteCreationUndo();
+    void prerequisiteEditUndo();
 
 };
 

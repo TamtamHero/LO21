@@ -74,6 +74,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->comboBox_creation, SIGNAL(currentTextChanged(QString)),this, SLOT(creationView(QString) ));
     QObject::connect(ui->pushButton_creation_create,SIGNAL(clicked()),this,SLOT(createElement()));
     QObject::connect(ui->tabWidget_editing_editor,SIGNAL(currentChanged(int)),this,SLOT(switchEditTab()));
+    QObject::connect(ui->toolButton_edit_undo,SIGNAL(clicked()),this,SLOT(prerequisiteEditUndo()));
+    QObject::connect(ui->toolButton_creation_undo,SIGNAL(clicked()),this,SLOT(prerequisiteCreationUndo()));
 
 }
 
@@ -518,6 +520,24 @@ void MainWindow::createElement()
 
 }
 
+void MainWindow::prerequisiteCreationUndo()
+{
+    int i;
+    for(i=0;listModel_creation_prerequisite->item(i)!=0;i++);
+    if(--i!=0)
+    {
+        listModel_creation_prerequisite->removeRow(i);
+    }
+}
 
+void MainWindow::prerequisiteEditUndo()
+{
+    int i;
+    for(i=0;listModel_edit_prerequisite->item(i)!=0;i++);
+    if(i--!=0)
+    {
+        listModel_edit_prerequisite->removeRow(i);
+    }
+}
 
 
