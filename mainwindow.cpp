@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     listModel_edit_attachedTo(new QStandardItemModel),
     listModel_creation_prerequisite(new QStandardItemModel),
     listModel_creation_attachedTo(new QStandardItemModel),
+    reply(QMessageBox::No),
     projectManager(Manager<Projet>::getInstance()),
     programManager(Manager<Programmation>::getInstance()),
     currentProject(NULL),
@@ -155,6 +156,7 @@ void MainWindow::editorView(Tache * task)
             item=new QStandardItem((*it)->getTitre());
             item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
             if(ptr!=task) item->setBackground(Qt::gray);
+            else item->setBackground(QColor::fromRgb(175,229,250));
             listModel_edit_prerequisite->appendRow(item);
         }
     }
@@ -207,6 +209,13 @@ void MainWindow::editPrerequisiteSelection()
 
         if(selection->getSelectedTask()!=NULL)
         {
+            if(listModel_edit_attachedTo->item(0)!=0)
+            {
+                if(!checkCoherence(listModel_edit_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache*>(),selection->getSelectedTask()))
+                {
+                     return;
+                }
+            }
             QStandardItem *item;
             item=new QStandardItem(selection->getSelectedTask()->getTitre());
             item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
@@ -226,6 +235,10 @@ void MainWindow::editAttachedToSelection()
 
         if(selection->getSelectedTask()!=NULL)
         {
+            if(!checkCoherence(selection->getSelectedTask(),currentTask))
+            {
+                 return;
+            }
             QStandardItem * item=new QStandardItem(selection->getSelectedTask()->getTitre());
             item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
             listModel_edit_attachedTo->clear();
@@ -249,6 +262,21 @@ void MainWindow::creationPrerequisiteSelection()
 
         if(selection->getSelectedTask()!=NULL)
         {
+            if(listModel_creation_attachedTo->item(0)!=0)
+            {
+                if(!checkCoherence(listModel_creation_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache*>(),selection->getSelectedTask()))
+                {
+                     return;
+                }
+            }
+            else if(reply==QMessageBox::No)
+            {
+                reply=QMessageBox::question(this,"Erreur","Êtes-vous sur de ne pas vouloir rattacher la nouvelle tache ?",QMessageBox::Yes|QMessageBox::No);
+                if(reply==QMessageBox::No)
+                {
+                    return;
+                }
+            }
             QStandardItem *item;
             item=new QStandardItem(selection->getSelectedTask()->getTitre());
             item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
@@ -316,63 +344,70 @@ void MainWindow::deleteSelection()
 
 void MainWindow::edit()
 {
-    QItemSelectionModel *selection = ui->treeView->selectionModel();
-    QModelIndex indexElementSelectionne = selection->currentIndex();
-
-    if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL && currentProject!=NULL) // Check if selected element is a Project
+   try
     {
-        currentProject->setTitle(ui->lineEdit_edit_title->text());
-        currentProject->setDisponibility(ui->dateTimeEdit_edit_disponibility->dateTime());
-        currentProject->setDeadline(ui->dateTimeEdit_edit_deadline->dateTime());
-        treeModel->itemFromIndex(indexElementSelectionne)->setText(currentProject->getTitre()); //Update the view
+        QItemSelectionModel *selection = ui->treeView->selectionModel();
+        QModelIndex indexElementSelectionne = selection->currentIndex();
+
+        if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL && currentProject!=NULL) // Check if selected element is a Project
+        {
+            currentProject->setTitle(ui->lineEdit_edit_title->text());
+            currentProject->setDisponibility(ui->dateTimeEdit_edit_disponibility->dateTime());
+            currentProject->setDeadline(ui->dateTimeEdit_edit_deadline->dateTime());
+            treeModel->itemFromIndex(indexElementSelectionne)->setText(currentProject->getTitre()); //Update the view
+        }
+        else if(currentTask!=NULL) // If it's not a Project, it's a Task
+        {
+            if(listModel_edit_attachedTo->item(0)!=0 && listModel_edit_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache*>()!=currentTask->getParent()) // Linking new parent with son
+            {
+                TacheComposite * ptr_newParent=dynamic_cast<TacheComposite*>(listModel_edit_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache *>());
+                if(currentTask->getParent()!=NULL)
+                {
+                    vector<Tache*>& list=static_cast<TacheComposite*>(currentTask->getParent())->getElement(); // Erasing son from parent
+                    list.erase(std::remove(list.begin(),list.end(),currentTask),list.end());
+                }
+                else
+                {
+                    currentProject->removeElement(currentTask); // Erasing son from Project
+                }
+                currentTask->setParent(ptr_newParent);
+                ptr_newParent->addElement(currentTask);
+            }
+            else if(listModel_edit_attachedTo->item(0)==0 && currentTask->getParent()!=NULL) // Case where the task becomes an apex
+            {
+                 vector<Tache*>& list=static_cast<TacheComposite*>(currentTask->getParent())->getElement(); // Erasing son from parent
+                 list.erase(std::remove(list.begin(),list.end(),currentTask),list.end());
+                 currentTask->setParent(NULL);
+                 currentProject->addElement(currentTask);
+            }
+
+            //_-_-_-_-_-_-_-_-_-_-_-END OF ATTACHING TREATMENT-_-_-_-_-_-_-_-_--_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+
+            currentTask->setTitle(ui->lineEdit_edit_title->text());
+            currentTask->setDisponibility(ui->dateTimeEdit_edit_disponibility->dateTime());
+            currentTask->setDeadline(ui->dateTimeEdit_edit_deadline->dateTime());
+
+            currentTask->getPrerequisite().clear();
+            for(int i=0;listModel_edit_prerequisite->item(i)!=0;i++)
+            {
+                if(listModel_edit_prerequisite->item(i)->background().color()!=Qt::gray)
+                {
+                    currentTask->addPrerequisite(listModel_edit_prerequisite->item(i)->data(Qt::UserRole+2).value<Tache *>());
+                }
+            }
+            if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
+            {
+                TacheUnitaire *ptr_task=dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>());
+                ptr_task->setDuree(ui->timeEdit_edit_length->time());
+                ptr_task->setPreemptability(ui->comboBox_edit_preemptability->currentText()=="Oui");
+            }
+
+            updateTreeView(treeModel,ui->treeView);
+        }
     }
-    else if(currentTask!=NULL) // If it's not a Project, it's a Task
+    catch(CalendarException error)
     {
-        if(listModel_edit_attachedTo->item(0)!=0 && listModel_edit_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache*>()!=currentTask->getParent()) // Linking new parent with son
-        {
-            TacheComposite * ptr_newParent=dynamic_cast<TacheComposite*>(listModel_edit_attachedTo->item(0)->data(Qt::UserRole+2).value<Tache *>());
-            if(currentTask->getParent()!=NULL)
-            {
-                vector<Tache*>& list=static_cast<TacheComposite*>(currentTask->getParent())->getElement(); // Erasing son from parent
-                list.erase(std::remove(list.begin(),list.end(),currentTask),list.end());
-            }
-            else
-            {
-                currentProject->removeElement(currentTask); // Erasing son from Project
-            }
-            currentTask->setParent(ptr_newParent);
-            ptr_newParent->addElement(currentTask);
-        }
-        else if(listModel_edit_attachedTo->item(0)==0 && currentTask->getParent()!=NULL) // Case where the task becomes an apex
-        {
-             vector<Tache*>& list=static_cast<TacheComposite*>(currentTask->getParent())->getElement(); // Erasing son from parent
-             list.erase(std::remove(list.begin(),list.end(),currentTask),list.end());
-             currentTask->setParent(NULL);
-             currentProject->addElement(currentTask);
-        }
-
-        //_-_-_-_-_-_-_-_-_-_-_-END OF ATTACHING TREATMENT-_-_-_-_-_-_-_-_--_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-
-        currentTask->setTitle(ui->lineEdit_edit_title->text());
-        currentTask->setDisponibility(ui->dateTimeEdit_edit_disponibility->dateTime());
-        currentTask->setDeadline(ui->dateTimeEdit_edit_deadline->dateTime());
-
-        currentTask->getPrerequisite().clear();
-        for(int i=0;listModel_edit_prerequisite->item(i)!=0;i++)
-        {
-            if(listModel_edit_prerequisite->item(i)->background().color()!=Qt::gray)
-            {
-                currentTask->addPrerequisite(listModel_edit_prerequisite->item(i)->data(Qt::UserRole+2).value<Tache *>());
-            }
-        }
-        if(dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>())!=NULL)
-        {
-            TacheUnitaire *ptr_task=dynamic_cast<TacheUnitaire*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache*>());
-            ptr_task->setDuree(ui->timeEdit_edit_length->time());
-            ptr_task->setPreemptability(ui->comboBox_edit_preemptability->currentText()=="Oui");
-        }
-
-        updateTreeView(treeModel,ui->treeView);
+        QMessageBox::warning(this,"erreur",error.getInfo());
     }
 }
 
@@ -551,4 +586,36 @@ void MainWindow::prerequisiteEditUndo()
     }
 }
 
+//_-_-_-_-_-_-_-_-_-_-_-_-_ FUNCTIONS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+
+
+bool checkCoherence(Tache* parent, Tache* prerequisite)
+{
+    try
+    {
+        if(parent==NULL)
+        {
+            return true;
+        }
+        else if(parent==prerequisite)
+        {
+            throw CalendarException("La tache est déjà rattachée à la tache \""+prerequisite->getTitre()+"\"");
+        }
+
+        for(vector<Tache*>::iterator it=parent->getPrerequisite().begin();it!=parent->getPrerequisite().end();++it)
+        {
+            if((*it)==prerequisite)
+            {
+                throw CalendarException("La tache "+ prerequisite->getTitre()+" est déjà un pérequis d'une tache parente\nVeuillez enlever le prérequis ou changer l'attache.");
+            }
+        }
+
+        return checkCoherence(parent->getParent(),prerequisite);
+    }
+    catch(CalendarException error)
+    {
+        QMessageBox::warning(NULL,"erreur",error.getInfo());
+        return false;
+    }
+}
 

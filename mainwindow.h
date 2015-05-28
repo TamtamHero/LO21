@@ -37,6 +37,7 @@ private:
     QStandardItemModel *listModel_edit_attachedTo;
     QStandardItemModel *listModel_creation_prerequisite;
     QStandardItemModel *listModel_creation_attachedTo;
+    QMessageBox::StandardButton reply;
     Manager<Projet> &projectManager;
     Manager<Programmation> &programManager;
     Projet * currentProject;
@@ -62,5 +63,7 @@ private slots:
     void prerequisiteEditUndo();
 
 };
+
+bool checkCoherence(Tache* parent, Tache *prerequisite);
 
 #endif // MAINWINDOW_H
