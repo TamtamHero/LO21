@@ -8,7 +8,8 @@ SOURCES += \
     tachecomposite.cpp \
     manager.tpp \
     taskselectionwindow.cpp \
-    validationwindow.cpp
+    validationwindow.cpp \
+    schedulingwindow.cpp
 
 HEADERS += \
     tache.h \
@@ -20,7 +21,8 @@ HEADERS += \
     tachecomposite.h \
     manager.h \
     taskselectionwindow.h \
-    validationwindow.h
+    validationwindow.h \
+    schedulingwindow.h
 
 FORMS += \
     mainwindow.ui

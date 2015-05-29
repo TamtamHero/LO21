@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     listModel_creation_attachedTo(new QStandardItemModel),
     reply(QMessageBox::No),
     projectManager(Manager<Projet>::getInstance()),
-    programManager(Manager<Programmation>::getInstance()),
+    scheduleManager(Manager<Programmation>::getInstance()),
     currentProject(NULL),
     currentTask(NULL)
 {
@@ -61,16 +61,18 @@ MainWindow::MainWindow(QWidget *parent) :
     projectManager.addElement(projet);
     projectManager.addElement(projet2);
 
-    selectionProjet();
+    editing_selectionProjet();
 
-    QObject::connect(ui->pushButton_editing_projectSelection, SIGNAL(clicked()), this, SLOT(selectionProjet()));
+    // Editing connections
+
+    QObject::connect(ui->pushButton_editing_projectSelection, SIGNAL(clicked()), this, SLOT(editing_selectionProjet()));
     QObject::connect(ui->pushButton_edit_delete, SIGNAL(clicked()), this, SLOT(deleteSelection()));
-    QObject::connect(ui->treeView,SIGNAL(clicked(const QModelIndex&)),this,SLOT( clickArbre(const QModelIndex&)));
-    QObject::connect(ui->treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleclickArbre(QModelIndex)));
-    QObject::connect(ui->toolButton_edit_attachedTo, SIGNAL(clicked()), this, SLOT(editAttachedToSelection()));
-    QObject::connect(ui->toolButton_edit_prerequisite, SIGNAL(clicked()), this, SLOT(editPrerequisiteSelection()));
-    QObject::connect(ui->toolButton_creation_attachedTo, SIGNAL(clicked()), this, SLOT(creationAttachedToSelection()));
-    QObject::connect(ui->toolButton_creation_prerequisite, SIGNAL(clicked()), this, SLOT(creationPrerequisiteSelection()));
+    QObject::connect(ui->treeView,SIGNAL(clicked(const QModelIndex&)),this,SLOT( editing_clickArbre(const QModelIndex&)));
+    QObject::connect(ui->treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(editing_doubleclickArbre(QModelIndex)));
+    QObject::connect(ui->toolButton_edit_attachedTo, SIGNAL(clicked()), this, SLOT(editing_attachedToSelection()));
+    QObject::connect(ui->toolButton_edit_prerequisite, SIGNAL(clicked()), this, SLOT(editing_prerequisiteSelection()));
+    QObject::connect(ui->toolButton_creation_attachedTo, SIGNAL(clicked()), this, SLOT(creation_attachedToSelection()));
+    QObject::connect(ui->toolButton_creation_prerequisite, SIGNAL(clicked()), this, SLOT(creation_prerequisiteSelection()));
     QObject::connect(ui->pushButton_edit_edit, SIGNAL(clicked()), this, SLOT(edit()));
     QObject::connect(ui->comboBox_creation, SIGNAL(currentTextChanged(QString)),this, SLOT(creationView(QString) ));
     QObject::connect(ui->pushButton_creation_create,SIGNAL(clicked()),this,SLOT(createElement()));
@@ -78,6 +80,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->toolButton_edit_undo,SIGNAL(clicked()),this,SLOT(prerequisiteEditUndo()));
     QObject::connect(ui->toolButton_creation_undo,SIGNAL(clicked()),this,SLOT(prerequisiteCreationUndo()));
 
+    // Scheduler connections
+
+    QObject::connect(ui->pushButton_scheduler_taskSelection,SIGNAL(clicked()),this,SLOT(scheduler_taskSelection()));
 }
 
 MainWindow::~MainWindow()
@@ -85,10 +90,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+//_-_-_-_-_-_-_-_-_-_-_ SIGNALS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
 
-void MainWindow::selectionProjet()
+void MainWindow::editing_selectionProjet()
 {
     currentProject=NULL;
     treeModel->clear();
@@ -97,7 +102,7 @@ void MainWindow::selectionProjet()
     ui->treeView->setModel(treeModel);
 }
 
-void MainWindow::clickArbre(const QModelIndex&)
+void MainWindow::editing_clickArbre(const QModelIndex&)
 {
     QItemSelectionModel *selection = ui->treeView->selectionModel();
     QModelIndex indexElementSelectionne = selection->currentIndex();
@@ -112,10 +117,9 @@ void MainWindow::clickArbre(const QModelIndex&)
         currentTask=indexElementSelectionne.data(Qt::UserRole+2).value<Tache *>();
         editorView(currentTask);
     }
-
 }
 
-void MainWindow::doubleclickArbre(QModelIndex)
+void MainWindow::editing_doubleclickArbre(QModelIndex)
 {
     QItemSelectionModel *selection = ui->treeView->selectionModel();
     QModelIndex indexElementSelectionne = selection->currentIndex();
@@ -200,7 +204,7 @@ void MainWindow::editorView(Projet * project)
     ui->comboBox_edit_preemptability->setEnabled(false);
 }
 
-void MainWindow::editPrerequisiteSelection()
+void MainWindow::editing_prerequisiteSelection()
 {
     if(currentProject!=NULL)
     {
@@ -226,7 +230,7 @@ void MainWindow::editPrerequisiteSelection()
 }
 
 
-void MainWindow::editAttachedToSelection()
+void MainWindow::editing_attachedToSelection()
 {
     if(currentProject!=NULL)
     {
@@ -253,7 +257,7 @@ void MainWindow::editAttachedToSelection()
     }
 }
 
-void MainWindow::creationPrerequisiteSelection()
+void MainWindow::creation_prerequisiteSelection()
 {
     if(currentProject!=NULL)
     {
@@ -287,7 +291,7 @@ void MainWindow::creationPrerequisiteSelection()
 }
 
 
-void MainWindow::creationAttachedToSelection()
+void MainWindow::creation_attachedToSelection()
 {
     if(currentProject!=NULL)
     {
@@ -412,37 +416,6 @@ void MainWindow::edit()
 }
 
 
-void MainWindow::updateTreeView(QStandardItemModel *model,QTreeView *view)
-{
-    if(model->item(0)==0)
-    {
-        model->clear();
-        currentProject->afficher(model);
-        return; //If no item in the view, then no expand list needed;
-    }
-
-    QList<Tache*> expandedList;
-    QModelIndexList indexList=model->match(model->index(0,0),Qt::FontRole,model->item(0)->data(Qt::FontRole));
-    foreach(QModelIndex index,indexList)
-    {
-        if(view->isExpanded(index))
-        {
-            expandedList.append(index.data(Qt::UserRole+2).value<Tache*>());
-        }
-    }
-
-    model->clear();
-    currentProject->afficher(model);
-
-    foreach (Tache* expandedTask,expandedList)
-    {
-        QModelIndexList item=model->match(model->index(0,0),Qt::UserRole+2,QVariant::fromValue(expandedTask));
-        if(!item.isEmpty())
-        {
-            view->setExpanded(item.first(),true);
-        }
-    }
-}
 
 void MainWindow::creationView(QString type)
 {
@@ -501,7 +474,7 @@ void MainWindow::createElement()
             }
             Projet *newProject=new Projet(ui->lineEdit_creation_title->text(),ui->dateTimeEdit_creation_disponibility->dateTime(),ui->dateTimeEdit_creation_deadline->dateTime());
             projectManager.addElement(newProject);
-            selectionProjet();
+            editing_selectionProjet();
             return;
         }
 
@@ -585,6 +558,48 @@ void MainWindow::prerequisiteEditUndo()
         listModel_edit_prerequisite->removeRow(i);
     }
 }
+
+void MainWindow::scheduler_taskSelection()
+{
+    SchedulingWindow * selection=new SchedulingWindow(this,projectManager);
+    selection->exec();
+}
+
+//_-_-_-_-_-_-_-_-_-_-_-_-_ METHODS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+
+
+void MainWindow::updateTreeView(QStandardItemModel *model,QTreeView *view)
+{
+    if(model->item(0)==0)
+    {
+        model->clear();
+        currentProject->afficher(model);
+        return; //If no item in the view, then no expand list needed;
+    }
+
+    QList<Tache*> expandedList;
+    QModelIndexList indexList=model->match(model->index(0,0),Qt::FontRole,model->item(0)->data(Qt::FontRole));
+    foreach(QModelIndex index,indexList)
+    {
+        if(view->isExpanded(index))
+        {
+            expandedList.append(index.data(Qt::UserRole+2).value<Tache*>());
+        }
+    }
+
+    model->clear();
+    currentProject->afficher(model);
+
+    foreach (Tache* expandedTask,expandedList)
+    {
+        QModelIndexList item=model->match(model->index(0,0),Qt::UserRole+2,QVariant::fromValue(expandedTask));
+        if(!item.isEmpty())
+        {
+            view->setExpanded(item.first(),true);
+        }
+    }
+}
+
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_ FUNCTIONS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 

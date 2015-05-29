@@ -12,6 +12,8 @@
 #include "programmation.h"
 #include "taskselectionwindow.h"
 #include "validationwindow.h"
+#include "schedulingwindow.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -39,7 +41,7 @@ private:
     QStandardItemModel *listModel_creation_attachedTo;
     QMessageBox::StandardButton reply;
     Manager<Projet> &projectManager;
-    Manager<Programmation> &programManager;
+    Manager<Programmation> &scheduleManager;
     Projet * currentProject;
     Tache * currentTask;
 
@@ -47,20 +49,22 @@ private:
 
 
 private slots:
-    void selectionProjet();
+    void editing_selectionProjet();
     void deleteSelection();
-    void clickArbre(const QModelIndex&);
-    void doubleclickArbre(QModelIndex);
-    void editPrerequisiteSelection();
-    void editAttachedToSelection();
-    void creationPrerequisiteSelection();
-    void creationAttachedToSelection();
+    void editing_clickArbre(const QModelIndex&);
+    void editing_doubleclickArbre(QModelIndex);
+    void editing_prerequisiteSelection();
+    void editing_attachedToSelection();
+    void creation_prerequisiteSelection();
+    void creation_attachedToSelection();
     void edit();
     void creationView(QString type);
     void createElement();
     void switchEditTab(){currentTask=NULL;}
     void prerequisiteCreationUndo();
     void prerequisiteEditUndo();
+
+    void scheduler_taskSelection();
 
 };
 

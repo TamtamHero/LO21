@@ -30,7 +30,7 @@
      </size>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab_6">
      <attribute name="title">
@@ -47,7 +47,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QTableWidget" name="tableWidget">
+        <widget class="QTableWidget" name="tableWidget_scheduler_view">
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
@@ -270,24 +270,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit_4">
+          <widget class="QLineEdit" name="lineEdit_scheduler_title">
            <property name="text">
             <string/>
            </property>
           </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_5">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
          </item>
          <item>
           <widget class="Line" name="line_3">
@@ -297,20 +284,7 @@
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_5">
+          <widget class="QPushButton" name="pushButton_scheduler_taskSelection">
            <property name="text">
             <string>Programmer une tache</string>
            </property>
@@ -328,7 +302,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDateTimeEdit" name="dateTimeEdit_7"/>
+          <widget class="QDateTimeEdit" name="dateTimeEdit_scheduler_datetime"/>
          </item>
          <item>
           <widget class="QLabel" name="label_20">
@@ -338,7 +312,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QTimeEdit" name="timeEdit_2"/>
+          <widget class="QTimeEdit" name="timeEdit_scheduler_duration"/>
          </item>
          <item>
           <spacer name="horizontalSpacer_4">
@@ -354,7 +328,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_3">
+          <widget class="QPushButton" name="pushButton_scheduler_validate">
            <property name="text">
             <string>Valider</string>
            </property>
@@ -385,7 +359,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QComboBox" name="comboBox_5">
+          <widget class="QComboBox" name="comboBox_scheduler_export">
            <property name="minimumSize">
             <size>
              <width>10</width>
@@ -405,7 +379,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_4">
+          <widget class="QPushButton" name="pushButton_scheduler_export">
            <property name="text">
             <string>Exporter</string>
            </property>

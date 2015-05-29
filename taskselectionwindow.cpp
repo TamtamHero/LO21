@@ -54,8 +54,12 @@ void TaskSelectionWindow::sendSelection()
                 break;
 
             case ATTACHEDTO:
-            if(Tache::checkAttachedTo(dynamic_cast<MainWindow*>(parent())->getCurrentTask(),selectedTask)) //check if the selected task can be a prerequisite of current task
+            if(Tache::checkAttachedTo(dynamic_cast<MainWindow*>(parent())->getCurrentTask(),selectedTask)) //check if the selected task can be composed of current task
             {
+                if(dynamic_cast<TacheUnitaire*>(selectedTask)!=NULL)
+                {
+                    throw CalendarException("La tache sélectionnée n'est pas une tache composite");
+                }
                 this->close();
             }
                 break;
