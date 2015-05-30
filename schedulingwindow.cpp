@@ -21,10 +21,12 @@ SchedulingWindow::SchedulingWindow(QWidget *parent, Manager<Projet> &manager):
     vLayout->addLayout(hLayout);
     this->setLayout(vLayout);
 
+
+
     QObject::connect(pushButton_TaskSelection_projectSelection, SIGNAL(clicked()), this, SLOT(scheduler_selectionProjet()));
+    QObject::connect(pushButton_TaskSelection_selection,SIGNAL(clicked()),this,SLOT(sendSelection()));
     QObject::connect(treeView,SIGNAL(clicked(const QModelIndex&)),this,SLOT(scheduler_clickArbre(const QModelIndex&)));
     QObject::connect(treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(scheduler_doubleclickArbre(QModelIndex)));
-    //QObject::connect(pushButton_TaskSelection_selection,SIGNAL(clicked()),this,SLOT(sendSelection()));
 }
 
 
@@ -40,6 +42,27 @@ void SchedulingWindow::scheduler_selectionProjet()
     projectManager.Afficher(Model);
     Model->setHorizontalHeaderLabels(QStringList("Sélectionnez un projet"));
     treeView->setModel(Model);
+}
+
+void SchedulingWindow::sendSelection()
+{
+    try
+    {
+        if(selectedTask==NULL)
+        {
+            throw CalendarException("Vous n'avez pas sélectionné de tache");
+        }
+        else if(dynamic_cast<TacheUnitaire*>(selectedTask)==NULL)
+        {
+            throw CalendarException("Vous ne pouvez pas programmer une tache composite");
+        }
+        this->close();
+    }
+    catch(CalendarException error)
+    {
+        selectedTask=NULL;
+        QMessageBox::warning(this, "Erreur", error.getInfo());
+    }
 }
 
 void SchedulingWindow::scheduler_clickArbre(const QModelIndex&)
@@ -69,4 +92,9 @@ void SchedulingWindow::scheduler_doubleclickArbre(QModelIndex)
         Model->setHorizontalHeaderLabels(QStringList(selectedProject->getTitre()));
         treeView->setModel(Model);
     }
+}
+
+void SchedulingWindow::closeEvent(QCloseEvent *event)
+{
+
 }

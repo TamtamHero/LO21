@@ -18,7 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
     projectManager(Manager<Projet>::getInstance()),
     scheduleManager(Manager<Programmation>::getInstance()),
     currentProject(NULL),
-    currentTask(NULL)
+    currentTask(NULL),
+    scheduleTask(NULL)
 {
     ui->setupUi(this);
 
@@ -82,7 +83,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Scheduler connections
 
-    QObject::connect(ui->pushButton_scheduler_taskSelection,SIGNAL(clicked()),this,SLOT(scheduler_taskSelection()));
+    QObject::connect(ui->toolButton_scheduler_taskSelection,SIGNAL(clicked()),this,SLOT(scheduler_taskSelection()));
+    QObject::connect(ui->timeEdit_scheduler_duration,SIGNAL(timeChanged(QTime)),this,SLOT(scheduler_checkTime(QTime)));
+    QObject::connect(ui->dateTimeEdit_scheduler_datetime,SIGNAL(dateTimeChanged(QDateTime)),this,SLOT(scheduler_checkDeadline(QDateTime)));
 }
 
 MainWindow::~MainWindow()
@@ -563,6 +566,30 @@ void MainWindow::scheduler_taskSelection()
 {
     SchedulingWindow * selection=new SchedulingWindow(this,projectManager);
     selection->exec();
+
+    if(selection->getSelectedTask()!=NULL)
+    {
+        scheduleTask=static_cast<TacheUnitaire*>(selection->getSelectedTask());
+        ui->lineEdit_scheduler_title->setText(scheduleTask->getTitre());
+        ui->timeEdit_scheduler_duration->setTime(scheduleTask->getDuree());
+        ui->dateTimeEdit_scheduler_datetime->setDateTime(scheduleTask->getDisponibility());
+    }
+}
+
+void MainWindow::scheduler_checkTime(QTime t)
+{
+    if(scheduleTask!=NULL && scheduleTask->getDuree()<t)
+    {
+        ui->timeEdit_scheduler_duration->setTime(scheduleTask->getDuree());
+    }
+}
+
+void MainWindow::scheduler_checkDeadline(QDateTime t)
+{
+    if(scheduleTask!=NULL && scheduleTask->getDeadline()<t)
+    {
+        ui->dateTimeEdit_scheduler_datetime->setDateTime(scheduleTask->getDeadline());
+    }
 }
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_ METHODS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-

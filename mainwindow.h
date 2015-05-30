@@ -44,6 +44,7 @@ private:
     Manager<Programmation> &scheduleManager;
     Projet * currentProject;
     Tache * currentTask;
+    TacheUnitaire * scheduleTask;
 
     void updateTreeView(QStandardItemModel *model, QTreeView *view);
 
@@ -65,6 +66,8 @@ private slots:
     void prerequisiteEditUndo();
 
     void scheduler_taskSelection();
+    void scheduler_checkTime(QTime t);
+    void scheduler_checkDeadline(QDateTime t);
 
 };
 

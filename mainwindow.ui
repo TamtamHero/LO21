@@ -261,38 +261,6 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_19">
-         <item>
-          <widget class="QLabel" name="label_19">
-           <property name="text">
-            <string>Programmer une activité: </string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineEdit_scheduler_title">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="Line" name="line_3">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_scheduler_taskSelection">
-           <property name="text">
-            <string>Programmer une tache</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_21">
          <item>
           <widget class="QLabel" name="label_21">
@@ -315,7 +283,25 @@
           <widget class="QTimeEdit" name="timeEdit_scheduler_duration"/>
          </item>
          <item>
-          <spacer name="horizontalSpacer_4">
+          <widget class="QLineEdit" name="lineEdit_scheduler_title">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_scheduler_validateActivity">
+           <property name="text">
+            <string>Programmer une activité</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_19">
+         <item>
+          <spacer name="horizontalSpacer_3">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -328,9 +314,22 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_scheduler_validate">
+          <widget class="QToolButton" name="toolButton_scheduler_taskSelection">
            <property name="text">
-            <string>Valider</string>
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_scheduler_validateTask">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Programmer une tache</string>
            </property>
           </widget>
          </item>
