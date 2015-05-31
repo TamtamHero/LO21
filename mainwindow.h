@@ -6,6 +6,7 @@
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include <QBrush>
+#include <QDate>
 
 #include "projet.h"
 #include "manager.h"
@@ -35,19 +36,21 @@ private:
     Ui::MainWindow *ui;
 
     QStandardItemModel *treeModel;
+    QStandardItemModel *schedulerModel;
     QStandardItemModel *listModel_edit_prerequisite;
     QStandardItemModel *listModel_edit_attachedTo;
     QStandardItemModel *listModel_creation_prerequisite;
     QStandardItemModel *listModel_creation_attachedTo;
-    //vector<QStandardItemModel>
     QMessageBox::StandardButton reply;
     Manager<Projet> &projectManager;
     Manager<Programmation> &scheduleManager;
     Projet * currentProject;
     Tache * currentTask;
     TacheUnitaire * scheduleTask;
+    QDateTime weekDisplayed;
 
     void updateTreeView(QStandardItemModel *model, QTreeView *view);
+    void updateScheduler();
 
 
 private slots:
@@ -70,6 +73,10 @@ private slots:
     void scheduler_checkTime(QTime t);
     void scheduler_checkDeadline(QDateTime t);
     void scheduler_setDate(int row,int column);
+    void scheduler_saveTask();
+    void scheduler_saveActivity();
+    void scheduler_previousWeek();
+    void scheduler_nextWeek();
 
 };
 

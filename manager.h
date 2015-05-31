@@ -7,8 +7,11 @@
 #include <QStandardItemModel>
 #include <QVariant>
 #include "projet.h"
+#include "programmation.h"
 
 Q_DECLARE_METATYPE(Projet *)
+Q_DECLARE_METATYPE(Programmation *)
+
 
 template<typename Type> class Manager
 {
@@ -27,14 +30,24 @@ private:
     static Handler m_handler;
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 
-    vector<Type *> m_liste;
+    list<Type *> m_liste;
 public:
 
     static Manager<Type> &getInstance();
     static void freeInstance();
-    vector<Type *>& getList(){return m_liste;}
+    list<Type *>& getList(){return m_liste;}
     void addElement(Type * element);
-    void Afficher(QStandardItemModel * treeModel);
+    void Afficher(QStandardItemModel * model);
+    void sort();
+
+    struct taskCompare
+    {
+          template<typename T>
+          bool operator()(const T* l, const T* r)
+          {
+            return *l < *r;
+          }
+    };
 
 };
 

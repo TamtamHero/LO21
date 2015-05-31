@@ -19,11 +19,12 @@ MainWindow::MainWindow(QWidget *parent) :
     scheduleManager(Manager<Programmation>::getInstance()),
     currentProject(NULL),
     currentTask(NULL),
-    scheduleTask(NULL)
+    scheduleTask(NULL),
+    weekDisplayed(QDateTime::currentDateTime().addDays(-QDate::currentDate().dayOfWeek())) //store monday date
 {
     ui->setupUi(this);
+    ui->label_scheduler_week->setText("Semaine du "+weekDisplayed.toString("dd/MM"));
 
-    ui->tableWidget_scheduler_view->setSpan(2,2,3,3);
 
     QDateTime t1=QDateTime::currentDateTime();
     QDateTime t2=QDateTime::currentDateTime().addDays(1);
@@ -64,6 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     editing_selectionProjet();
 
+
     // Editing connections
 
     QObject::connect(ui->pushButton_editing_projectSelection, SIGNAL(clicked()), this, SLOT(editing_selectionProjet()));
@@ -87,6 +89,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->timeEdit_scheduler_duration,SIGNAL(timeChanged(QTime)),this,SLOT(scheduler_checkTime(QTime)));
     QObject::connect(ui->dateTimeEdit_scheduler_datetime,SIGNAL(dateTimeChanged(QDateTime)),this,SLOT(scheduler_checkDeadline(QDateTime)));
     QObject::connect(ui->tableWidget_scheduler_view,SIGNAL(cellClicked(int,int)),this,SLOT(scheduler_setDate(int,int)));
+    QObject::connect(ui->pushButton_scheduler_validateTask,SIGNAL(clicked()),this,SLOT(scheduler_saveTask()));
+    QObject::connect(ui->pushButton_scheduler_validateActivity,SIGNAL(clicked()),this,SLOT(scheduler_saveActivity()));
+    QObject::connect(ui->pushButton_scheduler_previous,SIGNAL(clicked()),this,SLOT(scheduler_previousWeek()));
+    QObject::connect(ui->pushButton_scheduler_next,SIGNAL(clicked()),this,SLOT(scheduler_nextWeek()));
 }
 
 MainWindow::~MainWindow()
@@ -330,7 +336,7 @@ void MainWindow::deleteSelection()
         result.exec();
         if(result.getValidation())
         {
-            vector<Projet*>& projectList=projectManager.getList();
+            list<Projet*>& projectList=projectManager.getList();
             projectList.erase(std::remove(projectList.begin(),projectList.end(),currentProject),projectList.end());
             delete currentProject;
             currentProject=NULL;
@@ -362,7 +368,8 @@ void MainWindow::edit()
             currentProject->setTitle(ui->lineEdit_edit_title->text());
             currentProject->setDisponibility(ui->dateTimeEdit_edit_disponibility->dateTime());
             currentProject->setDeadline(ui->dateTimeEdit_edit_deadline->dateTime());
-            treeModel->itemFromIndex(indexElementSelectionne)->setText(currentProject->getTitre()); //Update the view
+            projectManager.sort();
+            editing_selectionProjet(); // update view
         }
         else if(currentTask!=NULL) // If it's not a Project, it's a Task
         {
@@ -603,10 +610,69 @@ void MainWindow::scheduler_setDate(int row,int column)
     time=time.addSecs(1800*row);
     ui->dateTimeEdit_scheduler_datetime->setTime(time);
 
-    QDate date=QDate::currentDate();
-    int day=date.dayOfWeek()-1;
-    date=date.addDays(column-day);
-    ui->dateTimeEdit_scheduler_datetime->setDate(date);
+    QDateTime date=weekDisplayed;
+    date=date.addDays(column+1);
+    ui->dateTimeEdit_scheduler_datetime->setDate(date.date());
+}
+
+void MainWindow::scheduler_saveTask()
+{
+    try
+    {
+        if(ui->timeEdit_scheduler_duration->time()<QTime::fromString("00:30:00"))
+        {
+            throw CalendarException("Vous ne pouvez pas créer une programmation de moins de 30 minutes");
+        }
+        else if(scheduleTask==NULL)
+        {
+            throw CalendarException("Veuillez d'abord sélectionner une tache");
+        }
+        else
+        {
+            Programmation *new_prog=new Programmation(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),scheduleTask);
+            scheduleManager.addElement(new_prog);
+            updateScheduler();
+        }
+    }
+    catch(CalendarException error)
+    {
+        QMessageBox::warning(this, "Erreur", error.getInfo());
+    }
+}
+
+void MainWindow::scheduler_saveActivity()
+{
+    try
+    {
+        if(ui->timeEdit_scheduler_duration->time()<QTime::fromString("00:30:00"))
+        {
+            throw CalendarException("Vous ne pouvez pas créer une activité de moins de 30 minutes");
+        }
+        else
+        {
+            Programmation *new_prog=new Programmation(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),ui->lineEdit_scheduler_title->text());
+            scheduleManager.addElement(new_prog);
+            updateScheduler();
+        }
+    }
+    catch(CalendarException error)
+    {
+        QMessageBox::warning(this, "Erreur", error.getInfo());
+    }
+}
+
+void MainWindow::scheduler_previousWeek()
+{
+    weekDisplayed=weekDisplayed.addDays(-7);
+    ui->label_scheduler_week->setText("Semaine du "+weekDisplayed.toString("dd/MM"));
+    updateScheduler();
+}
+
+void MainWindow::scheduler_nextWeek()
+{
+    weekDisplayed=weekDisplayed.addDays(7);
+    ui->label_scheduler_week->setText("Semaine du "+weekDisplayed.toString("dd/MM"));
+    updateScheduler();
 }
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_ METHODS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
@@ -644,6 +710,29 @@ void MainWindow::updateTreeView(QStandardItemModel *model,QTreeView *view)
     }
 }
 
+void MainWindow::updateScheduler()
+{
+    ui->tableWidget_scheduler_view->clearContents();
+    ui->tableWidget_scheduler_view->clearSpans();
+
+    int row,column;
+    QDateTime endOfWeek=weekDisplayed.addDays(7);
+    endOfWeek=endOfWeek.addSecs(16*3600);
+    QTableWidgetItem *item;
+    for(list<Programmation *>::iterator it=scheduleManager.getList().begin();it!=scheduleManager.getList().end();++it)
+    {
+        if((*it)->getDateTime() >= weekDisplayed && (*it)->getDateTime() < endOfWeek)
+        {
+            row=(QTime(0, 0, 0).secsTo((*it)->getDateTime().time())-8*3600)/1800;
+            column=(*it)->getDateTime().date().dayOfWeek()-1;
+
+            item=new QTableWidgetItem((*it)->getTitle());
+            item->setBackgroundColor(Qt::gray);
+            ui->tableWidget_scheduler_view->setSpan(row,column,1+QTime(0, 0, 0).secsTo((*it)->getDuration())/1800,1);
+            ui->tableWidget_scheduler_view->setItem(row,column,item);
+        }
+    }
+}
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_ FUNCTIONS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 

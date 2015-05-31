@@ -40,17 +40,24 @@ template<typename Type>
 void Manager<Type>::addElement(Type * element)
 {
     m_liste.push_back(element);
+    sort();
 }
 
 template<typename Type>
-void Manager<Type>::Afficher(QStandardItemModel * modele)
+void Manager<Type>::sort()
+{
+    m_liste.sort(taskCompare());
+}
+
+template<typename Type>
+void Manager<Type>::Afficher(QStandardItemModel * model)
 {
     QStandardItem *item;
 
-    for(typename vector<Type *>::iterator it=this->m_liste.begin();it!=this->m_liste.end();++it)
+    for(typename list<Type *>::iterator it=this->m_liste.begin();it!=this->m_liste.end();++it)
     {
         item=new QStandardItem((*it)->getTitre());
         item->setData(QVariant::fromValue((*it)),Qt::UserRole+1);
-        modele->appendRow(item);
+        model->appendRow(item);
     }
 }

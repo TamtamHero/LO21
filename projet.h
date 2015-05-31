@@ -37,8 +37,10 @@ public:
     void setTitle(QString title){m_titre=title;}
     QDateTime getDisponibility(){return m_disponibilite;}
     void setDisponibility(QDateTime disponibility){m_disponibilite=disponibility;}
-    QDateTime getDeadline(){return m_echeance;}
+    QDateTime getDeadline()const {return m_echeance;}
     void setDeadline(QDateTime deadline){m_echeance=deadline;}
+
+    bool operator < (const Projet& b) const;
 
 };
 

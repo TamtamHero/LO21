@@ -120,4 +120,14 @@ void Projet::afficher(QStandardItemModel * treeModel)
     }
 }
 
+//_-_-_-_-_-_-_-_OPERATOR OVERLOADS-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
+
+bool Projet::operator<(const Projet &b) const
+{
+    if(this->getDeadline()<=b.getDeadline())
+    {
+        return true;
+    }
+    return false;
+}
