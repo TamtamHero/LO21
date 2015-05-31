@@ -39,6 +39,7 @@ private:
     QStandardItemModel *listModel_edit_attachedTo;
     QStandardItemModel *listModel_creation_prerequisite;
     QStandardItemModel *listModel_creation_attachedTo;
+    //vector<QStandardItemModel>
     QMessageBox::StandardButton reply;
     Manager<Projet> &projectManager;
     Manager<Programmation> &scheduleManager;
@@ -68,6 +69,7 @@ private slots:
     void scheduler_taskSelection();
     void scheduler_checkTime(QTime t);
     void scheduler_checkDeadline(QDateTime t);
+    void scheduler_setDate(int row,int column);
 
 };
 

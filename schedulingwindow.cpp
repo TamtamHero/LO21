@@ -94,7 +94,3 @@ void SchedulingWindow::scheduler_doubleclickArbre(QModelIndex)
     }
 }
 
-void SchedulingWindow::closeEvent(QCloseEvent *event)
-{
-
-}

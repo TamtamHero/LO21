@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
+    ui->tableWidget_scheduler_view->setSpan(2,2,3,3);
 
     QDateTime t1=QDateTime::currentDateTime();
     QDateTime t2=QDateTime::currentDateTime().addDays(1);
@@ -86,6 +86,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->toolButton_scheduler_taskSelection,SIGNAL(clicked()),this,SLOT(scheduler_taskSelection()));
     QObject::connect(ui->timeEdit_scheduler_duration,SIGNAL(timeChanged(QTime)),this,SLOT(scheduler_checkTime(QTime)));
     QObject::connect(ui->dateTimeEdit_scheduler_datetime,SIGNAL(dateTimeChanged(QDateTime)),this,SLOT(scheduler_checkDeadline(QDateTime)));
+    QObject::connect(ui->tableWidget_scheduler_view,SIGNAL(cellClicked(int,int)),this,SLOT(scheduler_setDate(int,int)));
 }
 
 MainWindow::~MainWindow()
@@ -590,6 +591,22 @@ void MainWindow::scheduler_checkDeadline(QDateTime t)
     {
         ui->dateTimeEdit_scheduler_datetime->setDateTime(scheduleTask->getDeadline());
     }
+    else if(scheduleTask!=NULL && scheduleTask->getDisponibility()>t)
+    {
+        ui->dateTimeEdit_scheduler_datetime->setDateTime(scheduleTask->getDisponibility());
+    }
+}
+
+void MainWindow::scheduler_setDate(int row,int column)
+{
+    QTime time=QTime::fromString("08:00:00");
+    time=time.addSecs(1800*row);
+    ui->dateTimeEdit_scheduler_datetime->setTime(time);
+
+    QDate date=QDate::currentDate();
+    int day=date.dayOfWeek()-1;
+    date=date.addDays(column-day);
+    ui->dateTimeEdit_scheduler_datetime->setDate(date);
 }
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_ METHODS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-

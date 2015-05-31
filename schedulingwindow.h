@@ -30,9 +30,6 @@ private:
     Projet *selectedProject;
     Tache *selectedTask;
 
-    virtual void closeEvent(QCloseEvent *event);
-
-
 private slots:
     void scheduler_selectionProjet();
     void sendSelection();
