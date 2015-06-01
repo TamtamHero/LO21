@@ -93,6 +93,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->pushButton_scheduler_validateActivity,SIGNAL(clicked()),this,SLOT(scheduler_saveActivity()));
     QObject::connect(ui->pushButton_scheduler_previous,SIGNAL(clicked()),this,SLOT(scheduler_previousWeek()));
     QObject::connect(ui->pushButton_scheduler_next,SIGNAL(clicked()),this,SLOT(scheduler_nextWeek()));
+
 }
 
 MainWindow::~MainWindow()
@@ -629,6 +630,17 @@ void MainWindow::scheduler_saveTask()
         else
         {
             Programmation *new_prog=new Programmation(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),scheduleTask);
+            QDateTime firstLimit,secondLimit;
+            firstLimit=new_prog->getDateTime().addSecs(QTime(0, 0, 0).secsTo(new_prog->getDuration()));
+
+            for(list<Programmation *>::iterator it=scheduleManager.getList().begin();it!=scheduleManager.getList().end();++it)
+            {
+                secondLimit=(*it)->getDateTime().addSecs(QTime(0, 0, 0).secsTo((*it)->getDuration()));
+                if((*it)->getDateTime()<firstLimit && secondLimit>new_prog->getDateTime())
+                {
+                    throw CalendarException("Une tache est déjà programmée sur cet intervalle");
+                }
+            }
             scheduleManager.addElement(new_prog);
             updateScheduler();
         }
@@ -650,16 +662,17 @@ void MainWindow::scheduler_saveActivity()
         else
         {
             Programmation *new_prog=new Programmation(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),ui->lineEdit_scheduler_title->text());
-            if(scheduleManager.findElement(new_prog)!=NULL)
+            QDateTime firstLimit,secondLimit;
+            firstLimit=new_prog->getDateTime().addSecs(QTime(0, 0, 0).secsTo(new_prog->getDuration()));
+
+            for(list<Programmation *>::iterator it=scheduleManager.getList().begin();it!=scheduleManager.getList().end();++it)
             {
-                validationWindow confirm(this,"Il existe déjà une programmation à cette date, voulez-vous l'écraser?");
-                confirm.exec();
-                if(!confirm.getValidation())
+                secondLimit=(*it)->getDateTime().addSecs(QTime(0, 0, 0).secsTo((*it)->getDuration()));
+                if((*it)->getDateTime()<firstLimit && secondLimit>new_prog->getDateTime())
                 {
-                    return;
+                    throw CalendarException("Une tache est déjà programmée sur cet intervalle");
                 }
             }
-            scheduleManager.removeElement(scheduleManager.findElement(new_prog));
             scheduleManager.addElement(new_prog);
             updateScheduler();
         }
@@ -682,6 +695,29 @@ void MainWindow::scheduler_nextWeek()
     weekDisplayed=weekDisplayed.addDays(7);
     ui->label_scheduler_week->setText("Semaine du "+weekDisplayed.toString("dd/MM"));
     updateScheduler();
+}
+
+void MainWindow::deleteScheduling()
+{
+    cout << "lol";
+    if(!ui->tableWidget_scheduler_view->selectedItems().empty())
+    {
+        validationWindow confirm(this,"Êtes-vous sûr de vouloir enlever les programmations sélectionnées?");
+        confirm.exec();
+        if(!confirm.getValidation())
+        {
+            return;
+        }
+        foreach (QTableWidgetItem *item, ui->tableWidget_scheduler_view->selectedItems())
+        {
+            scheduleManager.removeElement(item->data(Qt::UserRole+2).value<Programmation*>());
+        }
+        updateScheduler();
+    }
+    else
+    {
+        return;
+    }
 }
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_ METHODS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
@@ -742,6 +778,20 @@ void MainWindow::updateScheduler()
             ui->tableWidget_scheduler_view->setItem(row,column,item);
         }
     }
+}
+
+bool MainWindow::event(QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        if (keyEvent->key() == 16777219 ) //Why the hell can't I use Qt::Key_Delete instead ? it's worth 16777223...
+        {
+            deleteScheduling();
+            return true;
+        }
+    }
+    return QWidget::event(event);
 }
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_ FUNCTIONS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-

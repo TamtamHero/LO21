@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QBrush>
 #include <QDate>
+#include <QKeyEvent>
 #include <cmath>
 
 #include "projet.h"
@@ -51,6 +52,7 @@ private:
     TacheUnitaire * scheduleTask;
     QDateTime weekDisplayed;
 
+    bool event(QEvent *event);
     void updateTreeView(QStandardItemModel *model, QTreeView *view);
     void updateScheduler();
 
@@ -79,6 +81,7 @@ private slots:
     void scheduler_saveActivity();
     void scheduler_previousWeek();
     void scheduler_nextWeek();
+    void deleteScheduling();
 
 };
 
