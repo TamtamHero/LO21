@@ -40,3 +40,12 @@ bool Programmation::operator<(const Programmation &b) const
     }
     return false;
 }
+
+bool Programmation::operator==(const Programmation &b) const
+{
+    if(this->getDateTime()==b.getDateTime())
+    {
+        return true;
+    }
+    return false;
+}

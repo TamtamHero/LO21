@@ -22,6 +22,7 @@ public:
     QString getTitle(){return m_titre;}
     QTime getDuration(){return m_duree;}
     bool operator < (const Programmation& b) const;
+    bool operator == (const Programmation& b) const;
 
 };
 

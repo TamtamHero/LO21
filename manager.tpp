@@ -44,9 +44,28 @@ void Manager<Type>::addElement(Type * element)
 }
 
 template<typename Type>
+void Manager<Type>::removeElement(Type * element)
+{
+    m_liste.erase(std::remove(m_liste.begin(),m_liste.end(),element),m_liste.end());
+}
+
+template<typename Type>
+Type* Manager<Type>::findElement(Type *element)
+{
+    comparator a;
+    a.toFind=element;
+    typename list<Type*>::iterator it=std::find_if(m_liste.begin(),m_liste.end(),a);
+    if(it!=m_liste.end())
+    {
+        return (*it);
+    }
+    return NULL;
+}
+
+template<typename Type>
 void Manager<Type>::sort()
 {
-    m_liste.sort(taskCompare());
+    m_liste.sort(typeIsInferior());
 }
 
 template<typename Type>

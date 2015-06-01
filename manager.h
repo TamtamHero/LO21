@@ -37,15 +37,26 @@ public:
     static void freeInstance();
     list<Type *>& getList(){return m_liste;}
     void addElement(Type * element);
+    void removeElement(Type * element);
+    Type* findElement(Type *element);
     void Afficher(QStandardItemModel * model);
     void sort();
 
-    struct taskCompare
+    struct typeIsInferior
     {
           template<typename T>
           bool operator()(const T* l, const T* r)
           {
             return *l < *r;
+          }
+    };
+
+    struct comparator
+    {
+          Type *toFind;
+          bool operator()(Type const* item)
+          {
+            return *toFind == *item;
           }
     };
 

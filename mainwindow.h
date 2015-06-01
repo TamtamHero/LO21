@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QBrush>
 #include <QDate>
+#include <cmath>
 
 #include "projet.h"
 #include "manager.h"
@@ -46,6 +47,7 @@ private:
     Manager<Programmation> &scheduleManager;
     Projet * currentProject;
     Tache * currentTask;
+    Programmation * currentScheduling;
     TacheUnitaire * scheduleTask;
     QDateTime weekDisplayed;
 

@@ -336,8 +336,7 @@ void MainWindow::deleteSelection()
         result.exec();
         if(result.getValidation())
         {
-            list<Projet*>& projectList=projectManager.getList();
-            projectList.erase(std::remove(projectList.begin(),projectList.end(),currentProject),projectList.end());
+            projectManager.removeElement(currentProject);
             delete currentProject;
             currentProject=NULL;
             treeModel->removeRow(indexElementSelectionne.row(),indexElementSelectionne.parent());
@@ -651,6 +650,16 @@ void MainWindow::scheduler_saveActivity()
         else
         {
             Programmation *new_prog=new Programmation(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),ui->lineEdit_scheduler_title->text());
+            if(scheduleManager.findElement(new_prog)!=NULL)
+            {
+                validationWindow confirm(this,"Il existe déjà une programmation à cette date, voulez-vous l'écraser?");
+                confirm.exec();
+                if(!confirm.getValidation())
+                {
+                    return;
+                }
+            }
+            scheduleManager.removeElement(scheduleManager.findElement(new_prog));
             scheduleManager.addElement(new_prog);
             updateScheduler();
         }
@@ -727,8 +736,9 @@ void MainWindow::updateScheduler()
             column=(*it)->getDateTime().date().dayOfWeek()-1;
 
             item=new QTableWidgetItem((*it)->getTitle());
+            item->setData(Qt::UserRole+2,QVariant::fromValue((*it)));
             item->setBackgroundColor(Qt::gray);
-            ui->tableWidget_scheduler_view->setSpan(row,column,1+QTime(0, 0, 0).secsTo((*it)->getDuration())/1800,1);
+            ui->tableWidget_scheduler_view->setSpan(row,column,ceil(QTime(0, 0, 0).secsTo((*it)->getDuration())/1800.0),1);
             ui->tableWidget_scheduler_view->setItem(row,column,item);
         }
     }

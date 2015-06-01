@@ -131,3 +131,8 @@ bool Projet::operator<(const Projet &b) const
     }
     return false;
 }
+
+bool Projet::operator==(const Projet &b) const
+{
+    return false;
+}

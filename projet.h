@@ -41,6 +41,8 @@ public:
     void setDeadline(QDateTime deadline){m_echeance=deadline;}
 
     bool operator < (const Projet& b) const;
+    bool operator == (const Projet& b) const;
+
 
 };
 
