@@ -596,7 +596,7 @@ void MainWindow::scheduler_checkDeadline(QDateTime t)
 {
     if(scheduleTask!=NULL && scheduleTask->getDeadline()<t)
     {
-        ui->dateTimeEdit_scheduler_datetime->setDateTime(scheduleTask->getDeadline());
+        ui->dateTimeEdit_scheduler_datetime->setDateTime(scheduleTask->getDeadline().addSecs(-QTime(0, 0, 0).secsTo(scheduleTask->getDuree())));
     }
     else if(scheduleTask!=NULL && scheduleTask->getDisponibility()>t)
     {
@@ -629,6 +629,10 @@ void MainWindow::scheduler_saveTask()
         }
         else
         {
+            if(!scheduleTask->getPreemptability() && ui->timeEdit_scheduler_duration->time()!=scheduleTask->getDuree())
+            {
+                throw CalendarException("La tache n'est pas préemptable, vous devez la programmer entièrement");
+            }
             Programmation *new_prog=new Programmation(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),scheduleTask);
             QDateTime firstLimit,secondLimit;
             firstLimit=new_prog->getDateTime().addSecs(QTime(0, 0, 0).secsTo(new_prog->getDuration()));
@@ -642,6 +646,7 @@ void MainWindow::scheduler_saveTask()
                 }
             }
             scheduleManager.addElement(new_prog);
+            scheduleTask->setDuree(scheduleTask->getDuree().addSecs(-QTime(0, 0, 0).secsTo(new_prog->getDuration())));
             updateScheduler();
         }
     }
@@ -708,9 +713,12 @@ void MainWindow::deleteScheduling()
         {
             return;
         }
+        Programmation * ptr;
         foreach (QTableWidgetItem *item, ui->tableWidget_scheduler_view->selectedItems())
         {
-            scheduleManager.removeElement(item->data(Qt::UserRole+2).value<Programmation*>());
+            ptr=item->data(Qt::UserRole+2).value<Programmation*>();
+            ptr->getTask()->setDuree(ptr->getTask()->getDuree().addSecs(QTime(0, 0, 0).secsTo(ptr->getDuration())));
+            scheduleManager.removeElement(ptr);
         }
         updateScheduler();
     }
