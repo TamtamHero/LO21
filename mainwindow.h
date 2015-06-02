@@ -77,8 +77,7 @@ private slots:
     void scheduler_checkTime(QTime t);
     void scheduler_checkDeadline(QDateTime t);
     void scheduler_setDate(int row,int column);
-    void scheduler_saveTask();
-    void scheduler_saveActivity();
+    void scheduler_save();
     void scheduler_previousWeek();
     void scheduler_nextWeek();
     void deleteScheduling();

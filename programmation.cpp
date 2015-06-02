@@ -1,7 +1,7 @@
 #include "programmation.h"
 
 Programmation::Programmation(QDateTime date,QTime duree,QString titre):
-    m_date(date),m_duree(duree),m_titre(titre)
+    m_date(date),m_duree(duree),m_titre(titre),m_tache(NULL)
 {
     if(date < QDateTime::currentDateTime())
     {

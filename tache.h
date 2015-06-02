@@ -20,7 +20,7 @@ protected:
     QString m_titre;
     QDateTime m_disponibilite;
     QDateTime m_echeance;
-    int m_status;
+    bool m_status;
     Tache* m_parent;
     vector<Tache*> m_prerequisite;
     Tache(QString titre,QDateTime disponibilite,QDateTime echeance);
@@ -38,8 +38,11 @@ public:
     QDateTime getDeadline() const{return m_echeance;}
     void setDeadline(QDateTime deadline){m_echeance=deadline;}
     vector<Tache*>& getPrerequisite(){return m_prerequisite;}
+    void setStatus(bool status){m_status=status;}
+    bool getStatus(){return m_status;}
     void addPrerequisite(Tache * prerequisite);
     virtual void afficher(QStandardItem * parent)=0;
+    bool arePrerequisiteDone();
 
     static bool checkPrerequisite(Tache* task,Tache * prerequisiteTask);
     static bool checkAttachedTo(Tache* task,Tache * motherTask);

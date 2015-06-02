@@ -35,11 +35,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QDateTime temps7=QDateTime::currentDateTime().addDays(5);
     QDateTime temps8=QDateTime::currentDateTime().addDays(7);
     TacheUnitaire *t=new TacheUnitaire("tache 1",t1,t2,QTime::fromString("11:00:00"),true);
-    TacheUnitaire *t5=new TacheUnitaire("tache 5",t3,t4,QTime::fromString("5:00:00"),false);
-    TacheUnitaire *t7=new TacheUnitaire("tache 7",temps5,temps6,QTime::fromString("5:00:00"),false);
-    TacheUnitaire *t9=new TacheUnitaire("tache 9",temps7,temps8,QTime::fromString("5:00:00"),false);
+    TacheUnitaire *t5=new TacheUnitaire("tache 5",t3,t4,QTime::fromString("05:00:00"),false);
+    TacheUnitaire *t7=new TacheUnitaire("tache 7",temps5,temps6,QTime::fromString("05:00:00"),false);
+    TacheUnitaire *t9=new TacheUnitaire("tache 9",temps7,temps8,QTime::fromString("06:00:00"),false);
     TacheUnitaire *t66=new TacheUnitaire("tache 66",t1,t2,QTime::fromString("11:00:00"),true);
-    TacheUnitaire *t77=new TacheUnitaire("tache 77",t3,t4,QTime::fromString("5:00:00"),false);
+    TacheUnitaire *t77=new TacheUnitaire("tache 77",t3,t4,QTime::fromString("05:00:00"),false);
 
     TacheComposite *tc=new TacheComposite("tache compo",t3,t4);
     TacheComposite *tc2=new TacheComposite("tache compo 2",t1,t2);
@@ -89,8 +89,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->timeEdit_scheduler_duration,SIGNAL(timeChanged(QTime)),this,SLOT(scheduler_checkTime(QTime)));
     QObject::connect(ui->dateTimeEdit_scheduler_datetime,SIGNAL(dateTimeChanged(QDateTime)),this,SLOT(scheduler_checkDeadline(QDateTime)));
     QObject::connect(ui->tableWidget_scheduler_view,SIGNAL(cellClicked(int,int)),this,SLOT(scheduler_setDate(int,int)));
-    QObject::connect(ui->pushButton_scheduler_validateTask,SIGNAL(clicked()),this,SLOT(scheduler_saveTask()));
-    QObject::connect(ui->pushButton_scheduler_validateActivity,SIGNAL(clicked()),this,SLOT(scheduler_saveActivity()));
+    QObject::connect(ui->pushButton_scheduler_validateTask,SIGNAL(clicked()),this,SLOT(scheduler_save()));
+    QObject::connect(ui->pushButton_scheduler_validateActivity,SIGNAL(clicked()),this,SLOT(scheduler_save()));
     QObject::connect(ui->pushButton_scheduler_previous,SIGNAL(clicked()),this,SLOT(scheduler_previousWeek()));
     QObject::connect(ui->pushButton_scheduler_next,SIGNAL(clicked()),this,SLOT(scheduler_nextWeek()));
 
@@ -615,58 +615,37 @@ void MainWindow::scheduler_setDate(int row,int column)
     ui->dateTimeEdit_scheduler_datetime->setDate(date.date());
 }
 
-void MainWindow::scheduler_saveTask()
+void MainWindow::scheduler_save()
 {
     try
     {
+        bool isTask=static_cast<QPushButton*>(QObject::sender())==ui->pushButton_scheduler_validateTask;
         if(ui->timeEdit_scheduler_duration->time()<QTime::fromString("00:30:00"))
         {
             throw CalendarException("Vous ne pouvez pas créer une programmation de moins de 30 minutes");
         }
-        else if(scheduleTask==NULL)
+        else if(scheduleTask==NULL && isTask)
         {
             throw CalendarException("Veuillez d'abord sélectionner une tache");
         }
         else
         {
-            if(!scheduleTask->getPreemptability() && ui->timeEdit_scheduler_duration->time()!=scheduleTask->getDuree())
-            {
-                throw CalendarException("La tache n'est pas préemptable, vous devez la programmer entièrement");
-            }
-            Programmation *new_prog=new Programmation(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),scheduleTask);
-            QDateTime firstLimit,secondLimit;
-            firstLimit=new_prog->getDateTime().addSecs(QTime(0, 0, 0).secsTo(new_prog->getDuration()));
-
-            for(list<Programmation *>::iterator it=scheduleManager.getList().begin();it!=scheduleManager.getList().end();++it)
-            {
-                secondLimit=(*it)->getDateTime().addSecs(QTime(0, 0, 0).secsTo((*it)->getDuration()));
-                if((*it)->getDateTime()<firstLimit && secondLimit>new_prog->getDateTime())
-                {
-                    throw CalendarException("Une tache est déjà programmée sur cet intervalle");
-                }
-            }
-            scheduleManager.addElement(new_prog);
-            scheduleTask->setDuree(scheduleTask->getDuree().addSecs(-QTime(0, 0, 0).secsTo(new_prog->getDuration())));
-            updateScheduler();
-        }
-    }
-    catch(CalendarException error)
-    {
-        QMessageBox::warning(this, "Erreur", error.getInfo());
-    }
-}
-
-void MainWindow::scheduler_saveActivity()
-{
-    try
-    {
-        if(ui->timeEdit_scheduler_duration->time()<QTime::fromString("00:30:00"))
-        {
-            throw CalendarException("Vous ne pouvez pas créer une activité de moins de 30 minutes");
-        }
-        else
-        {
             Programmation *new_prog=new Programmation(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),ui->lineEdit_scheduler_title->text());
+
+            if(isTask)
+            {
+                if(!scheduleTask->arePrerequisiteDone())
+                {
+                    scheduleTask=NULL;
+                    throw CalendarException("Certains prérequis ne sont pas encore validés, impossible de programmer cette tache");
+                }
+                if(!scheduleTask->getPreemptability() && ui->timeEdit_scheduler_duration->time()!=scheduleTask->getDuree())
+                {
+                    throw CalendarException("La tache n'est pas préemptable, vous devez la programmer entièrement");
+                }
+                new_prog=new Programmation(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),scheduleTask);
+            }
+
             QDateTime firstLimit,secondLimit;
             firstLimit=new_prog->getDateTime().addSecs(QTime(0, 0, 0).secsTo(new_prog->getDuration()));
 
@@ -678,7 +657,20 @@ void MainWindow::scheduler_saveActivity()
                     throw CalendarException("Une tache est déjà programmée sur cet intervalle");
                 }
             }
+            if(new_prog->getDateTime().time().addSecs(QTime(0, 0, 0).secsTo(new_prog->getDuration()))<QTime::fromString("08:00:00"))
+            {
+                throw CalendarException("Vous ne pouvez pas programmer une tache après minuit");
+            }
             scheduleManager.addElement(new_prog);
+            if(isTask)
+            {
+                scheduleTask->setDuree(scheduleTask->getDuree().addSecs(-QTime(0, 0, 0).secsTo(new_prog->getDuration())));
+                if(scheduleTask->getDuree()==QTime::fromString("00:00:00"))
+                {
+                    scheduleTask->setStatus(true);
+                }
+            }
+            scheduleTask=NULL;
             updateScheduler();
         }
     }
@@ -704,7 +696,6 @@ void MainWindow::scheduler_nextWeek()
 
 void MainWindow::deleteScheduling()
 {
-    cout << "lol";
     if(!ui->tableWidget_scheduler_view->selectedItems().empty())
     {
         validationWindow confirm(this,"Êtes-vous sûr de vouloir enlever les programmations sélectionnées?");
@@ -717,7 +708,10 @@ void MainWindow::deleteScheduling()
         foreach (QTableWidgetItem *item, ui->tableWidget_scheduler_view->selectedItems())
         {
             ptr=item->data(Qt::UserRole+2).value<Programmation*>();
-            ptr->getTask()->setDuree(ptr->getTask()->getDuree().addSecs(QTime(0, 0, 0).secsTo(ptr->getDuration())));
+            if(ptr->getTask()!=NULL) //restore duration of task if unscheduled
+            {
+                ptr->getTask()->setDuree(ptr->getTask()->getDuree().addSecs(QTime(0, 0, 0).secsTo(ptr->getDuration())));
+            }
             scheduleManager.removeElement(ptr);
         }
         updateScheduler();

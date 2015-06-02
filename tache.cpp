@@ -2,7 +2,7 @@
 #include <iostream>
 
 Tache::Tache(QString titre,QDateTime disponibilite,QDateTime echeance):
-    m_titre(titre), m_disponibilite(disponibilite), m_echeance(echeance), m_status(0), m_parent(NULL)
+    m_titre(titre), m_disponibilite(disponibilite), m_echeance(echeance), m_status(false), m_parent(NULL)
 {
     if(echeance < QDateTime::currentDateTime())
     {
@@ -27,6 +27,22 @@ void Tache::addPrerequisite(Tache *prerequisite)
     checkPrerequisite(this,prerequisite);
     m_prerequisite.push_back(prerequisite);
     std::sort(m_prerequisite.begin(),m_prerequisite.end(),taskCompare());
+}
+
+bool Tache::arePrerequisiteDone()
+{
+    for(vector<Tache *>::iterator it=this->m_prerequisite.begin();it!=this->m_prerequisite.end();++it)
+    {
+        if((*it)->getStatus()!=true)
+        {
+            return false;
+        }
+        if((*it)->arePrerequisiteDone()==false)
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 //_-_-_-_-_-_-_-_-_-STATIC_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
