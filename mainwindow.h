@@ -12,6 +12,8 @@
 
 #include "projet.h"
 #include "manager.h"
+#include "projectmanager.h"
+#include "schedulingmanager.h"
 #include "programmation.h"
 #include "taskselectionwindow.h"
 #include "validationwindow.h"
@@ -44,8 +46,8 @@ private:
     QStandardItemModel *listModel_creation_prerequisite;
     QStandardItemModel *listModel_creation_attachedTo;
     QMessageBox::StandardButton reply;
-    Manager<Projet> &projectManager;
-    Manager<Programmation> &scheduleManager;
+    ProjectManager &projectManager;
+    SchedulingManager &scheduleManager;
     Projet * currentProject;
     Tache * currentTask;
     Programmation * currentScheduling;

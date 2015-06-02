@@ -6,7 +6,6 @@
 #include <QTreeView>
 #include <QPushButton>
 #include "projet.h"
-#include "manager.h"
 #include "mainwindow.h"
 #include <QVBoxLayout>
 #include <QMessageBox>
@@ -16,7 +15,7 @@ class SchedulingWindow : public QDialog
     Q_OBJECT
 
 public:
-    SchedulingWindow(QWidget *parent, Manager<Projet>& manager);
+    SchedulingWindow(QWidget *parent, ProjectManager &manager);
     ~SchedulingWindow();
 
     Tache * getSelectedTask(){return selectedTask;}
@@ -26,7 +25,7 @@ private:
     QTreeView *treeView;
     QPushButton *pushButton_TaskSelection_selection;
     QPushButton *pushButton_TaskSelection_projectSelection;
-    Manager<Projet>& projectManager;
+    ProjectManager& projectManager;
     Projet *selectedProject;
     Tache *selectedTask;
 

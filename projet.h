@@ -46,6 +46,5 @@ public:
 
 };
 
-// A faire: ProjetManager
 
 #endif // PROJET_H

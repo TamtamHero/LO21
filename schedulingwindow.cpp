@@ -1,6 +1,6 @@
 #include "schedulingwindow.h"
 
-SchedulingWindow::SchedulingWindow(QWidget *parent, Manager<Projet> &manager):
+SchedulingWindow::SchedulingWindow(QWidget *parent, ProjectManager &manager):
     QDialog(parent),
     Model(new QStandardItemModel()),
     treeView(new QTreeView(this)),

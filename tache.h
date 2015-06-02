@@ -20,7 +20,7 @@ protected:
     QString m_titre;
     QDateTime m_disponibilite;
     QDateTime m_echeance;
-    bool m_status;
+    bool m_status; // false if not done, true if done
     Tache* m_parent;
     vector<Tache*> m_prerequisite;
     Tache(QString titre,QDateTime disponibilite,QDateTime echeance);

@@ -6,10 +6,11 @@ SOURCES += \
     mainwindow.cpp \
     tacheunitaire.cpp \
     tachecomposite.cpp \
-    manager.tpp \
     taskselectionwindow.cpp \
     validationwindow.cpp \
-    schedulingwindow.cpp
+    schedulingwindow.cpp \
+    projectmanager.cpp \
+    schedulingmanager.cpp
 
 HEADERS += \
     tache.h \
@@ -19,10 +20,11 @@ HEADERS += \
     calendarexception.h \
     tacheunitaire.h \
     tachecomposite.h \
-    manager.h \
     taskselectionwindow.h \
     validationwindow.h \
-    schedulingwindow.h
+    schedulingwindow.h \
+    projectmanager.h \
+    schedulingmanager.h
 
 FORMS += \
     mainwindow.ui

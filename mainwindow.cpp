@@ -15,8 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
     listModel_creation_prerequisite(new QStandardItemModel),
     listModel_creation_attachedTo(new QStandardItemModel),
     reply(QMessageBox::No),
-    projectManager(Manager<Projet>::getInstance()),
-    scheduleManager(Manager<Programmation>::getInstance()),
+    projectManager(ProjectManager::getInstance()),
+    scheduleManager(SchedulingManager::getInstance()),
     currentProject(NULL),
     currentTask(NULL),
     scheduleTask(NULL),
@@ -101,7 +101,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//_-_-_-_-_-_-_-_-_-_-_ SIGNALS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+//_-_-_-_-_-_-_-_-_-_-_ SLOTS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
 
 void MainWindow::editing_selectionProjet()
@@ -637,7 +637,7 @@ void MainWindow::scheduler_save()
                 if(!scheduleTask->arePrerequisiteDone())
                 {
                     scheduleTask=NULL;
-                    throw CalendarException("Certains prérequis ne sont pas encore validés, impossible de programmer cette tache");
+                    throw CalendarException("Certains prérequis ne sont pas encore terminés, impossible de programmer cette tache");
                 }
                 if(!scheduleTask->getPreemptability() && ui->timeEdit_scheduler_duration->time()!=scheduleTask->getDuree())
                 {
