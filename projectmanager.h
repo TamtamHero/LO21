@@ -6,9 +6,10 @@
 
 #include <QStandardItemModel>
 #include <QVariant>
+#include "abstractmanager.h"
 #include "projet.h"
 
-class ProjectManager
+class ProjectManager : public AbstractManager<Projet>
 {
 private:
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_Single instance handling-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
@@ -25,24 +26,11 @@ private:
     static Handler m_handler;
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 
-    list<Projet *> m_liste;
 public:
 
     static ProjectManager& getInstance();
     static void freeInstance();
-    list<Projet *>& getList(){return m_liste;}
-    void addElement(Projet * element);
-    void removeElement(Projet * element);
     void Afficher(QStandardItemModel * model);
-    void sort();
-
-    struct ProjectIsSooner
-    {
-          bool operator()(const Projet* l, const Projet* r)
-          {
-            return *l < *r;
-          }
-    };
 
 };
 

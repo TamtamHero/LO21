@@ -6,11 +6,11 @@
 
 #include <QStandardItemModel>
 #include <QVariant>
-#include "projet.h"
+#include "abstractmanager.h"
 #include "programmation.h"
 
 
-class SchedulingManager
+class SchedulingManager : public AbstractManager<Programmation>
 {
 private:
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_Single instance handling-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
@@ -27,24 +27,11 @@ private:
     static Handler m_handler;
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 
-    list<Programmation *> m_liste;
 public:
 
     static SchedulingManager &getInstance();
     static void freeInstance();
-    list<Programmation *>& getList(){return m_liste;}
-    void addElement(Programmation * element);
-    void removeElement(Programmation * element);
     Programmation* findElement(Programmation *element);
-    void sort();
-
-    struct ProgrammationIsInferior
-    {
-          bool operator()(const Programmation* l, const Programmation* r)
-          {
-            return *l < *r;
-          }
-    };
 
     struct comparator
     {

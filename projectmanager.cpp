@@ -31,21 +31,6 @@ void ProjectManager::freeInstance()
     }
 }
 
-void ProjectManager::addElement(Projet * element)
-{
-    m_liste.push_back(element);
-    sort();
-}
-
-void ProjectManager::removeElement(Projet * element)
-{
-    m_liste.erase(std::remove(m_liste.begin(),m_liste.end(),element),m_liste.end());
-}
-
-void ProjectManager::sort()
-{
-    m_liste.sort(ProjectIsSooner());
-}
 
 void ProjectManager::Afficher(QStandardItemModel * model)
 {

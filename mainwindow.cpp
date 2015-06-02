@@ -620,6 +620,7 @@ void MainWindow::scheduler_save()
     try
     {
         bool isTask=static_cast<QPushButton*>(QObject::sender())==ui->pushButton_scheduler_validateTask;
+
         if(ui->timeEdit_scheduler_duration->time()<QTime::fromString("00:30:00"))
         {
             throw CalendarException("Vous ne pouvez pas créer une programmation de moins de 30 minutes");

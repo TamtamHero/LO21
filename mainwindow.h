@@ -11,7 +11,6 @@
 #include <cmath>
 
 #include "projet.h"
-#include "manager.h"
 #include "projectmanager.h"
 #include "schedulingmanager.h"
 #include "programmation.h"

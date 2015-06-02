@@ -10,7 +10,8 @@ SOURCES += \
     validationwindow.cpp \
     schedulingwindow.cpp \
     projectmanager.cpp \
-    schedulingmanager.cpp
+    schedulingmanager.cpp \
+    abstractmanager.tpp
 
 HEADERS += \
     tache.h \
@@ -24,7 +25,8 @@ HEADERS += \
     validationwindow.h \
     schedulingwindow.h \
     projectmanager.h \
-    schedulingmanager.h
+    schedulingmanager.h \
+    abstractmanager.h
 
 FORMS += \
     mainwindow.ui

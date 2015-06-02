@@ -34,20 +34,6 @@ void SchedulingManager::freeInstance()
     }
 }
 
-
-void SchedulingManager::addElement(Programmation * element)
-{
-    m_liste.push_back(element);
-    sort();
-}
-
-
-void SchedulingManager::removeElement(Programmation * element)
-{
-    m_liste.erase(std::remove(m_liste.begin(),m_liste.end(),element),m_liste.end());
-}
-
-
 Programmation* SchedulingManager::findElement(Programmation *element)
 {
     comparator a;
@@ -58,10 +44,4 @@ Programmation* SchedulingManager::findElement(Programmation *element)
         return (*it);
     }
     return NULL;
-}
-
-
-void SchedulingManager::sort()
-{
-    m_liste.sort(ProgrammationIsInferior());
 }
