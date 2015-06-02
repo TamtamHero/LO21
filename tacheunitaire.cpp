@@ -22,3 +22,28 @@ void TacheUnitaire::afficher(QStandardItem * parent)
 {
 
 }
+
+list<Tache*> TacheUnitaire::getAllUniquePrerequisite()
+{
+    list<Tache*> result,part;
+    for(vector<Tache *>::iterator it=this->m_prerequisite.begin();it!=this->m_prerequisite.end();++it)
+    {
+        if(dynamic_cast<TacheUnitaire*>((*it))!=NULL)
+        {
+            result.push_back((*it));
+        }
+        else
+        {
+            part=dynamic_cast<TacheComposite*>((*it))->getAllUniqueSons();
+            result.merge(part);
+        }
+    }
+
+    if(getParent()!=NULL)
+    {
+        part=dynamic_cast<TacheComposite*>(getParent())->getAllUniquePrerequisite();
+        result.merge(part);
+    }
+
+    return result;
+}

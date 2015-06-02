@@ -19,7 +19,7 @@ public:
     ~Programmation();
 
     QDateTime getDateTime()const {return m_date;}
-    QString getTitle(){return m_titre;}
+    QString getTitle()const{return m_titre;}
     QTime getDuration(){return m_duree;}
     TacheUnitaire* getTask(){return m_tache;}
     bool operator < (const Programmation& b) const;

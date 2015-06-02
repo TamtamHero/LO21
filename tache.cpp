@@ -29,7 +29,7 @@ void Tache::addPrerequisite(Tache *prerequisite)
     std::sort(m_prerequisite.begin(),m_prerequisite.end(),taskCompare());
 }
 
-bool Tache::arePrerequisiteDone()
+bool Tache::arePrerequisiteScheduled()
 {
     for(vector<Tache *>::iterator it=this->m_prerequisite.begin();it!=this->m_prerequisite.end();++it)
     {
@@ -37,10 +37,14 @@ bool Tache::arePrerequisiteDone()
         {
             return false;
         }
-        if((*it)->arePrerequisiteDone()==false)
-        {
-            return false;
-        }
+    }
+    if(getParent()==NULL)
+    {
+        return true;
+    }
+    if(getParent()->arePrerequisiteScheduled()==false)
+    {
+        return false;
     }
     return true;
 }

@@ -42,7 +42,7 @@ public:
     bool getStatus(){return m_status;}
     void addPrerequisite(Tache * prerequisite);
     virtual void afficher(QStandardItem * parent)=0;
-    bool arePrerequisiteDone();
+    bool arePrerequisiteScheduled();
 
     static bool checkPrerequisite(Tache* task,Tache * prerequisiteTask);
     static bool checkAttachedTo(Tache* task,Tache * motherTask);

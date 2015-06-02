@@ -44,3 +44,45 @@ void TacheComposite::afficher(QStandardItem * parent)
 }
 
 
+list<Tache *> TacheComposite::getAllUniquePrerequisite()
+{
+    list<Tache*> result,part;
+    for(vector<Tache *>::iterator it=this->m_prerequisite.begin();it!=this->m_prerequisite.end();++it)
+    {
+        if(dynamic_cast<TacheUnitaire*>((*it))!=NULL)
+        {
+            result.push_back((*it));
+        }
+        else
+        {
+            part=dynamic_cast<TacheComposite*>((*it))->getAllUniqueSons();
+            result.merge(part);
+        }
+    }
+
+    if(getParent()!=NULL)
+    {
+        part=dynamic_cast<TacheComposite*>(getParent())->getAllUniquePrerequisite();
+        result.merge(part);
+    }
+
+    return result;
+}
+
+ list<Tache *> TacheComposite::getAllUniqueSons()
+ {
+     list<Tache*> result,part;
+     foreach(Tache* ptr,this->m_element)
+     {
+         if(dynamic_cast<TacheUnitaire*>(ptr)!=NULL)
+         {
+             result.push_back(ptr);
+         }
+         else
+         {
+             part=dynamic_cast<TacheComposite*>(ptr)->getAllUniqueSons();
+             result.merge(part);
+         }
+     }
+     return result;
+ }

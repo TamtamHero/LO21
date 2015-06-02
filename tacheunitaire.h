@@ -2,6 +2,7 @@
 #define TACHEUNITAIRE_H
 
 #include "tache.h"
+#include "tachecomposite.h"
 #include <QVariant>
 
 
@@ -19,6 +20,7 @@ public:
     void setDuree(QTime duree) {m_duree=duree;}
     void setPreemptability(bool choice){m_preemptable=choice;}
     void afficher(QStandardItem * parent);
+    list<Tache *> getAllUniquePrerequisite();
 
     virtual ~TacheUnitaire();
 };

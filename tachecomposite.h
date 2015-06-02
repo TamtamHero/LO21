@@ -2,6 +2,7 @@
 #define TACHECOMPOSITE_H
 
 #include "tache.h"
+#include "tacheunitaire.h"
 #include <QVariant>
 
 
@@ -16,6 +17,8 @@ public:
     void addElement(Tache * element);
     vector<Tache *>& getElement(){return m_element;}
     void afficher(QStandardItem * parent);
+    list<Tache*> getAllUniquePrerequisite();
+    list<Tache*> getAllUniqueSons();
     virtual ~TacheComposite();
 };
 

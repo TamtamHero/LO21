@@ -604,7 +604,7 @@ void MainWindow::scheduler_checkDeadline(QDateTime t)
     }
 }
 
-void MainWindow::scheduler_setDate(int row,int column)
+void MainWindow::scheduler_setDate(int row,int column) //Auto completion of DateTime when clicking on TableView boxes
 {
     QTime time=QTime::fromString("08:00:00");
     time=time.addSecs(1800*row);
@@ -621,59 +621,18 @@ void MainWindow::scheduler_save()
     {
         bool isTask=static_cast<QPushButton*>(QObject::sender())==ui->pushButton_scheduler_validateTask;
 
-        if(ui->timeEdit_scheduler_duration->time()<QTime::fromString("00:30:00"))
+        if(isTask)
         {
-            throw CalendarException("Vous ne pouvez pas créer une programmation de moins de 30 minutes");
-        }
-        else if(scheduleTask==NULL && isTask)
-        {
-            throw CalendarException("Veuillez d'abord sélectionner une tache");
+            scheduleManager.addElement(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),scheduleTask);
         }
         else
         {
-            Programmation *new_prog=new Programmation(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),ui->lineEdit_scheduler_title->text());
-
-            if(isTask)
-            {
-                if(!scheduleTask->arePrerequisiteDone())
-                {
-                    scheduleTask=NULL;
-                    throw CalendarException("Certains prérequis ne sont pas encore terminés, impossible de programmer cette tache");
-                }
-                if(!scheduleTask->getPreemptability() && ui->timeEdit_scheduler_duration->time()!=scheduleTask->getDuree())
-                {
-                    throw CalendarException("La tache n'est pas préemptable, vous devez la programmer entièrement");
-                }
-                new_prog=new Programmation(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),scheduleTask);
-            }
-
-            QDateTime firstLimit,secondLimit;
-            firstLimit=new_prog->getDateTime().addSecs(QTime(0, 0, 0).secsTo(new_prog->getDuration()));
-
-            for(list<Programmation *>::iterator it=scheduleManager.getList().begin();it!=scheduleManager.getList().end();++it)
-            {
-                secondLimit=(*it)->getDateTime().addSecs(QTime(0, 0, 0).secsTo((*it)->getDuration()));
-                if((*it)->getDateTime()<firstLimit && secondLimit>new_prog->getDateTime())
-                {
-                    throw CalendarException("Une tache est déjà programmée sur cet intervalle");
-                }
-            }
-            if(new_prog->getDateTime().time().addSecs(QTime(0, 0, 0).secsTo(new_prog->getDuration()))<QTime::fromString("08:00:00"))
-            {
-                throw CalendarException("Vous ne pouvez pas programmer une tache après minuit");
-            }
-            scheduleManager.addElement(new_prog);
-            if(isTask)
-            {
-                scheduleTask->setDuree(scheduleTask->getDuree().addSecs(-QTime(0, 0, 0).secsTo(new_prog->getDuration())));
-                if(scheduleTask->getDuree()==QTime::fromString("00:00:00"))
-                {
-                    scheduleTask->setStatus(true);
-                }
-            }
-            scheduleTask=NULL;
-            updateScheduler();
+            scheduleManager.addElement(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),ui->lineEdit_scheduler_title->text());
         }
+
+        scheduleTask=NULL;
+        updateScheduler();
+
     }
     catch(CalendarException error)
     {

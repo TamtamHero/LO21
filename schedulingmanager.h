@@ -31,16 +31,9 @@ public:
 
     static SchedulingManager &getInstance();
     static void freeInstance();
-    Programmation* findElement(Programmation *element);
-
-    struct comparator
-    {
-          Programmation *toFind;
-          bool operator()(Programmation const* item)
-          {
-            return *toFind == *item;
-          }
-    };
+    list<const Programmation *> findTaskSchedulings(TacheUnitaire *element);
+    void addElement(QDateTime date,QTime duree,QString titre);
+    void addElement(QDateTime date,QTime duree,TacheUnitaire *tache);
 
 };
 
