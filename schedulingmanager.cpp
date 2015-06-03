@@ -77,18 +77,18 @@ void SchedulingManager::addElement(QDateTime date,QTime duree,TacheUnitaire* tac
     }
     else
     {
-        list<Tache*> prerequisiteList=tache->getAllUniquePrerequisite();
+        list<Tache*> prerequisiteList=tache->getAllUniquePrerequisite(); // Get list of all the UniqueTask that are a prerequisite of the task
         if(!prerequisiteList.empty())
         {
             list<const Programmation*> prerequisiteSchedulings;
             foreach(Tache* ptr,prerequisiteList)
             {
 
-                prerequisiteSchedulings=findTaskSchedulings(dynamic_cast<TacheUnitaire*>(ptr));
+                prerequisiteSchedulings=findTaskSchedulings(dynamic_cast<TacheUnitaire*>(ptr)); //for each prerequisite, get a list of all its scheduling
 
                 if(!prerequisiteSchedulings.empty())
                 {
-                    foreach(const Programmation* prog_ptr,prerequisiteSchedulings)
+                    foreach(const Programmation* prog_ptr,prerequisiteSchedulings) // for each scheduling, check
                     {
                         if(prog_ptr->getDateTime()>date)
                         {
@@ -123,9 +123,17 @@ void SchedulingManager::addElement(QDateTime date,QTime duree,TacheUnitaire* tac
     Programmation *new_prog=new Programmation(date,duree,tache);
 
     tache->setDuree(tache->getDuree().addSecs(-QTime(0, 0, 0).secsTo(new_prog->getDuration())));
-    if(tache->getDuree()==QTime::fromString("00:00:00"))
+    if(tache->getDuree()==QTime::fromString("00:00:00"))     // Status management
     {
         tache->setStatus(true);
+        tache->getParent()->setStatus(true);
+        foreach(Tache* ptr,static_cast<TacheComposite*>(tache->getParent())->getElement()) // after completion of a task, check if parent task has to be set completed too
+        {
+            if(!ptr->getStatus())
+            {
+                tache->getParent()->setStatus(false); //only one task not complete, and the parent is set as not complete
+            }
+        }
     }
 
     AbstractManager::addElement(new_prog);
