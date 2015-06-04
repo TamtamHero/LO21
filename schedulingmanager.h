@@ -8,10 +8,10 @@
 #include <QVariant>
 #include <QMessageBox>
 #include "abstractmanager.h"
-#include "programmation.h"
+#include "scheduling.h"
 
 
-class SchedulingManager : public AbstractManager<Programmation>
+class SchedulingManager : public AbstractManager<Scheduling>
 {
 private:
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_Single instance handling-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
@@ -32,13 +32,13 @@ public:
 
     static SchedulingManager &getInstance();
     static void freeInstance();
-    list<const Programmation *> findTaskSchedulings(TacheUnitaire *element);
+    list<const Scheduling *> findTaskSchedulings(UniqueTask *element);
     void addElement(QDateTime date,QTime duree,QString titre);
-    void addElement(QDateTime date,QTime duree,TacheUnitaire *tache);
-    void removeElement(Programmation *element);
+    void addElement(QDateTime date,QTime duree,UniqueTask *task);
+    void removeElement(Scheduling *element);
 
 };
 
-Q_DECLARE_METATYPE(Programmation *)
+Q_DECLARE_METATYPE(Scheduling *)
 
 #endif // SCHEDULINGSchedulingManager_H

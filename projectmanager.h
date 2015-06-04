@@ -7,9 +7,9 @@
 #include <QStandardItemModel>
 #include <QVariant>
 #include "abstractmanager.h"
-#include "projet.h"
+#include "project.h"
 
-class ProjectManager : public AbstractManager<Projet>
+class ProjectManager : public AbstractManager<Project>
 {
 private:
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_Single instance handling-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
@@ -34,6 +34,6 @@ public:
 
 };
 
-Q_DECLARE_METATYPE(Projet *)
+Q_DECLARE_METATYPE(Project *)
 
 #endif // PROJECTMANAGER_H

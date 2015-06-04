@@ -10,10 +10,10 @@
 #include <QKeyEvent>
 #include <cmath>
 
-#include "projet.h"
+#include "project.h"
 #include "projectmanager.h"
 #include "schedulingmanager.h"
-#include "programmation.h"
+#include "scheduling.h"
 #include "taskselectionwindow.h"
 #include "validationwindow.h"
 #include "schedulingwindow.h"
@@ -31,9 +31,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void editorView(Tache * task);
-    void editorView(Projet * project);
-    Tache * getCurrentTask(){return currentTask;}
+    void editorView(Task * task);
+    void editorView(Project * project);
+    Task * getCurrentTask(){return currentTask;}
 
 private:
     Ui::MainWindow *ui;
@@ -47,10 +47,10 @@ private:
     QMessageBox::StandardButton reply;
     ProjectManager &projectManager;
     SchedulingManager &scheduleManager;
-    Projet * currentProject;
-    Tache * currentTask;
-    Programmation * currentScheduling;
-    TacheUnitaire * scheduleTask;
+    Project * currentProject;
+    Task * currentTask;
+    Scheduling * currentScheduling;
+    UniqueTask * scheduleTask;
     QDateTime weekDisplayed;
 
     bool event(QEvent *event);
@@ -59,10 +59,10 @@ private:
 
 
 private slots:
-    void editing_selectionProjet();
+    void editing_selectionProject();
     void deleteSelection();
-    void editing_clickArbre(const QModelIndex&);
-    void editing_doubleclickArbre(QModelIndex);
+    void editing_clickTree(const QModelIndex&);
+    void editing_doubleclickTree(QModelIndex);
     void editing_prerequisiteSelection();
     void editing_attachedToSelection();
     void creation_prerequisiteSelection();
@@ -85,6 +85,6 @@ private slots:
 
 };
 
-bool checkCoherence(Tache* parent, Tache *prerequisite);
+bool checkCoherence(Task* parent, Task *prerequisite);
 
 #endif // MAINWINDOW_H

@@ -5,7 +5,7 @@
 #include <QDialog>
 #include <QTreeView>
 #include <QPushButton>
-#include "projet.h"
+#include "project.h"
 #include "mainwindow.h"
 #include <QVBoxLayout>
 #include <QMessageBox>
@@ -18,7 +18,7 @@ public:
     SchedulingWindow(QWidget *parent, ProjectManager &manager);
     ~SchedulingWindow();
 
-    Tache * getSelectedTask(){return selectedTask;}
+    Task * getSelectedTask(){return selectedTask;}
 
 private:
     QStandardItemModel *Model;
@@ -26,14 +26,14 @@ private:
     QPushButton *pushButton_TaskSelection_selection;
     QPushButton *pushButton_TaskSelection_projectSelection;
     ProjectManager& projectManager;
-    Projet *selectedProject;
-    Tache *selectedTask;
+    Project *selectedProject;
+    Task *selectedTask;
 
 private slots:
-    void scheduler_selectionProjet();
+    void scheduler_selectionProject();
     void sendSelection();
-    void scheduler_clickArbre(const QModelIndex&);
-    void scheduler_doubleclickArbre(QModelIndex);
+    void scheduler_clickTree(const QModelIndex&);
+    void scheduler_doubleclickTree(QModelIndex);
 };
 
 #endif // SCHEDULINGWINDOW_H

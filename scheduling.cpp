@@ -1,7 +1,7 @@
-#include "programmation.h"
+#include "scheduling.h"
 
-Programmation::Programmation(QDateTime date,QTime duree,QString titre):
-    m_date(date),m_duree(duree),m_titre(titre),m_tache(NULL)
+Scheduling::Scheduling(QDateTime date,QTime duree,QString titre):
+    m_date(date),m_duree(duree),m_titre(titre),m_task(NULL)
 {
     if(date < QDateTime::currentDateTime())
     {
@@ -9,7 +9,7 @@ Programmation::Programmation(QDateTime date,QTime duree,QString titre):
     }
 }
 
-Programmation::Programmation(QDateTime date,QTime duree,TacheUnitaire *tache):
+Scheduling::Scheduling(QDateTime date,QTime duree,UniqueTask *task):
     m_date(date),m_duree(duree)
 {
     if(date < QDateTime::currentDateTime())
@@ -17,14 +17,14 @@ Programmation::Programmation(QDateTime date,QTime duree,TacheUnitaire *tache):
         throw CalendarException("La date de la programmation est déjà passée !");
     }
 
-    m_tache=tache;
-    m_titre=m_tache->getTitre();
+    m_task=task;
+    m_titre=m_task->getTitre();
 
-    // Il faudra voir si on réduit la durée de tache ici ou si on le fait ailleurs, dans l'agenda
+    // Il faudra voir si on réduit la durée de task ici ou si on le fait ailleurs, dans l'agenda
 }
 
 
-Programmation::~Programmation()
+Scheduling::~Scheduling()
 {
 
 }
@@ -32,7 +32,7 @@ Programmation::~Programmation()
 //_-_-_-_-_-_-_-_OPERATOR OVERLOADS-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
 
-bool Programmation::operator<(const Programmation &b) const
+bool Scheduling::operator<(const Scheduling &b) const
 {
     if(this->getDateTime()<=b.getDateTime())
     {

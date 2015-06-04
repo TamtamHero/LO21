@@ -36,7 +36,7 @@ void ProjectManager::Afficher(QStandardItemModel * model)
 {
     QStandardItem *item;
 
-    for(list<Projet *>::iterator it=this->m_liste.begin();it!=this->m_liste.end();++it)
+    for(list<Project *>::iterator it=this->m_liste.begin();it!=this->m_liste.end();++it)
     {
         item=new QStandardItem((*it)->getTitre());
         item->setData(QVariant::fromValue((*it)),Qt::UserRole+1);

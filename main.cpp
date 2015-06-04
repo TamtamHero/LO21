@@ -1,5 +1,5 @@
 #include <iostream>
-#include <tache.h>
+#include <task.h>
 #include <mainwindow.h>
 #include <QTextStream>
 #include <QApplication>
@@ -13,13 +13,13 @@ int main(int argc, char * argv[])
 /*
     QDateTime t1=QDateTime::currentDateTime();
     QDateTime t2=QDateTime::currentDateTime().addDays(1);
-    TacheUnitaire *t=new TacheUnitaire("tache 1",t1,t2,QTime::fromString("11:00:00"),true);
-    TacheUnitaire t5("tache 1",t1,t2,QTime::fromString("11:00:00"),true);
+    UniqueTask *t=new UniqueTask("task 1",t1,t2,QTime::fromString("11:00:00"),true);
+    UniqueTask t5("task 1",t1,t2,QTime::fromString("11:00:00"),true);
 
     QTextStream out(stdout);
 
 
-    TacheComposite *tc=new TacheComposite("tache compo",t1,t2);
+    BlendTask *tc=new BlendTask("task compo",t1,t2);
 
 
     tc->addElement(t);

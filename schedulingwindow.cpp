@@ -23,10 +23,10 @@ SchedulingWindow::SchedulingWindow(QWidget *parent, ProjectManager &manager):
 
 
 
-    QObject::connect(pushButton_TaskSelection_projectSelection, SIGNAL(clicked()), this, SLOT(scheduler_selectionProjet()));
+    QObject::connect(pushButton_TaskSelection_projectSelection, SIGNAL(clicked()), this, SLOT(scheduler_selectionProject()));
     QObject::connect(pushButton_TaskSelection_selection,SIGNAL(clicked()),this,SLOT(sendSelection()));
-    QObject::connect(treeView,SIGNAL(clicked(const QModelIndex&)),this,SLOT(scheduler_clickArbre(const QModelIndex&)));
-    QObject::connect(treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(scheduler_doubleclickArbre(QModelIndex)));
+    QObject::connect(treeView,SIGNAL(clicked(const QModelIndex&)),this,SLOT(scheduler_clickTree(const QModelIndex&)));
+    QObject::connect(treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(scheduler_doubleclickTree(QModelIndex)));
 }
 
 
@@ -35,7 +35,7 @@ SchedulingWindow::~SchedulingWindow()
 
 }
 
-void SchedulingWindow::scheduler_selectionProjet()
+void SchedulingWindow::scheduler_selectionProject()
 {
     selectedProject=NULL;
     Model->clear();
@@ -50,11 +50,11 @@ void SchedulingWindow::sendSelection()
     {
         if(selectedTask==NULL)
         {
-            throw CalendarException("Vous n'avez pas sélectionné de tache");
+            throw CalendarException("Vous n'avez pas sélectionné de task");
         }
-        else if(dynamic_cast<TacheUnitaire*>(selectedTask)==NULL)
+        else if(dynamic_cast<UniqueTask*>(selectedTask)==NULL)
         {
-            throw CalendarException("Vous ne pouvez pas programmer une tache composite");
+            throw CalendarException("Vous ne pouvez pas programmer une task composite");
         }
         this->close();
     }
@@ -65,27 +65,27 @@ void SchedulingWindow::sendSelection()
     }
 }
 
-void SchedulingWindow::scheduler_clickArbre(const QModelIndex&)
+void SchedulingWindow::scheduler_clickTree(const QModelIndex&)
 {
     QItemSelectionModel *selection = treeView->selectionModel();
     QModelIndex indexElementSelectionne = selection->currentIndex();
 
-    if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL) // Check if selected element is a Project
+    if(dynamic_cast<Project*>(indexElementSelectionne.data(Qt::UserRole+1).value<Project *>())!=NULL) // Check if selected element is a Project
     {
-        selectedProject=indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>();
+        selectedProject=indexElementSelectionne.data(Qt::UserRole+1).value<Project *>();
     }
-    else if(dynamic_cast<Tache*>(indexElementSelectionne.data(Qt::UserRole+2).value<Tache *>())!=NULL) // Else, Task* case
+    else if(dynamic_cast<Task*>(indexElementSelectionne.data(Qt::UserRole+2).value<Task *>())!=NULL) // Else, Task* case
     {
-        selectedTask=indexElementSelectionne.data(Qt::UserRole+2).value<Tache *>();
+        selectedTask=indexElementSelectionne.data(Qt::UserRole+2).value<Task *>();
     }
 }
 
-void SchedulingWindow::scheduler_doubleclickArbre(QModelIndex)
+void SchedulingWindow::scheduler_doubleclickTree(QModelIndex)
 {
     QItemSelectionModel *selection = treeView->selectionModel();
     QModelIndex indexElementSelectionne = selection->currentIndex();
 
-    if(dynamic_cast<Projet*>(indexElementSelectionne.data(Qt::UserRole+1).value<Projet *>())!=NULL) // Check if selected element is a Project
+    if(dynamic_cast<Project*>(indexElementSelectionne.data(Qt::UserRole+1).value<Project *>())!=NULL) // Check if selected element is a Project
     {
         Model->clear();
         selectedProject->afficher(Model);

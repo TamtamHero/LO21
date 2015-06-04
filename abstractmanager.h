@@ -6,8 +6,8 @@
 
 #include <QStandardItemModel>
 #include <QVariant>
-#include "projet.h"
-#include "programmation.h"
+#include "project.h"
+#include "scheduling.h"
 
 
 template<typename Type> class AbstractManager
