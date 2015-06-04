@@ -10,14 +10,14 @@ class UniqueTask: public Task
 {
 
 protected:
-    QTime m_duree;
+    QTime m_duration;
     bool m_preemptable;
 
 public:
-    UniqueTask(QString titre,QDateTime disponibility,QDateTime echeance,QTime duree,bool preemptable=false);
-    QTime getDuree() const {return m_duree;}
+    UniqueTask(QString title,QDateTime disponibility,QDateTime echeance,QTime duration,bool preemptable=false);
+    QTime getDuree() const {return m_duration;}
     bool getPreemptability(){return m_preemptable;}
-    void setDuree(QTime duree) {m_duree=duree;}
+    void setDuree(QTime duration) {m_duration=duration;}
     void setPreemptability(bool choice){m_preemptable=choice;}
     void afficher(QStandardItem * parent);
     list<Task *> getAllUniquePrerequisite();

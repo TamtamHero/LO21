@@ -475,7 +475,7 @@ void MainWindow::createElement()
         {
             if(ui->lineEdit_creation_title->text()=="")
             {
-                QMessageBox::warning(this,"Attention","Veuillez donner un titre au nouveau projet");
+                QMessageBox::warning(this,"Attention","Veuillez donner un title au nouveau projet");
                 return;
             }
             else if(ui->dateTimeEdit_creation_deadline->dateTime()<=QDateTime::currentDateTime())
@@ -493,7 +493,7 @@ void MainWindow::createElement()
         {
             if(ui->lineEdit_creation_title->text()=="")
             {
-                QMessageBox::warning(this,"Attention","Veuillez donner un titre à la nouvelle task");
+                QMessageBox::warning(this,"Attention","Veuillez donner un title à la nouvelle task");
                 return;
             }
             else if(ui->dateTimeEdit_creation_deadline->dateTime()<=QDateTime::currentDateTime())

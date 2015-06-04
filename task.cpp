@@ -1,8 +1,8 @@
 #include "task.h"
 #include <iostream>
 
-Task::Task(QString titre,QDateTime disponibility,QDateTime echeance):
-    m_titre(titre), m_disponibility(disponibility), m_echeance(echeance), m_status(false), m_parent(NULL)
+Task::Task(QString title,QDateTime disponibility,QDateTime echeance):
+    m_title(title), m_disponibility(disponibility), m_echeance(echeance), m_status(false), m_parent(NULL)
 {
     if(echeance < QDateTime::currentDateTime())
     {

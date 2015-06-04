@@ -1,7 +1,7 @@
 #include "blendtask.h"
 
-BlendTask::BlendTask(QString titre,QDateTime disponibility,QDateTime echeance):
-    Task(titre,disponibility,echeance)
+BlendTask::BlendTask(QString title,QDateTime disponibility,QDateTime echeance):
+    Task(title,disponibility,echeance)
 {
     // Useless pour l'instant, le constructeur de la classe mère Task fait tout le travail.
 }

@@ -33,8 +33,8 @@ public:
     static SchedulingManager &getInstance();
     static void freeInstance();
     list<const Scheduling *> findTaskSchedulings(UniqueTask *element);
-    void addElement(QDateTime date,QTime duree,QString titre);
-    void addElement(QDateTime date,QTime duree,UniqueTask *task);
+    void addElement(QDateTime date,QTime duration,QString title);
+    void addElement(QDateTime date,QTime duration,UniqueTask *task);
     void removeElement(Scheduling *element);
 
 };

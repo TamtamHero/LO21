@@ -49,15 +49,15 @@ list<const Scheduling *> SchedulingManager::findTaskSchedulings(UniqueTask *elem
 }
 
 
-void SchedulingManager::addElement(QDateTime date,QTime duree,QString titre) // Add an activity
+void SchedulingManager::addElement(QDateTime date,QTime duration,QString title) // Add an activity
 {
-    if(duree<QTime::fromString("00:30:00"))
+    if(duration<QTime::fromString("00:30:00"))
     {
         throw CalendarException("Vous ne pouvez pas créer une programmation de moins de 30 minutes");
     }
 
     QDateTime firstLimit,secondLimit;
-    firstLimit=date.addSecs(QTime(0, 0, 0).secsTo(duree));
+    firstLimit=date.addSecs(QTime(0, 0, 0).secsTo(duration));
 
     for(list<Scheduling *>::iterator it=getList().begin();it!=getList().end();++it)
     {
@@ -67,18 +67,18 @@ void SchedulingManager::addElement(QDateTime date,QTime duree,QString titre) // 
             throw CalendarException("Une task est déjà programmée sur cet intervalle");
         }
     }
-    if(date.time().addSecs(QTime(0, 0, 0).secsTo(duree))<QTime::fromString("08:00:00"))
+    if(date.time().addSecs(QTime(0, 0, 0).secsTo(duration))<QTime::fromString("08:00:00"))
     {
         throw CalendarException("Vous ne pouvez pas programmer une task après minuit");
     }
-    Scheduling *new_prog=new Scheduling(date,duree,titre);
+    Scheduling *new_prog=new Scheduling(date,duration,title);
     AbstractManager::addElement(new_prog);
 }
 
 
-void SchedulingManager::addElement(QDateTime date,QTime duree,UniqueTask* task) // Add a task
+void SchedulingManager::addElement(QDateTime date,QTime duration,UniqueTask* task) // Add a task
 {
-    if(duree<QTime::fromString("00:30:00"))
+    if(duration<QTime::fromString("00:30:00"))
     {
         throw CalendarException("Vous ne pouvez pas créer une programmation de moins de 30 minutes");
     }
@@ -115,13 +115,13 @@ void SchedulingManager::addElement(QDateTime date,QTime duree,UniqueTask* task) 
         }
     }
 
-    if(!task->getPreemptability() && duree!=task->getDuree())
+    if(!task->getPreemptability() && duration!=task->getDuree())
     {
         throw CalendarException("La task n'est pas préemptable, vous devez la programmer entièrement");
     }
 
     QDateTime firstLimit,secondLimit;
-    firstLimit=date.addSecs(QTime(0, 0, 0).secsTo(duree));
+    firstLimit=date.addSecs(QTime(0, 0, 0).secsTo(duration));
 
     for(list<Scheduling *>::iterator it=getList().begin();it!=getList().end();++it)
     {
@@ -131,11 +131,11 @@ void SchedulingManager::addElement(QDateTime date,QTime duree,UniqueTask* task) 
             throw CalendarException("Une task est déjà programmée sur cet intervalle");
         }
     }
-    if(date.time().addSecs(QTime(0, 0, 0).secsTo(duree))<QTime::fromString("08:00:00"))
+    if(date.time().addSecs(QTime(0, 0, 0).secsTo(duration))<QTime::fromString("08:00:00"))
     {
         throw CalendarException("Vous ne pouvez pas programmer une task après minuit");
     }
-    Scheduling *new_prog=new Scheduling(date,duree,task);
+    Scheduling *new_prog=new Scheduling(date,duration,task);
 
     task->setDuree(task->getDuree().addSecs(-QTime(0, 0, 0).secsTo(new_prog->getDuration())));
     if(task->getDuree()==QTime::fromString("00:00:00"))     // Status management

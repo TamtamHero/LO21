@@ -13,7 +13,7 @@
 class Project
 {
 protected:
-    QString m_titre;
+    QString m_title;
     QDateTime m_disponibility;
     QDateTime m_echeance;
     vector<Task *> m_decomposition;
@@ -26,15 +26,15 @@ protected:
     void cleanPrerequisite(Task * element);
 
 public:
-    Project(QString titre, QDateTime disponibility, QDateTime echeance);
+    Project(QString title, QDateTime disponibility, QDateTime echeance);
     ~Project();
 
     void addElement(Task * element);
     void removeElement(Task * element);
     void deleteElement(Task * element);
     void afficher(QStandardItemModel * treeModel);
-    QString getTitre(){return m_titre;}
-    void setTitle(QString title){m_titre=title;}
+    QString getTitre(){return m_title;}
+    void setTitle(QString title){m_title=title;}
     QDateTime getDisponibility(){return m_disponibility;}
     void setDisponibility(QDateTime disponibility){m_disponibility=disponibility;}
     QDateTime getDeadline()const {return m_echeance;}

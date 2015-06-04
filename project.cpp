@@ -2,8 +2,8 @@
 #include "mainwindow.h"
 
 
-Project::Project(QString titre, QDateTime disponibility, QDateTime echeance):
-    m_titre(titre),m_disponibility(disponibility),m_echeance(echeance)
+Project::Project(QString title, QDateTime disponibility, QDateTime echeance):
+    m_title(title),m_disponibility(disponibility),m_echeance(echeance)
 {
     if(echeance < QDateTime::currentDateTime())
     {
