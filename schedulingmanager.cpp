@@ -34,6 +34,21 @@ void SchedulingManager::freeInstance()
     }
 }
 
+
+list<const Programmation *> SchedulingManager::findTaskSchedulings(TacheUnitaire *element)
+{
+    list<const Programmation *> results;
+    for(list<Programmation*>::iterator it=m_liste.begin();it!=m_liste.end();++it)
+    {
+        if((*it)->getTask()==element)
+        {
+            results.push_back((*it));
+        }
+    }
+    return results;
+}
+
+
 void SchedulingManager::addElement(QDateTime date,QTime duree,QString titre) // Add an activity
 {
     if(duree<QTime::fromString("00:30:00"))
@@ -141,15 +156,41 @@ void SchedulingManager::addElement(QDateTime date,QTime duree,TacheUnitaire* tac
 }
 
 
-list<const Programmation *> SchedulingManager::findTaskSchedulings(TacheUnitaire *element)
+void SchedulingManager::removeElement(Programmation * element)
 {
-    list<const Programmation *> results;
-    for(list<Programmation*>::iterator it=m_liste.begin();it!=m_liste.end();++it)
+    try
     {
-        if((*it)->getTask()==element)
+        list<Programmation*>::iterator it2;
+        for(list<Programmation*>::iterator it=m_liste.begin();it!=m_liste.end();++it)
         {
-            results.push_back((*it));
+            if((*it)==element)
+            {
+                it2=it;
+                break;
+            }
         }
+        TacheUnitaire* ptr=element->getTask();
+        while(it2!=m_liste.end())
+        {
+            foreach(Tache* prerequisite,(*it2)->getTask()->getPrerequisite())
+            {
+                if(prerequisite==ptr)
+                {
+                    throw CalendarException("Vous ne pouvez pas supprimer cette programmation, la tache "+prerequisite->getTitre()+" la recquiert et est déjà programmée");
+                }
+            }
+            it2++;
+        }
+
+        if(element!=NULL) //restore duration of task if unscheduled, and remove status of parent task
+        {
+            ptr->setDuree(ptr->getDuree().addSecs(QTime(0, 0, 0).secsTo(element->getDuration())));
+            ptr->getParent()->setStatus(false);
+        }
+        m_liste.erase(std::remove(m_liste.begin(),m_liste.end(),element),m_liste.end());
     }
-    return results;
+    catch(CalendarException error)
+    {
+        QMessageBox::warning(NULL, "Erreur", error.getInfo());
+    }
 }

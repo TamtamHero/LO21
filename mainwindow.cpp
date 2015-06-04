@@ -665,13 +665,10 @@ void MainWindow::deleteScheduling()
             return;
         }
         Programmation * ptr;
+
         foreach (QTableWidgetItem *item, ui->tableWidget_scheduler_view->selectedItems())
         {
             ptr=item->data(Qt::UserRole+2).value<Programmation*>();
-            if(ptr->getTask()!=NULL) //restore duration of task if unscheduled
-            {
-                ptr->getTask()->setDuree(ptr->getTask()->getDuree().addSecs(QTime(0, 0, 0).secsTo(ptr->getDuration())));
-            }
             scheduleManager.removeElement(ptr);
         }
         updateScheduler();

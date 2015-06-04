@@ -6,6 +6,7 @@
 
 #include <QStandardItemModel>
 #include <QVariant>
+#include <QMessageBox>
 #include "abstractmanager.h"
 #include "programmation.h"
 
@@ -34,6 +35,7 @@ public:
     list<const Programmation *> findTaskSchedulings(TacheUnitaire *element);
     void addElement(QDateTime date,QTime duree,QString titre);
     void addElement(QDateTime date,QTime duree,TacheUnitaire *tache);
+    void removeElement(Programmation *element);
 
 };
 
