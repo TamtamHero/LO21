@@ -7,11 +7,11 @@
 #include <QStandardItemModel>
 #include <QVariant>
 #include <QMessageBox>
-#include "abstractmanager.h"
+#include "abstractcontainer.h"
 #include "scheduling.h"
 
 
-class SchedulingManager : public AbstractManager<Scheduling>
+class SchedulingManager : public AbstractContainer<Scheduling>
 {
 private:
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_Single instance handling-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
@@ -36,6 +36,7 @@ public:
     void addElement(QDateTime date,QTime duration,QString title);
     void addElement(QDateTime date,QTime duration,UniqueTask *task);
     void removeElement(Scheduling *element);
+
 
 };
 

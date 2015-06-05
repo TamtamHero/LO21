@@ -1,32 +1,35 @@
-#ifndef ABSTRACTAbstractManager_H
-#define ABSTRACTAbstractManager_H
+#ifndef ABSTRACTCONTAINER_H
+#define ABSTRACTCONTAINER_H
 
 #include <iostream>
 #include <vector>
 
 #include <QStandardItemModel>
 #include <QVariant>
+#include <QFile>
+#include <QXmlStreamWriter>
 #include "project.h"
 #include "scheduling.h"
 
 
-template<typename Type> class AbstractManager
+template<typename Type> class AbstractContainer
 {
 protected:
-    AbstractManager();
-    AbstractManager(const AbstractManager& copy);
-    AbstractManager& operator=(const AbstractManager& copy);
+    AbstractContainer();
+    AbstractContainer(const AbstractContainer& copy);
+    AbstractContainer& operator=(const AbstractContainer& copy);
 
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 
     list<Type *> m_liste;
 public:
-    virtual ~AbstractManager()=0;
+    virtual ~AbstractContainer()=0;
 
     list<Type *>& getList(){return m_liste;}
     void addElement(Type * element);
     void removeElement(Type * element);
     void sort();
+    void save(const QString& f);
 
     struct typeIsInferior
     {
@@ -39,5 +42,5 @@ public:
 
 };
 
-#include "AbstractManager.tpp"
-#endif // ABSTRACTAbstractManager_H
+#include "abstractcontainer.tpp"
+#endif // ABSTRACTCONTAINER_H

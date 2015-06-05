@@ -15,8 +15,8 @@ class Project
 protected:
     QString m_title;
     QDateTime m_disponibility;
-    QDateTime m_echeance;
-    vector<Task *> m_decomposition;
+    QDateTime m_deadline;
+    vector<Task *> m_list;
     vector<Task *> m_deadList; //Used to clean interconnection between Task when destructor is called.
 
     Project(const Project& source);
@@ -25,20 +25,24 @@ protected:
     void fillDeadList(Task * element);
     void cleanPrerequisite(Task * element);
 
+    friend class AbstractBuilder;
+
 public:
-    Project(QString title, QDateTime disponibility, QDateTime echeance);
+    Project(QString title, QDateTime disponibility, QDateTime deadline);
     ~Project();
 
     void addElement(Task * element);
     void removeElement(Task * element);
     void deleteElement(Task * element);
-    void afficher(QStandardItemModel * treeModel);
-    QString getTitre(){return m_title;}
+    void display(QStandardItemModel * treeModel);
+    QString getTitle(){return m_title;}
     void setTitle(QString title){m_title=title;}
     QDateTime getDisponibility(){return m_disponibility;}
     void setDisponibility(QDateTime disponibility){m_disponibility=disponibility;}
-    QDateTime getDeadline()const {return m_echeance;}
-    void setDeadline(QDateTime deadline){m_echeance=deadline;}
+    QDateTime getDeadline()const {return m_deadline;}
+    void setDeadline(QDateTime deadline){m_deadline=deadline;}
+    const vector<Task *>& getList(){return m_list;}
+
 
     bool operator < (const Project& b) const;
     bool operator == (const Project& b) const;

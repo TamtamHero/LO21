@@ -10,8 +10,8 @@ TaskSelectionWindow::TaskSelectionWindow(QWidget *parent,Project * project,selec
     selectedTask(NULL),
     m_type(type)
 {
-    project->afficher(treeModel);
-    treeModel->setHorizontalHeaderLabels(QStringList(project->getTitre()));
+    project->display(treeModel);
+    treeModel->setHorizontalHeaderLabels(QStringList(project->getTitle()));
     treeView->setModel(treeModel);
     treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     QVBoxLayout *vLayout=new QVBoxLayout;

@@ -1,14 +1,14 @@
 #include "task.h"
 #include <iostream>
 
-Task::Task(QString title,QDateTime disponibility,QDateTime echeance):
-    m_title(title), m_disponibility(disponibility), m_echeance(echeance), m_status(false), m_parent(NULL)
+Task::Task(QString title,QDateTime disponibility,QDateTime deadline):
+    m_title(title), m_disponibility(disponibility), m_deadline(deadline), m_status(false), m_parent(NULL)
 {
-    if(echeance < QDateTime::currentDateTime())
+    if(deadline < QDateTime::currentDateTime())
     {
         throw CalendarException("Echéance de la task déjà passée !");
     }
-    else if(echeance < disponibility)
+    else if(deadline < disponibility)
     {
         throw CalendarException("La disponibilité entrée pour la task est ultérieure à l'échéance !");
     }

@@ -6,10 +6,10 @@
 
 #include <QStandardItemModel>
 #include <QVariant>
-#include "abstractmanager.h"
+#include "abstractcontainer.h"
 #include "project.h"
 
-class ProjectManager : public AbstractManager<Project>
+class ProjectManager : public AbstractContainer<Project>
 {
 private:
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_Single instance handling-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
@@ -30,7 +30,7 @@ public:
 
     static ProjectManager& getInstance();
     static void freeInstance();
-    void Afficher(QStandardItemModel * model);
+    void display(QStandardItemModel * model);
 
 };
 

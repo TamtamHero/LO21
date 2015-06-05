@@ -13,10 +13,10 @@ protected:
     vector<Task *> m_element;
 
 public:
-    BlendTask(QString title,QDateTime disponibility,QDateTime echeance);
+    BlendTask(QString title,QDateTime disponibility,QDateTime deadline);
     void addElement(Task * element);
     vector<Task *>& getElement(){return m_element;}
-    void afficher(QStandardItem * parent);
+    void display(QStandardItem * parent);
     list<Task*> getAllUniquePrerequisite();
     list<Task*> getAllUniqueSons();
     virtual ~BlendTask();

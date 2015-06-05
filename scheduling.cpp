@@ -18,7 +18,7 @@ Scheduling::Scheduling(QDateTime date,QTime duration,UniqueTask *task):
     }
 
     m_task=task;
-    m_title=m_task->getTitre();
+    m_title=m_task->getTitle();
 
     // Il faudra voir si on réduit la durée de task ici ou si on le fait ailleurs, dans l'agenda
 }

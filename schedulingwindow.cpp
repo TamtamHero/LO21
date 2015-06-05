@@ -9,7 +9,7 @@ SchedulingWindow::SchedulingWindow(QWidget *parent, ProjectManager &manager):
     projectManager(manager),
     selectedTask(NULL)
 {
-    projectManager.Afficher(Model);
+    projectManager.display(Model);
     Model->setHorizontalHeaderLabels(QStringList("Sélectionnez un projet"));
     treeView->setModel(Model);
     treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -39,7 +39,7 @@ void SchedulingWindow::scheduler_selectionProject()
 {
     selectedProject=NULL;
     Model->clear();
-    projectManager.Afficher(Model);
+    projectManager.display(Model);
     Model->setHorizontalHeaderLabels(QStringList("Sélectionnez un projet"));
     treeView->setModel(Model);
 }
@@ -88,8 +88,8 @@ void SchedulingWindow::scheduler_doubleclickTree(QModelIndex)
     if(dynamic_cast<Project*>(indexElementSelectionne.data(Qt::UserRole+1).value<Project *>())!=NULL) // Check if selected element is a Project
     {
         Model->clear();
-        selectedProject->afficher(Model);
-        Model->setHorizontalHeaderLabels(QStringList(selectedProject->getTitre()));
+        selectedProject->display(Model);
+        Model->setHorizontalHeaderLabels(QStringList(selectedProject->getTitle()));
         treeView->setModel(Model);
     }
 }

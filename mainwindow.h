@@ -17,6 +17,7 @@
 #include "taskselectionwindow.h"
 #include "validationwindow.h"
 #include "schedulingwindow.h"
+#include "xmlbuilder.h"
 
 
 namespace Ui {

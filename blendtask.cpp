@@ -1,7 +1,7 @@
 #include "blendtask.h"
 
-BlendTask::BlendTask(QString title,QDateTime disponibility,QDateTime echeance):
-    Task(title,disponibility,echeance)
+BlendTask::BlendTask(QString title,QDateTime disponibility,QDateTime deadline):
+    Task(title,disponibility,deadline)
 {
     // Useless pour l'instant, le constructeur de la classe mère Task fait tout le travail.
 }
@@ -29,16 +29,16 @@ void BlendTask::addElement(Task * element)
     element->setParent(this);
 }
 
-void BlendTask::afficher(QStandardItem * parent)
+void BlendTask::display(QStandardItem * parent)
 {
     QStandardItem *item;
 
     for(vector<Task *>::iterator it=this->m_element.begin();it!=this->m_element.end();++it)
     {
-        item=new QStandardItem((*it)->getTitre());
+        item=new QStandardItem((*it)->getTitle());
         item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
         parent->appendRow(item);
-        (*it)->afficher(item);
+        (*it)->display(item);
 
     }
 }

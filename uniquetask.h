@@ -14,12 +14,12 @@ protected:
     bool m_preemptable;
 
 public:
-    UniqueTask(QString title,QDateTime disponibility,QDateTime echeance,QTime duration,bool preemptable=false);
+    UniqueTask(QString title,QDateTime disponibility,QDateTime deadline,QTime duration,bool preemptable=false);
     QTime getDuree() const {return m_duration;}
     bool getPreemptability(){return m_preemptable;}
     void setDuree(QTime duration) {m_duration=duration;}
     void setPreemptability(bool choice){m_preemptable=choice;}
-    void afficher(QStandardItem * parent);
+    void display(QStandardItem * parent);
     list<Task *> getAllUniquePrerequisite();
 
     virtual ~UniqueTask();

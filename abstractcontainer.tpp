@@ -1,13 +1,13 @@
-#include "abstractmanager.h"
+#include "abstractcontainer.h"
 
 template<typename Type>
-AbstractManager<Type>::AbstractManager()
+AbstractContainer<Type>::AbstractContainer()
 {
 
 }
 
 template<typename Type>
-AbstractManager<Type>::~AbstractManager()
+AbstractContainer<Type>::~AbstractContainer()
 {
 
 }
@@ -18,20 +18,20 @@ AbstractManager<Type>::~AbstractManager()
 
 
 template<typename Type>
-void AbstractManager<Type>::addElement(Type * element)
+void AbstractContainer<Type>::addElement(Type * element)
 {
     m_liste.push_back(element);
     sort();
 }
 
 template<typename Type>
-void AbstractManager<Type>::removeElement(Type * element)
+void AbstractContainer<Type>::removeElement(Type * element)
 {
     m_liste.erase(std::remove(m_liste.begin(),m_liste.end(),element),m_liste.end());
 }
 
 template<typename Type>
-void AbstractManager<Type>::sort()
+void AbstractContainer<Type>::sort()
 {
     m_liste.sort(typeIsInferior());
 }

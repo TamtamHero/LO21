@@ -32,13 +32,13 @@ void ProjectManager::freeInstance()
 }
 
 
-void ProjectManager::Afficher(QStandardItemModel * model)
+void ProjectManager::display(QStandardItemModel * model)
 {
     QStandardItem *item;
 
     for(list<Project *>::iterator it=this->m_liste.begin();it!=this->m_liste.end();++it)
     {
-        item=new QStandardItem((*it)->getTitre());
+        item=new QStandardItem((*it)->getTitle());
         item->setData(QVariant::fromValue((*it)),Qt::UserRole+1);
         model->appendRow(item);
     }

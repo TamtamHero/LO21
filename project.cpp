@@ -2,14 +2,14 @@
 #include "mainwindow.h"
 
 
-Project::Project(QString title, QDateTime disponibility, QDateTime echeance):
-    m_title(title),m_disponibility(disponibility),m_echeance(echeance)
+Project::Project(QString title, QDateTime disponibility, QDateTime deadline):
+    m_title(title),m_disponibility(disponibility),m_deadline(deadline)
 {
-    if(echeance < QDateTime::currentDateTime())
+    if(deadline < QDateTime::currentDateTime())
     {
         throw CalendarException("Echéance du projet déjà passée !");
     }
-    else if(echeance < disponibility)
+    else if(deadline < disponibility)
     {
         throw CalendarException("La disponibilité entrée pour le projet est ultérieure à l'échéance !");
     }
@@ -17,7 +17,7 @@ Project::Project(QString title, QDateTime disponibility, QDateTime echeance):
 
 Project::~Project()
 {
-    for(vector<Task*>::iterator it=m_decomposition.begin(); it!=m_decomposition.end(); ++it)
+    for(vector<Task*>::iterator it=m_list.begin(); it!=m_list.end(); ++it)
     {
         delete(*it);
     }
@@ -25,14 +25,14 @@ Project::~Project()
 
 void Project::addElement(Task * element)
 {
-    m_decomposition.push_back(element);
-    std::sort(m_decomposition.begin(),m_decomposition.end(),Task::taskCompare());
+    m_list.push_back(element);
+    std::sort(m_list.begin(),m_list.end(),Task::taskCompare());
 }
 
 void Project::removeElement(Task * element)
 {
-    m_decomposition.erase(std::remove(m_decomposition.begin(),m_decomposition.end(),element),m_decomposition.end());
-    std::sort(m_decomposition.begin(),m_decomposition.end());
+    m_list.erase(std::remove(m_list.begin(),m_list.end(),element),m_list.end());
+    std::sort(m_list.begin(),m_list.end());
 }
 
 void Project::fillDeadList(Task * element)
@@ -91,12 +91,12 @@ void Project::deleteElement(Task * element)
     }
     else //remove element from project's root
     {
-        m_decomposition.erase(std::remove(m_decomposition.begin(),m_decomposition.end(),element),m_decomposition.end());
+        m_list.erase(std::remove(m_list.begin(),m_list.end(),element),m_list.end());
     }
 
     fillDeadList(element); //Make a list of tasks to be cleaned out
 
-    for(vector<Task*>::iterator it=m_decomposition.begin(); it!=m_decomposition.end(); ++it)
+    for(vector<Task*>::iterator it=m_list.begin(); it!=m_list.end(); ++it)
     {
         cleanPrerequisite(*it);
     }
@@ -106,16 +106,16 @@ void Project::deleteElement(Task * element)
 
 
 
-void Project::afficher(QStandardItemModel * treeModel)
+void Project::display(QStandardItemModel * treeModel)
 {
     QStandardItem *item;
 
-    for(vector<Task *>::iterator it=this->m_decomposition.begin();it!=this->m_decomposition.end();++it)
+    for(vector<Task *>::iterator it=this->m_list.begin();it!=this->m_list.end();++it)
     {
-        item=new QStandardItem((*it)->getTitre());
+        item=new QStandardItem((*it)->getTitle());
         item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
         treeModel->appendRow(item);
-        (*it)->afficher(item);
+        (*it)->display(item);
 
     }
 }

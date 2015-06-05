@@ -1,8 +1,8 @@
 #include "uniquetask.h"
 #include <iostream>
 
-UniqueTask::UniqueTask(QString title,QDateTime disponibility,QDateTime echeance,QTime duration,bool preemptable):
-    Task(title,disponibility,echeance),m_duration(duration),m_preemptable(preemptable)
+UniqueTask::UniqueTask(QString title,QDateTime disponibility,QDateTime deadline,QTime duration,bool preemptable):
+    Task(title,disponibility,deadline),m_duration(duration),m_preemptable(preemptable)
 {
     if(m_preemptable && m_duration>QTime::fromString("12:00:00"))
     {
@@ -18,7 +18,7 @@ UniqueTask::~UniqueTask()
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
-void UniqueTask::afficher(QStandardItem * parent)
+void UniqueTask::display(QStandardItem * parent)
 {
 
 }
