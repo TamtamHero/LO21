@@ -2,8 +2,11 @@
 #define XMLBUILDER_H
 #include<QXmlStreamWriter>
 #include<QFile>
+#include <QDomDocument>
+
 
 #include"abstractbuilder.h"
+
 
 class XmlBuilder : public AbstractBuilder
 {
@@ -12,8 +15,9 @@ public:
     ~XmlBuilder();
 
     void writeOutput(std::list<Project*>& project_list,std::list<Scheduling*>& scheduling_list);
-    void saveTask(QXmlStreamWriter& stream,Task * task,std::map<Task*,int>& pointer_to_id,int& id_incrementer);
-    void readInput(std::list<Project*>& project_list,std::list<Scheduling*>& scheduling_list);
+    void saveTask(QXmlStreamWriter& stream, Task * task);
+    void readInput(ProjectManager &projectManager, SchedulingManager &schedulingManager);
+    void readTask(QDomNode task_node,BlendTask* task_ptr);
 };
 
 #endif // XMLBUILDER_H

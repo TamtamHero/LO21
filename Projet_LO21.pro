@@ -35,4 +35,5 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
-QT += widgets
+QT += widgets\
+        xml

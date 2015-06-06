@@ -22,6 +22,18 @@ Task::~Task()
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
+void Task::setParent(Task * parent)
+{
+    if(this!=parent)
+    {
+       m_parent=parent;
+    }
+    else
+    {
+        throw CalendarException("Tentative avortée d'auto-inclusion de la tache "+getTitle());
+    }
+}
+
 void Task::addPrerequisite(Task *prerequisite)
 {
     checkPrerequisite(this,prerequisite);

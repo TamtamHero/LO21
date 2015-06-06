@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->label_scheduler_week->setText("Semaine du "+weekDisplayed.toString("dd/MM"));
 
-
+/*
     QDateTime t1=QDateTime::currentDateTime();
     QDateTime t2=QDateTime::currentDateTime().addDays(1);
     QDateTime t3=QDateTime::currentDateTime().addDays(3);
@@ -62,12 +62,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     projectManager.addElement(projet);
-    projectManager.addElement(projet2);
+    projectManager.addElement(projet2);*/
 
     editing_selectionProject();
-    //projectManager.save("xmltest.xml");
     XmlBuilder *test=new XmlBuilder("xmltest.xml");
-    test->writeOutput(projectManager.getList(),scheduleManager.getList());
+    try
+    {
+        test->readInput(projectManager,scheduleManager);
+        //test->writeOutput(projectManager.getList(),scheduleManager.getList());
+    }
+    catch(CalendarException error)
+    {
+        QMessageBox::warning(this,"erreur",error.getInfo());
+    }
+    //test->writeOutput(projectManager.getList(),scheduleManager.getList());
 
     // Editing connections
 
@@ -474,7 +482,7 @@ void MainWindow::createElement()
 {
     try
     {
-        if(ui->comboBox_creation->currentText()=="Project")
+        if(ui->comboBox_creation->currentText()=="Projet")
         {
             if(ui->lineEdit_creation_title->text()=="")
             {

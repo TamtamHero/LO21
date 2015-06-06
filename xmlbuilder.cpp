@@ -8,27 +8,28 @@ XmlBuilder::~XmlBuilder()
 
 void XmlBuilder::writeOutput(std::list<Project*>& project_list,std::list<Scheduling*>& scheduling_list)
 {
-    int id_incrementer=1;
-    std::map<Task*,int> pointer_to_id;
-    QFile newfile(m_file_path);
-    if (!newfile.open(QIODevice::WriteOnly | QIODevice::Text))
+    QFile output(m_file_path);
+    if (!output.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         throw CalendarException(QString("erreur sauvegarde tâches : ouverture fichier xml"));
     }
-    QXmlStreamWriter stream(&newfile);
+    QXmlStreamWriter stream(&output);
     stream.setAutoFormatting(true);
     stream.writeStartDocument();
+    stream.writeStartElement("projects");
     foreach(Project* project,project_list)
     {
         stream.writeStartElement("project");
         stream.writeTextElement("title",project->getTitle());
         stream.writeTextElement("disponibility",project->getDisponibility().toString(Qt::ISODate));
         stream.writeTextElement("deadline",project->getDeadline().toString(Qt::ISODate));
+
+        stream.writeStartElement("tasks");
         foreach(Task* task,project->getList())
         {
-            saveTask(stream,task,pointer_to_id,id_incrementer);
+            saveTask(stream,task);
         }
-
+        stream.writeEndElement();
         stream.writeEndElement();
     }
 
@@ -38,51 +39,186 @@ void XmlBuilder::writeOutput(std::list<Project*>& project_list,std::list<Schedul
         stream.writeTextElement("title",scheduling->getTitle());
         stream.writeTextElement("date",scheduling->getDateTime().toString(Qt::ISODate));
         stream.writeTextElement("duration",scheduling->getDuration().toString(Qt::ISODate));
-        stream.writeTextElement("task_id",QString::number(pointer_to_id[scheduling->getTask()]));
+        stream.writeTextElement("task_id",QString::number(m_pointer_to_id[scheduling->getTask()]));
 
         stream.writeEndElement();
     }
 
-
+    stream.writeEndElement();
     stream.writeEndDocument();
-    newfile.close();
+    output.close();
+    m_pointer_to_id.clear();
+    m_id_incrementer=0;
 }
 
-void XmlBuilder::saveTask(QXmlStreamWriter& stream,Task * task,std::map<Task*,int>& pointer_to_id,int& id_incrementer)
+void XmlBuilder::saveTask(QXmlStreamWriter& stream,Task * task)
 {
-    if(pointer_to_id[task]==0)
+    if(m_pointer_to_id[task]==0)
     {
-        pointer_to_id[task]=++id_incrementer;
+        m_pointer_to_id[task]=++m_id_incrementer;
+    }
+    if(m_pointer_to_id[task->getParent()]==0)
+    {
+        m_pointer_to_id[task->getParent()]=++m_id_incrementer;
     }
     stream.writeStartElement("task");
     stream.writeTextElement("title",task->getTitle());
-    stream.writeTextElement("id",QString::number(id_incrementer));
+    stream.writeTextElement("id",QString::number(m_pointer_to_id[task]));
+    stream.writeTextElement("parent_id",QString::number(m_pointer_to_id[task->getParent()]));
     stream.writeTextElement("disponibility",task->getDisponibility().toString(Qt::ISODate));
     stream.writeTextElement("deadline",task->getDeadline().toString(Qt::ISODate));
+
+    stream.writeStartElement("prerequisites");
     foreach(Task* prerequisite,task->getPrerequisite())
     {
-        if(pointer_to_id[prerequisite]!=0)
+        if(m_pointer_to_id[prerequisite]!=0)
         {
-            stream.writeTextElement("prerequisite_id",QString::number(pointer_to_id[prerequisite]));
+            stream.writeTextElement("prerequisite_id",QString::number(m_pointer_to_id[prerequisite]));
         }
         else
         {
-            pointer_to_id[prerequisite]=++id_incrementer;
-            stream.writeTextElement("prerequisite_id",QString::number(pointer_to_id[prerequisite]));
+            m_pointer_to_id[prerequisite]=++m_id_incrementer;
+            stream.writeTextElement("prerequisite_id",QString::number(m_pointer_to_id[prerequisite]));
         }
     }
-    if(dynamic_cast<BlendTask*>(task)!=NULL)
+    stream.writeEndElement();
+
+    if(dynamic_cast<UniqueTask*>(task)!=NULL)
     {
+        if(dynamic_cast<UniqueTask*>(task)->getPreemptability())
+        {
+            stream.writeTextElement("preemptability","true");
+        }
+        else
+        {
+            stream.writeTextElement("preemptability","false");
+        }
+        stream.writeTextElement("task_duration",QString::number(QTime(0, 0, 0).secsTo(dynamic_cast<UniqueTask*>(task)->getDuree())));
+    }
+    else
+    {
+        stream.writeStartElement("sub_tasks");
         foreach(Task * sub_task,dynamic_cast<BlendTask*>(task)->getElement())
         {
-            saveTask(stream,sub_task,pointer_to_id,id_incrementer);
+            saveTask(stream,sub_task);
         }
+        stream.writeEndElement();
     }
     stream.writeEndElement();
 }
 
 
-void XmlBuilder::readInput(std::list<Project*>& project_list,std::list<Scheduling*>& scheduling_list)
+void XmlBuilder::readInput(ProjectManager& projectManager,SchedulingManager& schedulingManager)
 {
+    Project *new_project;
+    UniqueTask * new_uniqueTask;
+    BlendTask* new_blendTask;
+    bool preemptability;
+    int id,parent_id;
 
+    QDomDocument doc;
+    QFile file(m_file_path);
+    if (!file.open(QIODevice::ReadOnly) || !doc.setContent(&file))
+        return;
+
+    QDomNodeList projects = doc.elementsByTagName("project");
+    for (int i = 0; i < projects.size(); i++)
+    {
+        QDomNode project_node = projects.item(i);
+        QDomElement title = project_node.firstChildElement("title");
+        QDomElement disponibility = project_node.firstChildElement("disponibility");
+        QDomElement deadline = project_node.firstChildElement("deadline");
+        if (title.isNull() || disponibility.isNull() || deadline.isNull())
+            continue;
+        new_project = new Project(title.text(),QDateTime::fromString(disponibility.text(),Qt::ISODate),QDateTime::fromString(deadline.text(),Qt::ISODate));
+        projectManager.addElement(new_project);
+
+        QDomElement tasks= project_node.firstChildElement("tasks");
+        QDomNodeList sub_tasks= tasks.elementsByTagName("task");
+        for(int j = 0;j<sub_tasks.size();j++)
+        {
+            QDomNode task_node= sub_tasks.item(j);
+            QDomElement task_title=task_node.firstChildElement("title");
+            QDomElement task_disponibility = task_node.firstChildElement("disponibility");
+            QDomElement task_deadline = task_node.firstChildElement("deadline");
+            QDomElement task_id = task_node.firstChildElement("id");
+            QDomElement task_parent_id = task_node.firstChildElement("parent_id");
+            id=task_id.text().toInt();
+            parent_id=task_parent_id.text().toInt();
+
+            if(task_node.firstChildElement("sub_tasks")!=QDomElement())
+            {
+                new_blendTask = new BlendTask(task_title.text(),QDateTime::fromString(task_disponibility.text(),Qt::ISODate),QDateTime::fromString(task_deadline.text(),Qt::ISODate));
+                m_id_to_pointer[id]=new_blendTask;
+                new_blendTask->setParent(m_id_to_pointer[parent_id]);
+
+                if(m_id_to_pointer[parent_id]==NULL)
+                    new_project->addElement(new_blendTask);
+                else
+                    dynamic_cast<BlendTask*>(m_id_to_pointer[parent_id])->addElement(new_blendTask);
+            }
+            else
+            {
+                QDomElement task_preemptability= task_node.firstChildElement("preemptability");
+                if(task_preemptability.text()=="true")
+                    preemptability=true;
+                else
+                    preemptability=false;
+                QDomElement task_duration=task_node.firstChildElement("task_duration");
+                new_uniqueTask = new UniqueTask(task_title.text(),QDateTime::fromString(task_disponibility.text(),Qt::ISODate),QDateTime::fromString(task_deadline.text(),Qt::ISODate),QTime::fromString(task_duration.text(),Qt::ISODate),preemptability);
+                m_id_to_pointer[id]=new_uniqueTask;
+                new_uniqueTask->setParent(m_id_to_pointer[parent_id]);
+                if(m_id_to_pointer[parent_id]==NULL)
+                    new_project->addElement(new_uniqueTask);
+                else
+                    dynamic_cast<BlendTask*>(m_id_to_pointer[parent_id])->addElement(new_uniqueTask);
+            }
+
+        }
+
+    }
 }
+
+/*
+ * QDateTime disponibility,deadline;
+    QString title;
+    Project *new_prog;
+
+    QFile input(m_file_path);
+    if (!input.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        throw CalendarException("Erreur ouverture fichier tâches");
+    }
+
+    QXmlStreamReader stream(&input);
+    while(!stream.atEnd() && !stream.hasError())
+    {
+        QXmlStreamReader::TokenType token = stream.readNext();
+        if(token == QXmlStreamReader::StartDocument) continue;
+
+        while(!(stream.tokenType() == QXmlStreamReader::EndElement && stream.name() == "project"))
+        {
+            cout << stream.name().toString().toStdString();
+
+            if(stream.name()== "title")
+            {
+                title=stream.readElementText();
+                cout << "*"+stream.readElementText().toStdString()+"*";
+                stream.readNextStartElement();
+            }
+            if(stream.name()== "disponibility")
+            {
+                disponibility=QDateTime::fromString(stream.readElementText(),Qt::ISODate);
+                stream.readNextStartElement();
+            }
+            if(stream.name()== "deadline")
+            {
+                deadline=QDateTime::fromString(stream.readElementText(),Qt::ISODate);
+                stream.readNextStartElement();
+            }
+        }
+        cout << disponibility.toString().toStdString();
+        new_prog=new Project(title,disponibility,deadline);
+        projectManager.addElement(new_prog);
+
+    }*/

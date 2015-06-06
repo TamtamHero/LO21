@@ -22,7 +22,7 @@ void BlendTask::addElement(Task * element)
 {
     if(element==this)
     {
-        throw CalendarException("Tentative avortée d'auto-inclusion"); // A verifier: est-ce utile ?
+        throw CalendarException("Tentative avortée d'auto-inclusion de la tache "+element->getTitle());
     }
     m_element.push_back(element);
     std::sort(m_element.begin(),m_element.end(),taskCompare());

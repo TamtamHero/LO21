@@ -29,7 +29,7 @@ protected:
     Task& operator=(const Task& source);
 
 public:
-    void setParent(Task * parent){m_parent=parent;}
+    void setParent(Task * parent);
     Task* getParent()const{ return m_parent;}
     QString getTitle()const{return m_title;}
     void setTitle(QString title){m_title=title;}
