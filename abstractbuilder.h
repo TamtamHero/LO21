@@ -18,6 +18,8 @@ public:
     AbstractBuilder(QString path):m_file_path(path),m_id_incrementer(0){}
     ~AbstractBuilder();
 
+    void setFilePath(QString path){m_file_path=path;}
+
     virtual void writeOutput(std::list<Project*>& project_list,std::list<Scheduling*>& scheduling_list)=0;
     virtual void readInput(ProjectManager &projectManager, SchedulingManager &schedulingManager)=0;
 };

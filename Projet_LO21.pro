@@ -13,7 +13,8 @@ SOURCES += \
     scheduling.cpp \
     abstractcontainer.tpp \
     abstractbuilder.cpp \
-    xmlbuilder.cpp
+    xmlbuilder.cpp \
+    iomanager.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -30,7 +31,8 @@ HEADERS += \
     scheduling.h \
     abstractcontainer.h \
     abstractbuilder.h \
-    xmlbuilder.h
+    xmlbuilder.h \
+    iomanager.h
 
 FORMS += \
     mainwindow.ui

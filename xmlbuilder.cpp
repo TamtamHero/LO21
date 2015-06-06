@@ -71,6 +71,7 @@ void XmlBuilder::saveTask(QXmlStreamWriter& stream,Task * task)
     stream.writeStartElement("prerequisites");
     foreach(Task* prerequisite,task->getPrerequisite())
     {
+        stream.writeStartElement("prerequisite");
         if(m_pointer_to_id[prerequisite]!=0)
         {
             stream.writeTextElement("prerequisite_id",QString::number(m_pointer_to_id[prerequisite]));
@@ -80,6 +81,7 @@ void XmlBuilder::saveTask(QXmlStreamWriter& stream,Task * task)
             m_pointer_to_id[prerequisite]=++m_id_incrementer;
             stream.writeTextElement("prerequisite_id",QString::number(m_pointer_to_id[prerequisite]));
         }
+        stream.writeEndElement();
     }
     stream.writeEndElement();
 
@@ -114,7 +116,7 @@ void XmlBuilder::readInput(ProjectManager& projectManager,SchedulingManager& sch
     UniqueTask * new_uniqueTask;
     BlendTask* new_blendTask;
     bool preemptability;
-    int id,parent_id;
+    int id,parent_id,prereq_id;
 
     QDomDocument doc;
     QFile file(m_file_path);
@@ -174,6 +176,25 @@ void XmlBuilder::readInput(ProjectManager& projectManager,SchedulingManager& sch
                     dynamic_cast<BlendTask*>(m_id_to_pointer[parent_id])->addElement(new_uniqueTask);
             }
 
+        }
+
+        tasks= project_node.firstChildElement("tasks");
+        sub_tasks= tasks.elementsByTagName("task");
+        for(int j = 0;j<sub_tasks.size();j++)
+        {
+            QDomNode task_node= sub_tasks.item(j);
+            QDomElement task_id = task_node.firstChildElement("id");
+            id=task_id.text().toInt();
+
+            QDomElement prerequisites= task_node.firstChildElement("prerequisites");
+            QDomNodeList prerequisiteList= prerequisites.elementsByTagName("prerequisite");
+            for(int k = 0;k<prerequisiteList.size();k++)
+            {
+                QDomNode prerequisite_node=prerequisiteList.item(k);
+                QDomElement prerequisite_id=prerequisite_node.firstChildElement("prerequisite_id");
+                prereq_id=prerequisite_id.text().toInt();
+                m_id_to_pointer[id]->addPrerequisite(m_id_to_pointer[prereq_id]);
+            }
         }
 
     }

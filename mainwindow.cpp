@@ -65,17 +65,6 @@ MainWindow::MainWindow(QWidget *parent) :
     projectManager.addElement(projet2);*/
 
     editing_selectionProject();
-    XmlBuilder *test=new XmlBuilder("xmltest.xml");
-    try
-    {
-        test->readInput(projectManager,scheduleManager);
-        //test->writeOutput(projectManager.getList(),scheduleManager.getList());
-    }
-    catch(CalendarException error)
-    {
-        QMessageBox::warning(this,"erreur",error.getInfo());
-    }
-    //test->writeOutput(projectManager.getList(),scheduleManager.getList());
 
     // Editing connections
 
@@ -104,7 +93,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->pushButton_scheduler_validateActivity,SIGNAL(clicked()),this,SLOT(scheduler_save()));
     QObject::connect(ui->pushButton_scheduler_previous,SIGNAL(clicked()),this,SLOT(scheduler_previousWeek()));
     QObject::connect(ui->pushButton_scheduler_next,SIGNAL(clicked()),this,SLOT(scheduler_nextWeek()));
-
+    QObject::connect(ui->pushButton_scheduler_export,SIGNAL(clicked()),this,SLOT(scheduler_export()));
+    QObject::connect(ui->pushButton_scheduler_import,SIGNAL(clicked()),this,SLOT(scheduler_import()));
 }
 
 MainWindow::~MainWindow()
@@ -441,7 +431,7 @@ void MainWindow::edit()
 
 void MainWindow::creationView(QString type)
 {
-    if(type=="Project")
+    if(type=="Projet")
     {
         ui->listView_creation_prerequisite->setEnabled(false);
         ui->listView_creation_attachedTo->setEnabled(false);
@@ -451,7 +441,7 @@ void MainWindow::creationView(QString type)
         ui->timeEdit_creation_length->setEnabled(false);
         ui->comboBox_creation_preemptability->setEnabled(false);
     }
-    else if(type=="Task Composite")
+    else if(type=="Tache Composite")
     {
         ui->listView_creation_prerequisite->setEnabled(true);
         ui->listView_creation_attachedTo->setEnabled(true);
@@ -461,7 +451,7 @@ void MainWindow::creationView(QString type)
         ui->timeEdit_creation_length->setEnabled(false);
         ui->comboBox_creation_preemptability->setEnabled(false);
     }
-    else if(type=="Task Unitaire")
+    else if(type=="Tache Unitaire")
     {
         ui->listView_creation_prerequisite->setEnabled(true);
         ui->listView_creation_attachedTo->setEnabled(true);
@@ -513,7 +503,7 @@ void MainWindow::createElement()
                 return;
             }
 
-            if(ui->comboBox_creation->currentText()=="Task Composite")
+            if(ui->comboBox_creation->currentText()=="Tache Composite")
             {
                 BlendTask *newTask=new BlendTask(ui->lineEdit_creation_title->text(),ui->dateTimeEdit_creation_disponibility->dateTime(),ui->dateTimeEdit_creation_deadline->dateTime());
                 for(int i=0;listModel_creation_prerequisite->item(i)!=0;newTask->addPrerequisite(listModel_creation_prerequisite->item(i++)->data(Qt::UserRole+2).value<Task *>()));
@@ -544,11 +534,10 @@ void MainWindow::createElement()
                 }
             }
 
-
         }
         else
         {
-            QMessageBox::warning(this,"Attention","Attention, veillez à être à l'interieur d'un projet pour créer une nouvelle task !");
+            QMessageBox::warning(this,"Attention","Attention, veillez à être à l'interieur d'un projet pour créer une nouvelle tache !");
             return;
         }
 
@@ -690,6 +679,52 @@ void MainWindow::deleteScheduling()
     {
         return;
     }
+}
+
+void MainWindow::scheduler_export()
+{
+    QString path;
+    if(ui->comboBox_scheduler_export->currentText()=="XML")
+    {
+        path = QFileDialog::getOpenFileName(this, "Choisissez un fichier d'export", QString(), "XML (*.xml *.XML)");
+        if(path=="")
+            return;
+        XmlBuilder *builder= new XmlBuilder(path);
+        ioManager.setBuilder(builder);
+    }
+    else if(ui->comboBox_scheduler_export->currentText()==".txt")
+    {
+        path = QFileDialog::getOpenFileName(this, "Choisissez un fichier d'export", QString(), "texte (*.txt *.TXT)");
+        if(path=="")
+            return;
+        XmlBuilder *builder= new XmlBuilder(path);
+        ioManager.setBuilder(builder);
+    }
+    ioManager.exportTo(projectManager,scheduleManager);
+}
+
+void MainWindow::scheduler_import()
+{
+    QString path;
+    if(ui->comboBox_scheduler_export->currentText()=="XML")
+    {
+        path = QFileDialog::getOpenFileName(this, "Choisissez un fichier d'import", QString(), "XML (*.xml *.XML)");
+        if(path=="")
+            return;
+        XmlBuilder *builder= new XmlBuilder(path);
+        ioManager.setBuilder(builder);
+    }
+    else if(ui->comboBox_scheduler_export->currentText()==".txt")
+    {
+        path = QFileDialog::getOpenFileName(this, "Choisissez un fichier d'import", QString(), "texte (*.txt *.TXT)");
+        if(path=="")
+            return;
+        XmlBuilder *builder= new XmlBuilder(path);
+        ioManager.setBuilder(builder);
+    }
+    ioManager.importFrom(projectManager,scheduleManager);
+    updateScheduler();
+    editing_selectionProject();
 }
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_ METHODS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-

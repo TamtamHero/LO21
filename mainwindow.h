@@ -5,6 +5,7 @@
 #include <QStandardItem>
 #include <QStandardItemModel>
 #include <QMessageBox>
+#include <QFileDialog>
 #include <QBrush>
 #include <QDate>
 #include <QKeyEvent>
@@ -18,6 +19,7 @@
 #include "validationwindow.h"
 #include "schedulingwindow.h"
 #include "xmlbuilder.h"
+#include "iomanager.h"
 
 
 namespace Ui {
@@ -48,6 +50,7 @@ private:
     QMessageBox::StandardButton reply;
     ProjectManager &projectManager;
     SchedulingManager &scheduleManager;
+    IOManager ioManager;
     Project * currentProject;
     Task * currentTask;
     Scheduling * currentScheduling;
@@ -83,6 +86,8 @@ private slots:
     void scheduler_previousWeek();
     void scheduler_nextWeek();
     void deleteScheduling();
+    void scheduler_export();
+    void scheduler_import();
 
 };
 
