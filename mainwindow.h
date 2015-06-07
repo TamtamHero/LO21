@@ -36,26 +36,24 @@ public:
 
     void editorView(Task * task);
     void editorView(Project * project);
-    Task * getCurrentTask(){return currentTask;}
+    Task * getCurrentTask(){return m_currentTask;}
 
 private:
     Ui::MainWindow *ui;
 
-    QStandardItemModel *treeModel;
-    QStandardItemModel *schedulerModel;
-    QStandardItemModel *listModel_edit_prerequisite;
-    QStandardItemModel *listModel_edit_attachedTo;
-    QStandardItemModel *listModel_creation_prerequisite;
-    QStandardItemModel *listModel_creation_attachedTo;
-    QMessageBox::StandardButton reply;
+    QStandardItemModel *m_treeModel;
+    QStandardItemModel *m_listModel_edit_prerequisite;
+    QStandardItemModel *m_listModel_edit_attachedTo;
+    QStandardItemModel *m_listModel_creation_prerequisite;
+    QStandardItemModel *m_listModel_creation_attachedTo;
+    QMessageBox::StandardButton m_reply;
     ProjectManager &projectManager;
     SchedulingManager &scheduleManager;
-    IOManager ioManager;
-    Project * currentProject;
-    Task * currentTask;
-    Scheduling * currentScheduling;
-    UniqueTask * scheduleTask;
-    QDateTime weekDisplayed;
+    IOManager m_ioManager;
+    Project * m_currentProject;
+    Task * m_currentTask;
+    UniqueTask * m_scheduleTask;
+    QDateTime m_weekDisplayed;
 
     bool event(QEvent *event);
     void updateTreeView(QStandardItemModel *model, QTreeView *view);
@@ -74,7 +72,7 @@ private slots:
     void edit();
     void creationView(QString type);
     void createElement();
-    void switchEditTab(){currentTask=NULL;}
+    void switchEditTab(){m_currentTask=NULL;}
     void prerequisiteCreationUndo();
     void prerequisiteEditUndo();
 

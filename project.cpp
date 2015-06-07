@@ -106,7 +106,7 @@ void Project::deleteElement(Task * element)
 
 
 
-void Project::display(QStandardItemModel * treeModel)
+void Project::display(QStandardItemModel * m_treeModel)
 {
     QStandardItem *item;
 
@@ -114,7 +114,7 @@ void Project::display(QStandardItemModel * treeModel)
     {
         item=new QStandardItem((*it)->getTitle());
         item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
-        treeModel->appendRow(item);
+        m_treeModel->appendRow(item);
         (*it)->display(item);
 
     }

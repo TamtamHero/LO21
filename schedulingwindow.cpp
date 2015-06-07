@@ -7,7 +7,7 @@ SchedulingWindow::SchedulingWindow(QWidget *parent, ProjectManager &manager):
     pushButton_TaskSelection_selection(new QPushButton("select")),
     pushButton_TaskSelection_projectSelection(new QPushButton("Autre projet")),
     projectManager(manager),
-    selectedTask(NULL)
+    m_selectedTask(NULL)
 {
     projectManager.display(Model);
     Model->setHorizontalHeaderLabels(QStringList("Sélectionnez un projet"));
@@ -48,11 +48,11 @@ void SchedulingWindow::sendSelection()
 {
     try
     {
-        if(selectedTask==NULL)
+        if(m_selectedTask==NULL)
         {
             throw CalendarException("Vous n'avez pas sélectionné de task");
         }
-        else if(dynamic_cast<UniqueTask*>(selectedTask)==NULL)
+        else if(dynamic_cast<UniqueTask*>(m_selectedTask)==NULL)
         {
             throw CalendarException("Vous ne pouvez pas programmer une task composite");
         }
@@ -60,7 +60,7 @@ void SchedulingWindow::sendSelection()
     }
     catch(CalendarException error)
     {
-        selectedTask=NULL;
+        m_selectedTask=NULL;
         QMessageBox::warning(this, "Erreur", error.getInfo());
     }
 }
@@ -76,7 +76,7 @@ void SchedulingWindow::scheduler_clickTree(const QModelIndex&)
     }
     else if(dynamic_cast<Task*>(indexElementSelectionne.data(Qt::UserRole+2).value<Task *>())!=NULL) // Else, Task* case
     {
-        selectedTask=indexElementSelectionne.data(Qt::UserRole+2).value<Task *>();
+        m_selectedTask=indexElementSelectionne.data(Qt::UserRole+2).value<Task *>();
     }
 }
 

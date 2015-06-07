@@ -18,7 +18,7 @@ public:
     SchedulingWindow(QWidget *parent, ProjectManager &manager);
     ~SchedulingWindow();
 
-    Task * getSelectedTask(){return selectedTask;}
+    Task * getSelectedTask(){return m_selectedTask;}
 
 private:
     QStandardItemModel *Model;
@@ -27,7 +27,7 @@ private:
     QPushButton *pushButton_TaskSelection_projectSelection;
     ProjectManager& projectManager;
     Project *selectedProject;
-    Task *selectedTask;
+    Task *m_selectedTask;
 
 private slots:
     void scheduler_selectionProject();

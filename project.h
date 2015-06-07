@@ -34,7 +34,7 @@ public:
     void addElement(Task * element);
     void removeElement(Task * element);
     void deleteElement(Task * element);
-    void display(QStandardItemModel * treeModel);
+    void display(QStandardItemModel * m_treeModel);
     QString getTitle(){return m_title;}
     void setTitle(QString title){m_title=title;}
     QDateTime getDisponibility(){return m_disponibility;}

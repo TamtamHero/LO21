@@ -1,18 +1,18 @@
 #include "taskselectionwindow.h"
 #include <iostream>
 
-TaskSelectionWindow::TaskSelectionWindow(QWidget *parent,Project * project,selectedTaskType type):
+TaskSelectionWindow::TaskSelectionWindow(QWidget *parent,Project * project,m_selectedTaskType type):
     QDialog(parent),
-    treeModel(new QStandardItemModel()),
+    m_treeModel(new QStandardItemModel()),
     treeView(new QTreeView(this)),
     pushButton_TaskSelection_selection(new QPushButton("select")),
     pushButton_TaskSelection_notAttaskd(NULL),
-    selectedTask(NULL),
+    m_selectedTask(NULL),
     m_type(type)
 {
-    project->display(treeModel);
-    treeModel->setHorizontalHeaderLabels(QStringList(project->getTitle()));
-    treeView->setModel(treeModel);
+    project->display(m_treeModel);
+    m_treeModel->setHorizontalHeaderLabels(QStringList(project->getTitle()));
+    treeView->setModel(m_treeModel);
     treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     QVBoxLayout *vLayout=new QVBoxLayout;
     QHBoxLayout *hLayout=new QHBoxLayout;
@@ -41,22 +41,22 @@ void TaskSelectionWindow::sendSelection()
 {
     QItemSelectionModel *selection = treeView->selectionModel();
     QModelIndex indexElementSelectionne = selection->currentIndex();
-    selectedTask=indexElementSelectionne.data(Qt::UserRole+2).value<Task *>();
+    m_selectedTask=indexElementSelectionne.data(Qt::UserRole+2).value<Task *>();
     try
     {
         switch (m_type)
         {
             case PREREQUISITE:
-            if(Task::checkPrerequisite(dynamic_cast<MainWindow*>(parent())->getCurrentTask(),selectedTask)) //check if the selected task can be a prerequisite of current task
+            if(Task::checkPrerequisite(dynamic_cast<MainWindow*>(parent())->getCurrentTask(),m_selectedTask)) //check if the selected task can be a prerequisite of current task
             {
                 this->close();
             }
                 break;
 
             case ATTACHEDTO:
-            if(Task::checkAttaskdTo(dynamic_cast<MainWindow*>(parent())->getCurrentTask(),selectedTask)) //check if the selected task can be composed of current task
+            if(Task::checkAttaskdTo(dynamic_cast<MainWindow*>(parent())->getCurrentTask(),m_selectedTask)) //check if the selected task can be composed of current task
             {
-                if(dynamic_cast<UniqueTask*>(selectedTask)!=NULL)
+                if(dynamic_cast<UniqueTask*>(m_selectedTask)!=NULL)
                 {
                     throw CalendarException("La task sélectionnée n'est pas une task composite");
                 }
@@ -71,13 +71,13 @@ void TaskSelectionWindow::sendSelection()
     }
     catch(CalendarException error)
     {
-        selectedTask=NULL;
+        m_selectedTask=NULL;
         QMessageBox::warning(this, "Erreur", error.getInfo());
     }
 }
 
 void TaskSelectionWindow::sendNotAttaskd()
 {
-    selectedTask=NULL;
+    m_selectedTask=NULL;
     this->close();
 }
