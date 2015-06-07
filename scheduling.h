@@ -13,9 +13,13 @@ protected:
     QString m_title;
     UniqueTask *m_task;
 
-public:
     Scheduling(QDateTime date,QTime duration,QString title);
     Scheduling(QDateTime date,QTime duration,UniqueTask *task);
+
+    friend class SchedulingManager;
+
+public:
+
     ~Scheduling();
 
     QDateTime getDateTime()const {return m_date;}

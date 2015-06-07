@@ -16,6 +16,7 @@ void XmlBuilder::writeOutput(std::list<Project*>& project_list,std::list<Schedul
     QXmlStreamWriter stream(&output);
     stream.setAutoFormatting(true);
     stream.writeStartDocument();
+    stream.writeStartElement("xml_data");
     stream.writeStartElement("projects");
     foreach(Project* project,project_list)
     {
@@ -32,7 +33,9 @@ void XmlBuilder::writeOutput(std::list<Project*>& project_list,std::list<Schedul
         stream.writeEndElement();
         stream.writeEndElement();
     }
+    stream.writeEndElement();
 
+    stream.writeStartElement("schedulings");
     foreach(Scheduling* scheduling,scheduling_list)
     {
         stream.writeStartElement("scheduling");
@@ -43,6 +46,8 @@ void XmlBuilder::writeOutput(std::list<Project*>& project_list,std::list<Schedul
 
         stream.writeEndElement();
     }
+    stream.writeEndElement();
+
 
     stream.writeEndElement();
     stream.writeEndDocument();
@@ -196,6 +201,23 @@ void XmlBuilder::readInput(ProjectManager& projectManager,SchedulingManager& sch
                 m_id_to_pointer[id]->addPrerequisite(m_id_to_pointer[prereq_id]);
             }
         }
+
+    }
+
+    QDomNodeList schedulings = doc.elementsByTagName("scheduling");
+    for (int i = 0; i < schedulings.size(); i++)
+    {
+        QDomNode scheduling_node = schedulings.item(i);
+        QDomElement title = scheduling_node.firstChildElement("title");
+        QDomElement date = scheduling_node.firstChildElement("date");
+        QDomElement duration = scheduling_node.firstChildElement("duration");
+        QDomElement task_id= scheduling_node.firstChildElement("task_id");
+        id=task_id.text().toInt();
+
+        if(m_id_to_pointer[id]==NULL)
+            schedulingManager.addElement(QDateTime::fromString(date.text(),Qt::ISODate),QTime::fromString(duration.text(),Qt::ISODate),title.text());
+        else
+            schedulingManager.addElement(QDateTime::fromString(date.text(),Qt::ISODate),QTime::fromString(duration.text(),Qt::ISODate),static_cast<UniqueTask*>(m_id_to_pointer[id]));
 
     }
 }

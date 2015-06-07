@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_currentProject(NULL),
     m_currentTask(NULL),
     m_scheduleTask(NULL),
-    m_weekDisplayed(QDateTime::currentDateTime().addDays(-QDate::currentDate().dayOfWeek())) //store monday date
+    m_weekDisplayed(QDateTime::currentDateTime()) //store monday date
 {
     ui->setupUi(this);
     ui->label_scheduler_week->setText("Semaine du "+m_weekDisplayed.toString("dd/MM"));
@@ -611,7 +611,7 @@ void MainWindow::scheduler_setDate(int row,int column) //Auto completion of Date
     ui->dateTimeEdit_scheduler_datetime->setTime(time);
 
     QDateTime date=m_weekDisplayed;
-    date=date.addDays(column+1);
+    date=date.addDays(column);
     ui->dateTimeEdit_scheduler_datetime->setDate(date.date());
 }
 
