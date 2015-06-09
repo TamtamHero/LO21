@@ -5,6 +5,8 @@ XmlBuilder::~XmlBuilder()
 
 }
 
+//_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+
 
 void XmlBuilder::writeOutput(std::list<Project*>& project_list,std::list<Scheduling*>& scheduling_list)
 {
@@ -221,47 +223,3 @@ void XmlBuilder::readInput(ProjectManager& projectManager,SchedulingManager& sch
 
     }
 }
-
-/*
- * QDateTime disponibility,deadline;
-    QString title;
-    Project *new_prog;
-
-    QFile input(m_file_path);
-    if (!input.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        throw CalendarException("Erreur ouverture fichier tâches");
-    }
-
-    QXmlStreamReader stream(&input);
-    while(!stream.atEnd() && !stream.hasError())
-    {
-        QXmlStreamReader::TokenType token = stream.readNext();
-        if(token == QXmlStreamReader::StartDocument) continue;
-
-        while(!(stream.tokenType() == QXmlStreamReader::EndElement && stream.name() == "project"))
-        {
-            cout << stream.name().toString().toStdString();
-
-            if(stream.name()== "title")
-            {
-                title=stream.readElementText();
-                cout << "*"+stream.readElementText().toStdString()+"*";
-                stream.readNextStartElement();
-            }
-            if(stream.name()== "disponibility")
-            {
-                disponibility=QDateTime::fromString(stream.readElementText(),Qt::ISODate);
-                stream.readNextStartElement();
-            }
-            if(stream.name()== "deadline")
-            {
-                deadline=QDateTime::fromString(stream.readElementText(),Qt::ISODate);
-                stream.readNextStartElement();
-            }
-        }
-        cout << disponibility.toString().toStdString();
-        new_prog=new Project(title,disponibility,deadline);
-        projectManager.addElement(new_prog);
-
-    }*/

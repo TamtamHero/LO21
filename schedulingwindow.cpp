@@ -35,6 +35,9 @@ SchedulingWindow::~SchedulingWindow()
 
 }
 
+//_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+
+
 void SchedulingWindow::scheduler_selectionProject()
 {
     selectedProject=NULL;

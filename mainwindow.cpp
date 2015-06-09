@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "uniquetask.h" //TEMPORAIRE POUR TEST, c'est un projetmanager qui doit balancer l'affichage
+#include "uniquetask.h"
 #include "blendtask.h"
 
 
@@ -23,48 +23,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->label_scheduler_week->setText("Semaine du "+m_weekDisplayed.toString("dd/MM"));
-
-/*
-    QDateTime t1=QDateTime::currentDateTime();
-    QDateTime t2=QDateTime::currentDateTime().addDays(1);
-    QDateTime t3=QDateTime::currentDateTime().addDays(3);
-    QDateTime t4=QDateTime::currentDateTime().addDays(5);
-    QDateTime temps5=QDateTime::currentDateTime().addDays(4);
-    QDateTime temps6=QDateTime::currentDateTime().addDays(6);
-    QDateTime temps7=QDateTime::currentDateTime().addDays(5);
-    QDateTime temps8=QDateTime::currentDateTime().addDays(7);
-    UniqueTask *t=new UniqueTask("task 1",t1,t2,QTime::fromString("11:00:00"),true);
-    UniqueTask *t5=new UniqueTask("task 5",t3,t4,QTime::fromString("05:00:00"),false);
-    UniqueTask *t7=new UniqueTask("task 7",temps5,temps6,QTime::fromString("05:00:00"),false);
-    UniqueTask *t9=new UniqueTask("task 9",temps7,temps8,QTime::fromString("06:00:00"),false);
-    UniqueTask *t66=new UniqueTask("task 66",t1,t2,QTime::fromString("11:00:00"),true);
-    UniqueTask *t77=new UniqueTask("task 77",t3,t4,QTime::fromString("05:00:00"),false);
-
-    BlendTask *tc=new BlendTask("task compo",t3,t4);
-    BlendTask *tc2=new BlendTask("task compo 2",t1,t2);
-
-    t5->addPrerequisite(t);
-    t7->addPrerequisite(t5);
-
-    tc->addElement(t);
-    tc->addElement(t5);
-    tc->addElement(t7);
-    tc->addElement(t9);
-
-
-    tc2->addElement(t66);
-    tc2->addElement(t77);
-
-    Project *projet=new Project("projet 1",t1,t2);
-    Project *projet2=new Project("projet 2",t1,t2);
-    projet->addElement(tc);
-    projet->addElement(tc2);
-
-
-    projectManager.addElement(projet);
-    projectManager.addElement(projet2);*/
-
-    editing_selectionProject();
 
     // Editing connections
 
@@ -176,7 +134,7 @@ void MainWindow::editorView(Task * task)
             m_listModel_edit_prerequisite->appendRow(item);
         }
     }
-    ui->listView_edit_prerequisite->setModel(m_listModel_edit_prerequisite); //verif si c'est out de chaque boucle similaire
+    ui->listView_edit_prerequisite->setModel(m_listModel_edit_prerequisite);
 
 
     ui->comboBox_edit_type->setCurrentIndex(1);
@@ -287,7 +245,7 @@ void MainWindow::creation_prerequisiteSelection()
             }
             else if(m_reply==QMessageBox::No)
             {
-                m_reply=QMessageBox::question(this,"Erreur","Êtes-vous sur de ne pas vouloir rattaskr la nouvelle task ?",QMessageBox::Yes|QMessageBox::No);
+                m_reply=QMessageBox::question(this,"Erreur","Êtes-vous sur de ne pas vouloir rattacher la nouvelle tache ?",QMessageBox::Yes|QMessageBox::No);
                 if(m_reply==QMessageBox::No)
                 {
                     return;
@@ -494,12 +452,12 @@ void MainWindow::createElement()
         {
             if(ui->lineEdit_creation_title->text()=="")
             {
-                QMessageBox::warning(this,"Attention","Veuillez donner un title à la nouvelle task");
+                QMessageBox::warning(this,"Attention","Veuillez donner un title à la nouvelle tache");
                 return;
             }
             else if(ui->dateTimeEdit_creation_deadline->dateTime()<=QDateTime::currentDateTime())
             {
-                QMessageBox::warning(this,"Attention","L'échéance de la task doit être située dans le futur");
+                QMessageBox::warning(this,"Attention","L'échéance de la tache doit être située dans le futur");
                 return;
             }
 
@@ -814,14 +772,14 @@ bool checkCoherence(Task* parent, Task* prerequisite)
         }
         else if(parent==prerequisite)
         {
-            throw CalendarException("La task est déjà rattachée à la task \""+prerequisite->getTitle()+"\"");
+            throw CalendarException("La task est déjà rattachée à la tache \""+prerequisite->getTitle()+"\"");
         }
 
         for(vector<Task*>::iterator it=parent->getPrerequisite().begin();it!=parent->getPrerequisite().end();++it)
         {
             if((*it)==prerequisite)
             {
-                throw CalendarException("La task "+ prerequisite->getTitle()+" est déjà un pérequis d'une task parente\nVeuillez enlever le prérequis ou changer l'attask.");
+                throw CalendarException("La task "+ prerequisite->getTitle()+" est déjà un pérequis d'une tache parente\nVeuillez enlever le prérequis ou changer l'attache.");
             }
         }
 
