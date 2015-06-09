@@ -3,14 +3,14 @@
 BlendTask::BlendTask(QString title,QDateTime disponibility,QDateTime deadline):
     Task(title,disponibility,deadline)
 {
-    // Useless pour l'instant, le constructeur de la classe mère Task fait tout le travail.
+
 }
 
 BlendTask::~BlendTask()
 {
     for(unsigned long i=0;i<m_element.size();i++)
     {
-        delete(m_element[i]);   // Est-ce la meilleure manière de détruire une task composite ?``
+        delete(m_element[i]);
         m_element[i]=0;
     }
 }

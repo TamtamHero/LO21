@@ -6,11 +6,11 @@ Task::Task(QString title,QDateTime disponibility,QDateTime deadline):
 {
     if(deadline < QDateTime::currentDateTime())
     {
-        throw CalendarException("Echéance de la task déjà passée !");
+        throw CalendarException("Echéance de la tache déjà passée !");
     }
     else if(deadline < disponibility)
     {
-        throw CalendarException("La disponibilité entrée pour la task est ultérieure à l'échéance !");
+        throw CalendarException("La disponibilité entrée pour la tache est ultérieure à l'échéance !");
     }
 }
 
@@ -72,11 +72,11 @@ bool Task::checkPrerequisite(Task* task, Task * prerequisiteTask)
     }
     if(task==prerequisiteTask)
     {
-        throw CalendarException("Une task ne peut être son propre prérequis");
+        throw CalendarException("Une tache ne peut être son propre prérequis");
     }
     else if(task->getDisponibility()<=prerequisiteTask->getDisponibility())
     {
-        throw CalendarException("La date de disponibilité de la nouvelle task doit être postérieure aux disponibilités des tasks qui la précède");
+        throw CalendarException("La date de disponibilité de la nouvelle tache doit être postérieure aux disponibilités des taches qui la précèdent");
     }
 
     Task* ptr_task=task->getParent();
@@ -84,7 +84,7 @@ bool Task::checkPrerequisite(Task* task, Task * prerequisiteTask)
     {
         if(ptr_task==prerequisiteTask)
         {
-            throw CalendarException("Une task ne peut pas avoir une task parente en prérequis");
+            throw CalendarException("Une tache ne peut pas avoir une tache parente en prérequis");
         }
         ptr_task=ptr_task->getParent();
     }
@@ -101,13 +101,13 @@ bool Task::checkAttaskdTo(Task* task, Task * motherTask)
     }
     if(task==motherTask)
     {
-        throw CalendarException("Une task ne peut pas être rattachée à elle même");
+        throw CalendarException("Une tache ne peut pas être rattachée à elle même");
     }
     else if(task->getDisponibility()>=motherTask->getDeadline())
     {
-        throw CalendarException("La date de disponibilité de la task est postérieure ou égale à la task qu'elle compose");
+        throw CalendarException("La date de disponibilité de la tache est postérieure ou égale à la tache qu'elle compose");
     }
-    //A FAIRE: nom déjà utilisé ?
+
     return true;
 
 }

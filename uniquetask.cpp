@@ -6,7 +6,7 @@ UniqueTask::UniqueTask(QString title,QDateTime disponibility,QDateTime deadline,
 {
     if(m_preemptable && m_duration>QTime::fromString("12:00:00"))
     {
-        throw CalendarException("Task unitaire trop longue ! (12H max.) ");
+        throw CalendarException("Tache unitaire trop longue ! (12H max.) ");
     }
 }
 
