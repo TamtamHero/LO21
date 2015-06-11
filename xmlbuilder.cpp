@@ -140,7 +140,7 @@ void XmlBuilder::readInput(ProjectManager& projectManager,SchedulingManager& sch
         if (title.isNull() || disponibility.isNull() || deadline.isNull())
             continue;
         new_project = new Project(title.text(),QDateTime::fromString(disponibility.text(),Qt::ISODate),QDateTime::fromString(deadline.text(),Qt::ISODate));
-        projectManager.addElement(new_project);
+        projectManager.AbstractContainer::addElement(new_project);
 
         QDomElement tasks= project_node.firstChildElement("tasks");
         QDomNodeList sub_tasks= tasks.elementsByTagName("task");

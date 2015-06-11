@@ -31,6 +31,12 @@ void ProjectManager::freeInstance()
     }
 }
 
+void ProjectManager::addElement(QString title, QDateTime disponibility, QDateTime deadline)
+{
+    Project * element=new Project(title,disponibility,deadline);
+    m_liste.push_back(element);
+    sort();
+}
 
 void ProjectManager::display(QStandardItemModel * model)
 {

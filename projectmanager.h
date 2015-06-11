@@ -30,6 +30,7 @@ public:
 
     static ProjectManager& getInstance();
     static void freeInstance();
+    void addElement(QString title, QDateTime disponibility, QDateTime deadline);
     void display(QStandardItemModel * model);
 
 };

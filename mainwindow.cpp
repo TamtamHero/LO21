@@ -434,7 +434,7 @@ void MainWindow::createElement()
         {
             if(ui->lineEdit_creation_title->text()=="")
             {
-                QMessageBox::warning(this,"Attention","Veuillez donner un title au nouveau projet");
+                QMessageBox::warning(this,"Attention","Veuillez donner un titre au nouveau projet");
                 return;
             }
             else if(ui->dateTimeEdit_creation_deadline->dateTime()<=QDateTime::currentDateTime())
@@ -442,8 +442,7 @@ void MainWindow::createElement()
                 QMessageBox::warning(this,"Attention","L'échéance du projet doit être située dans le futur");
                 return;
             }
-            Project *newProject=new Project(ui->lineEdit_creation_title->text(),ui->dateTimeEdit_creation_disponibility->dateTime(),ui->dateTimeEdit_creation_deadline->dateTime());
-            projectManager.addElement(newProject);
+            projectManager.addElement(ui->lineEdit_creation_title->text(),ui->dateTimeEdit_creation_disponibility->dateTime(),ui->dateTimeEdit_creation_deadline->dateTime());
             editing_selectionProject();
             return;
         }
@@ -452,7 +451,7 @@ void MainWindow::createElement()
         {
             if(ui->lineEdit_creation_title->text()=="")
             {
-                QMessageBox::warning(this,"Attention","Veuillez donner un title à la nouvelle tache");
+                QMessageBox::warning(this,"Attention","Veuillez donner un titre à la nouvelle tache");
                 return;
             }
             else if(ui->dateTimeEdit_creation_deadline->dateTime()<=QDateTime::currentDateTime())
