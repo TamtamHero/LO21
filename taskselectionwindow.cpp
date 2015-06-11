@@ -19,7 +19,7 @@ TaskSelectionWindow::TaskSelectionWindow(QWidget *parent,Project * project,m_sel
     hLayout->addWidget(pushButton_TaskSelection_selection);
     if(m_type==ATTACHEDTO)
     {
-        pushButton_TaskSelection_notAttaskd=new QPushButton("Not attaskd");
+        pushButton_TaskSelection_notAttaskd=new QPushButton("Sans attache");
         hLayout->addWidget(pushButton_TaskSelection_notAttaskd);
         QObject::connect(pushButton_TaskSelection_notAttaskd,SIGNAL(clicked()),this,SLOT(sendNotAttaskd()));
     }
