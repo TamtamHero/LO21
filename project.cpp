@@ -5,11 +5,7 @@
 Project::Project(QString title, QDateTime disponibility, QDateTime deadline):
     m_title(title),m_disponibility(disponibility),m_deadline(deadline)
 {
-    if(deadline < QDateTime::currentDateTime())
-    {
-        throw CalendarException("Echéance du projet déjà passée !");
-    }
-    else if(deadline < disponibility)
+    if(deadline < disponibility)
     {
         throw CalendarException("La disponibilité entrée pour le projet est ultérieure à l'échéance !");
     }

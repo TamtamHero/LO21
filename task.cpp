@@ -4,11 +4,7 @@
 Task::Task(QString title,QDateTime disponibility,QDateTime deadline):
     m_title(title), m_disponibility(disponibility), m_deadline(deadline), m_status(false), m_parent(NULL)
 {
-    if(deadline < QDateTime::currentDateTime())
-    {
-        throw CalendarException("Echéance de la tache déjà passée !");
-    }
-    else if(deadline < disponibility)
+    if(deadline < disponibility)
     {
         throw CalendarException("La disponibilité entrée pour la tache est ultérieure à l'échéance !");
     }
