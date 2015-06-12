@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_currentProject(NULL),
     m_currentTask(NULL),
     m_scheduleTask(NULL),
-    m_weekDisplayed(QDateTime::currentDateTime()) //store monday date
+    m_weekDisplayed(QDateTime::currentDateTime().addDays(-QDate::currentDate().dayOfWeek()+1)) //store monday date
 {
     ui->setupUi(this);
     ui->label_scheduler_week->setText("Semaine du "+m_weekDisplayed.toString("dd/MM"));
@@ -640,48 +640,62 @@ void MainWindow::deleteScheduling()
 
 void MainWindow::scheduler_export()
 {
-    QString path;
-    if(ui->comboBox_scheduler_export->currentText()=="XML")
+    try
     {
-        path = QFileDialog::getOpenFileName(this, "Choisissez un fichier d'export", QString(), "XML (*.xml *.XML)");
-        if(path=="")
-            return;
-        XmlBuilder *builder= new XmlBuilder(path);
-        m_ioManager.setBuilder(builder);
+        QString path;
+        if(ui->comboBox_scheduler_export->currentText()=="XML")
+        {
+            path = QFileDialog::getOpenFileName(this, "Choisissez un fichier d'export", QString(), "XML (*.xml *.XML)");
+            if(path=="")
+                return;
+            XmlBuilder *builder= new XmlBuilder(path);
+            m_ioManager.setBuilder(builder);
+        }
+        else if(ui->comboBox_scheduler_export->currentText()==".txt")
+        {
+            path = QFileDialog::getOpenFileName(this, "Choisissez un fichier d'export", QString(), "texte (*.txt *.TXT)");
+            if(path=="")
+                return;
+            XmlBuilder *builder= new XmlBuilder(path);
+            m_ioManager.setBuilder(builder);
+        }
+        m_ioManager.exportTo(projectManager,scheduleManager);
     }
-    else if(ui->comboBox_scheduler_export->currentText()==".txt")
+    catch(CalendarException error)
     {
-        path = QFileDialog::getOpenFileName(this, "Choisissez un fichier d'export", QString(), "texte (*.txt *.TXT)");
-        if(path=="")
-            return;
-        XmlBuilder *builder= new XmlBuilder(path);
-        m_ioManager.setBuilder(builder);
+        QMessageBox::warning(this,"erreur",error.getInfo());
     }
-    m_ioManager.exportTo(projectManager,scheduleManager);
 }
 
 void MainWindow::scheduler_import()
 {
-    QString path;
-    if(ui->comboBox_scheduler_export->currentText()=="XML")
+    try
     {
-        path = QFileDialog::getOpenFileName(this, "Choisissez un fichier d'import", QString(), "XML (*.xml *.XML)");
-        if(path=="")
-            return;
-        XmlBuilder *builder= new XmlBuilder(path);
-        m_ioManager.setBuilder(builder);
+        QString path;
+        if(ui->comboBox_scheduler_export->currentText()=="XML")
+        {
+            path = QFileDialog::getOpenFileName(this, "Choisissez un fichier d'import", QString(), "XML (*.xml *.XML)");
+            if(path=="")
+                return;
+            XmlBuilder *builder= new XmlBuilder(path);
+            m_ioManager.setBuilder(builder);
+        }
+        else if(ui->comboBox_scheduler_export->currentText()==".txt")
+        {
+            path = QFileDialog::getOpenFileName(this, "Choisissez un fichier d'import", QString(), "texte (*.txt *.TXT)");
+            if(path=="")
+                return;
+            XmlBuilder *builder= new XmlBuilder(path);
+            m_ioManager.setBuilder(builder);
+        }
+        m_ioManager.importFrom(projectManager,scheduleManager);
+        updateScheduler();
+        editing_selectionProject();
     }
-    else if(ui->comboBox_scheduler_export->currentText()==".txt")
+    catch(CalendarException error)
     {
-        path = QFileDialog::getOpenFileName(this, "Choisissez un fichier d'import", QString(), "texte (*.txt *.TXT)");
-        if(path=="")
-            return;
-        XmlBuilder *builder= new XmlBuilder(path);
-        m_ioManager.setBuilder(builder);
+        QMessageBox::warning(this,"erreur",error.getInfo());
     }
-    m_ioManager.importFrom(projectManager,scheduleManager);
-    updateScheduler();
-    editing_selectionProject();
 }
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_ METHODS -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
