@@ -463,15 +463,7 @@ void MainWindow::createElement()
             }
             else // UniqueTask
             {
-                if(m_listModel_creation_attachedTo->item(0)!=0)
-                {
-                    if(!checkCoherence(m_listModel_creation_attachedTo->item(0)->data(Qt::UserRole+2).value<Task*>(),m_listModel_creation_attachedTo->item(0)->data(Qt::UserRole+2).value<Task*>()))
-                    {
-                        throw CalendarException("Erreur, la tache mère n'est pas conforme");
-                        return;
-                    }
-                }
-                else
+                if(m_listModel_creation_attachedTo->item(0)==0)
                 {
                     m_reply=QMessageBox::question(this,"Attention","Êtes-vous sur de ne pas vouloir rattacher la nouvelle tache ?",QMessageBox::Yes|QMessageBox::No);
                     if(m_reply==QMessageBox::No)
