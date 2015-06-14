@@ -4,15 +4,15 @@
 UniqueTask::UniqueTask(QString title,QDateTime disponibility,QDateTime deadline,QTime duration,bool preemptable):
     Task(title,disponibility,deadline),m_duration(duration),m_preemptable(preemptable)
 {
-    if(m_preemptable && m_duration>QTime::fromString("12:00:00"))
+    if(!preemptable && QTime(0, 0, 0).secsTo(duration)>=PREEMPT_TASK_MAX_DURATION*3600)
     {
-        throw CalendarException("Tache unitaire trop longue ! (12H max.) ");
+        throw CalendarException("Une tache préemptable ne peux pas avoir une durée qui excède "+QString::number(PREEMPT_TASK_MAX_DURATION)+"h");
     }
 }
 
 UniqueTask::~UniqueTask()
 {
-    this->setDuree(QTime::fromString("15:00:00"));
+
 }
 
 
@@ -22,6 +22,23 @@ void UniqueTask::display(QStandardItem * parent)
 {
 
 }
+
+void UniqueTask::setPreemptability(bool choice)
+{
+    if(QTime(0, 0, 0).secsTo(m_duration)>=PREEMPT_TASK_MAX_DURATION*3600 && !choice)
+        throw CalendarException("Une tache préemptable ne peux pas avoir une durée qui excède "+QString::number(PREEMPT_TASK_MAX_DURATION)+"h");
+    else
+        m_preemptable=choice;
+}
+
+void UniqueTask::setDuree(QTime duration)
+{
+    if(!m_preemptable && QTime(0, 0, 0).secsTo(duration)>=PREEMPT_TASK_MAX_DURATION*3600)
+        throw CalendarException("Une tache préemptable ne peux pas avoir une durée qui excède "+QString::number(PREEMPT_TASK_MAX_DURATION)+"h");
+    else
+        m_duration=duration;
+}
+
 
 list<Task*> UniqueTask::getAllUniquePrerequisite()
 {
