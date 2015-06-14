@@ -102,7 +102,7 @@ void XmlBuilder::saveTask(QXmlStreamWriter& stream,Task * task)
         {
             stream.writeTextElement("preemptability","false");
         }
-        stream.writeTextElement("task_duration",QString::number(QTime(0, 0, 0).secsTo(dynamic_cast<UniqueTask*>(task)->getDuree())));
+        stream.writeTextElement("task_duration",dynamic_cast<UniqueTask*>(task)->getDuree().toString(Qt::ISODate));
     }
     else
     {
