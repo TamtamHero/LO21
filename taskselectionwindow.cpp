@@ -76,7 +76,7 @@ void TaskSelectionWindow::sendSelection()
     }
 }
 
-void TaskSelectionWindow::sendNotAttaskd()
+void TaskSelectionWindow::sendNotAttached()
 {
     m_selectedTask=NULL;
     this->close();

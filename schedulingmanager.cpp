@@ -49,7 +49,7 @@ list<const Scheduling *> SchedulingManager::findTaskSchedulings(UniqueTask *elem
 }
 
 
-void SchedulingManager::addElement(QDateTime date,QTime duration,QString title) // Add an activity
+void SchedulingManager::addElement(QDateTime date,QTime duration,QString title, bool import) // Add an activity
 {
     if(duration<QTime::fromString("00:30:00"))
     {
@@ -76,7 +76,7 @@ void SchedulingManager::addElement(QDateTime date,QTime duration,QString title) 
 }
 
 
-void SchedulingManager::addElement(QDateTime date,QTime duration,UniqueTask* task) // Add a task
+void SchedulingManager::addElement(QDateTime date,QTime duration,UniqueTask* task,bool import) // Add a task
 {
     if(duration<QTime::fromString("00:30:00"))
     {
@@ -86,7 +86,7 @@ void SchedulingManager::addElement(QDateTime date,QTime duration,UniqueTask* tas
     {
         throw CalendarException("Veuillez d'abord sélectionner une task");
     }
-    else if(!task->arePrerequisiteScheduled())
+    else if(!task->arePrerequisiteScheduled() && !import)
     {
         throw CalendarException("Certains prérequis ne sont pas encore programmés, impossible de programmer cette task");
     }
@@ -115,7 +115,7 @@ void SchedulingManager::addElement(QDateTime date,QTime duration,UniqueTask* tas
         }
     }
 
-    if(!task->getPreemptability() && duration!=task->getDuree())
+    if(!task->getPreemptability() && duration!=task->getDuree() && !import)
     {
         throw CalendarException("La task n'est pas préemptable, vous devez la programmer entièrement");
     }
@@ -136,10 +136,12 @@ void SchedulingManager::addElement(QDateTime date,QTime duration,UniqueTask* tas
         throw CalendarException("Vous ne pouvez pas programmer une tache sur plusieurs jours consécutifs");
     }
     Scheduling *new_prog=new Scheduling(date,duration,task);
-    cout << date.toString().toStdString();
 
+    if(!import)
+        task->setDuree(task->getDuree().addSecs(-QTime(0, 0, 0).secsTo(new_prog->getDuration())));
+    else
+        task->setDuree(task->getDuree().addSecs(QTime(0, 0, 0).secsTo(new_prog->getDuration())));
 
-    task->setDuree(task->getDuree().addSecs(-QTime(0, 0, 0).secsTo(new_prog->getDuration())));
     if(task->getDuree()==QTime::fromString("00:00:00"))     // Status management
     {
         task->setStatus(true);

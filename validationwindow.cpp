@@ -2,7 +2,7 @@
 
 validationWindow::validationWindow(QWidget *parent,QString info):
     QDialog(parent),
-    validation(false)
+    m_validation(false)
 {
     m_ok=new QPushButton("Ok");
     m_cancel=new QPushButton("Annuler");
@@ -31,12 +31,12 @@ validationWindow::~validationWindow()
 
 void validationWindow::setValidation()
 {
-    validation=true;
+    m_validation=true;
     this->close();
 }
 
 void validationWindow::setCancel()
 {
-    validation=false;
+    m_validation=false;
     this->close();
 }

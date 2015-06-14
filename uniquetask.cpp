@@ -20,7 +20,7 @@ UniqueTask::~UniqueTask()
 
 void UniqueTask::setPreemptability(bool choice)
 {
-    if(QTime(0, 0, 0).secsTo(m_duration)>=PREEMPT_TASK_MAX_DURATION*3600 && !choice)
+    if(QTime(0, 0, 0).secsTo(m_duration)>=PREEMPT_TASK_MAX_DURATION*3600 && !choice)        
         throw CalendarException("Une tache préemptable ne peux pas avoir une durée qui excède "+QString::number(PREEMPT_TASK_MAX_DURATION)+"h");
     else
         m_preemptable=choice;
