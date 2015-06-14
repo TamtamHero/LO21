@@ -28,6 +28,7 @@ template<typename Type>
 void AbstractContainer<Type>::removeElement(Type * element)
 {
     m_liste.erase(std::remove(m_liste.begin(),m_liste.end(),element),m_liste.end());
+    delete element;
 }
 
 template<typename Type>

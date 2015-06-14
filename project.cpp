@@ -114,7 +114,10 @@ void Project::display(QStandardItemModel * m_treeModel)
         item=new QStandardItem((*it)->getTitle());
         item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
         m_treeModel->appendRow(item);
-        (*it)->display(item);
+        if(dynamic_cast<BlendTask*>((*it))!=NULL)
+        {
+            dynamic_cast<BlendTask*>((*it))->display(item);
+        }
 
     }
 }
