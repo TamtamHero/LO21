@@ -298,7 +298,6 @@ void MainWindow::deleteSelection()
         if(result.getValidation())
         {
             projectManager.removeElement(m_currentProject);
-            delete m_currentProject;
             m_currentProject=NULL;
             m_treeModel->removeRow(indexElementSelectionne.row(),indexElementSelectionne.parent());
         }
@@ -564,7 +563,7 @@ void MainWindow::scheduler_checkDeadline(QDateTime t)
 
 void MainWindow::scheduler_setDate(int row,int column) //Auto completion of DateTime when clicking on TableView boxes
 {
-    QTime time=QTime::fromString("08:00:00");
+    QTime time=QTime::fromString("00:00:00");
     time=time.addSecs(1800*row);
     ui->dateTimeEdit_scheduler_datetime->setTime(time);
 
@@ -747,7 +746,7 @@ void MainWindow::updateScheduler()
     {
         if((*it)->getDateTime() >= m_firstDayOfWeek && (*it)->getDateTime() < endOfWeek)
         {
-            row=(QTime(0, 0, 0).secsTo((*it)->getDateTime().time())-8*3600)/1800;
+            row=(QTime(0, 0, 0).secsTo((*it)->getDateTime().time()))/1800;
             column=(*it)->getDateTime().date().dayOfWeek()-1;
 
             item=new QTableWidgetItem((*it)->getTitle());

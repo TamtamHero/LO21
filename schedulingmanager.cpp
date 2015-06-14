@@ -67,10 +67,10 @@ void SchedulingManager::addElement(QDateTime date,QTime duration,QString title) 
             throw CalendarException("Une task est déjà programmée sur cet intervalle");
         }
     }
-    if(date.time().addSecs(QTime(0, 0, 0).secsTo(duration))<QTime::fromString("08:00:00"))
+    /*if(date.time().addSecs(QTime(0, 0, 0).secsTo(duration))<QTime::fromString("08:00:00"))
     {
         throw CalendarException("Vous ne pouvez pas programmer une tache après minuit");
-    }
+    }*/
     Scheduling *new_prog=new Scheduling(date,duration,title);
     AbstractContainer::addElement(new_prog);
 }
@@ -131,22 +131,26 @@ void SchedulingManager::addElement(QDateTime date,QTime duration,UniqueTask* tas
             throw CalendarException("Une task est déjà programmée sur cet intervalle");
         }
     }
-    if(date.time().addSecs(QTime(0, 0, 0).secsTo(duration))<QTime::fromString("08:00:00"))
+   /* if(date.time().addSecs(QTime(0, 0, 0).secsTo(duration))<QTime::fromString("08:00:00"))
     {
         throw CalendarException("Vous ne pouvez pas programmer une task après minuit");
-    }
+    }*/
     Scheduling *new_prog=new Scheduling(date,duration,task);
 
     task->setDuree(task->getDuree().addSecs(-QTime(0, 0, 0).secsTo(new_prog->getDuration())));
     if(task->getDuree()==QTime::fromString("00:00:00"))     // Status management
     {
         task->setStatus(true);
-        task->getParent()->setStatus(true);
-        foreach(Task* ptr,static_cast<BlendTask*>(task->getParent())->getElement()) // after completion of a task, check if parent task has to be set completed too
+
+        if(task->getParent()!=NULL)
         {
-            if(!ptr->getStatus())
+            task->getParent()->setStatus(true);
+            foreach(Task* ptr,static_cast<BlendTask*>(task->getParent())->getElement()) // after completion of a task, check if parent task has to be set completed too
             {
-                task->getParent()->setStatus(false); //only one task not complete, and the parent is set as not complete
+                if(!ptr->getStatus())
+                {
+                    task->getParent()->setStatus(false); //only one task not complete, and the parent is set as not complete
+                }
             }
         }
     }

@@ -18,11 +18,6 @@ UniqueTask::~UniqueTask()
 
 //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 
-void UniqueTask::display(QStandardItem * parent)
-{
-
-}
-
 void UniqueTask::setPreemptability(bool choice)
 {
     if(QTime(0, 0, 0).secsTo(m_duration)>=PREEMPT_TASK_MAX_DURATION*3600 && !choice)
