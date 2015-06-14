@@ -136,6 +136,8 @@ void SchedulingManager::addElement(QDateTime date,QTime duration,UniqueTask* tas
         throw CalendarException("Vous ne pouvez pas programmer une tache sur plusieurs jours consécutifs");
     }
     Scheduling *new_prog=new Scheduling(date,duration,task);
+    cout << date.toString().toStdString();
+
 
     task->setDuree(task->getDuree().addSecs(-QTime(0, 0, 0).secsTo(new_prog->getDuration())));
     if(task->getDuree()==QTime::fromString("00:00:00"))     // Status management
@@ -191,7 +193,8 @@ void SchedulingManager::removeElement(Scheduling * element)
             if(element!=NULL) //restore duration of task if unscheduled, and remove status of parent task
             {
                 ptr->setDuree(ptr->getDuree().addSecs(QTime(0, 0, 0).secsTo(element->getDuration())));
-                ptr->getParent()->setStatus(false);
+                if(ptr->getParent()!=NULL)
+                    ptr->getParent()->setStatus(false);
             }
         }
         m_liste.erase(std::remove(m_liste.begin(),m_liste.end(),element),m_liste.end());

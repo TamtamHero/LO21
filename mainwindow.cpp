@@ -740,7 +740,7 @@ void MainWindow::updateScheduler()
 
     int row,column;
     QDateTime endOfWeek=m_firstDayOfWeek.addDays(7);
-    endOfWeek=endOfWeek.addSecs(16*3600);
+    endOfWeek=endOfWeek.addSecs(24*3600);
     QTableWidgetItem *item;
     for(list<Scheduling *>::iterator it=scheduleManager.getList().begin();it!=scheduleManager.getList().end();++it)
     {
