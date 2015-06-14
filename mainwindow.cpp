@@ -579,7 +579,7 @@ void MainWindow::scheduler_save()
         }
         else
         {
-            scheduleManager.addElement(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),ui->lineEdit_scheduler_title->text(),false);
+            scheduleManager.addElement(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),ui->lineEdit_scheduler_title->text());
         }
 
         m_scheduleTask=NULL;

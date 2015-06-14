@@ -217,7 +217,7 @@ void XmlBuilder::readInput(ProjectManager& projectManager,SchedulingManager& sch
         id=task_id.text().toInt();
 
         if(m_id_to_pointer[id]==NULL)
-            schedulingManager.addElement(QDateTime::fromString(date.text(),Qt::ISODate),QTime::fromString(duration.text(),Qt::ISODate),title.text(), true);
+            schedulingManager.addElement(QDateTime::fromString(date.text(),Qt::ISODate),QTime::fromString(duration.text(),Qt::ISODate),title.text());
         else
             schedulingManager.addElement(QDateTime::fromString(date.text(),Qt::ISODate),QTime::fromString(duration.text(),Qt::ISODate),static_cast<UniqueTask*>(m_id_to_pointer[id]), true);
 

@@ -49,7 +49,7 @@ list<const Scheduling *> SchedulingManager::findTaskSchedulings(UniqueTask *elem
 }
 
 
-void SchedulingManager::addElement(QDateTime date,QTime duration,QString title, bool import) // Add an activity
+void SchedulingManager::addElement(QDateTime date,QTime duration,QString title) // Add an activity
 {
     if(duration<QTime::fromString("00:30:00"))
     {

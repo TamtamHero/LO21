@@ -66,7 +66,7 @@ public:
     //! \param la durée de l'activité
     //! \param le titre de l'activité
     //! \return  void
-    void addElement(QDateTime date, QTime duration, QString title, bool import);
+    void addElement(QDateTime date, QTime duration, QString title);
 
     //! \brief Planifie une tache déjà existante
     //! \param Une date
