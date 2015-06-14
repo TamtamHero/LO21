@@ -18,9 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
     scheduleManager(SchedulingManager::getInstance()),
     m_currentProject(NULL),
     m_currentTask(NULL),
-    m_scheduleTask(NULL),
-    m_firstDayOfWeek(QDateTime::currentDateTime().addDays(-QDate::currentDate().dayOfWeek()+1)) //store monday date
+    m_scheduleTask(NULL)
 {
+    m_firstDayOfWeek=QDateTime::currentDateTime().addDays(-QDate::currentDate().dayOfWeek()+1); //store monday date
+    m_firstDayOfWeek.setTime(QTime::fromString("00:00:00"));
     ui->setupUi(this);
     updateScheduler();
     ui->label_scheduler_week->setText("Semaine du "+m_firstDayOfWeek.toString("dd/MM"));
@@ -589,8 +590,6 @@ void MainWindow::scheduler_save()
 
         m_scheduleTask=NULL;
         updateScheduler();
-        XmlBuilder *test=new XmlBuilder("xmltest.xml");
-        test->writeOutput(projectManager.getList(),scheduleManager.getList());
 
     }
     catch(CalendarException error)
