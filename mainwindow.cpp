@@ -19,10 +19,11 @@ MainWindow::MainWindow(QWidget *parent) :
     m_currentProject(NULL),
     m_currentTask(NULL),
     m_scheduleTask(NULL),
-    m_weekDisplayed(QDateTime::currentDateTime().addDays(-QDate::currentDate().dayOfWeek()+1)) //store monday date
+    m_firstDayOfWeek(QDateTime::currentDateTime().addDays(-QDate::currentDate().dayOfWeek()+1)) //store monday date
 {
     ui->setupUi(this);
-    ui->label_scheduler_week->setText("Semaine du "+m_weekDisplayed.toString("dd/MM"));
+    updateScheduler();
+    ui->label_scheduler_week->setText("Semaine du "+m_firstDayOfWeek.toString("dd/MM"));
 
     // Editing connections
 
@@ -567,7 +568,7 @@ void MainWindow::scheduler_setDate(int row,int column) //Auto completion of Date
     time=time.addSecs(1800*row);
     ui->dateTimeEdit_scheduler_datetime->setTime(time);
 
-    QDateTime date=m_weekDisplayed;
+    QDateTime date=m_firstDayOfWeek;
     date=date.addDays(column);
     ui->dateTimeEdit_scheduler_datetime->setDate(date.date());
 }
@@ -601,15 +602,15 @@ void MainWindow::scheduler_save()
 
 void MainWindow::scheduler_previousWeek()
 {
-    m_weekDisplayed=m_weekDisplayed.addDays(-7);
-    ui->label_scheduler_week->setText("Semaine du "+m_weekDisplayed.toString("dd/MM"));
+    m_firstDayOfWeek=m_firstDayOfWeek.addDays(-7);
+    ui->label_scheduler_week->setText("Semaine du "+m_firstDayOfWeek.toString("dd/MM"));
     updateScheduler();
 }
 
 void MainWindow::scheduler_nextWeek()
 {
-    m_weekDisplayed=m_weekDisplayed.addDays(7);
-    ui->label_scheduler_week->setText("Semaine du "+m_weekDisplayed.toString("dd/MM"));
+    m_firstDayOfWeek=m_firstDayOfWeek.addDays(7);
+    ui->label_scheduler_week->setText("Semaine du "+m_firstDayOfWeek.toString("dd/MM"));
     updateScheduler();
 }
 
@@ -739,12 +740,12 @@ void MainWindow::updateScheduler()
     ui->tableWidget_scheduler_view->clearSpans();
 
     int row,column;
-    QDateTime endOfWeek=m_weekDisplayed.addDays(7);
+    QDateTime endOfWeek=m_firstDayOfWeek.addDays(7);
     endOfWeek=endOfWeek.addSecs(16*3600);
     QTableWidgetItem *item;
     for(list<Scheduling *>::iterator it=scheduleManager.getList().begin();it!=scheduleManager.getList().end();++it)
     {
-        if((*it)->getDateTime() >= m_weekDisplayed && (*it)->getDateTime() < endOfWeek)
+        if((*it)->getDateTime() >= m_firstDayOfWeek && (*it)->getDateTime() < endOfWeek)
         {
             row=(QTime(0, 0, 0).secsTo((*it)->getDateTime().time())-8*3600)/1800;
             column=(*it)->getDateTime().date().dayOfWeek()-1;
@@ -755,6 +756,14 @@ void MainWindow::updateScheduler()
             ui->tableWidget_scheduler_view->setSpan(row,column,ceil(QTime(0, 0, 0).secsTo((*it)->getDuration())/1800.0),1);
             ui->tableWidget_scheduler_view->setItem(row,column,item);
         }
+    }
+
+    QDateTime day_iterator=m_firstDayOfWeek;
+
+    for(unsigned int i = 0; i < 7; i++)
+    {
+       ui->tableWidget_scheduler_view->setHorizontalHeaderItem(i, new QTableWidgetItem(day_iterator.toString("ddd d MMMM")));
+       day_iterator = day_iterator.addDays(1);
     }
 }
 

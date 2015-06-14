@@ -53,7 +53,7 @@ private:
     Project * m_currentProject;
     Task * m_currentTask;
     UniqueTask * m_scheduleTask;
-    QDateTime m_weekDisplayed;
+    QDateTime m_firstDayOfWeek;
 
     bool event(QEvent *event);
     void updateTreeView(QStandardItemModel *model, QTreeView *view);
