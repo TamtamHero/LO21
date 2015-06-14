@@ -6,7 +6,7 @@ TaskSelectionWindow::TaskSelectionWindow(QWidget *parent,Project * project,m_sel
     m_treeModel(new QStandardItemModel()),
     treeView(new QTreeView(this)),
     pushButton_TaskSelection_selection(new QPushButton("select")),
-    pushButton_TaskSelection_notAttaskd(NULL),
+    pushButton_TaskSelection_notAttached(NULL),
     m_selectedTask(NULL),
     m_type(type)
 {
@@ -19,9 +19,9 @@ TaskSelectionWindow::TaskSelectionWindow(QWidget *parent,Project * project,m_sel
     hLayout->addWidget(pushButton_TaskSelection_selection);
     if(m_type==ATTACHEDTO)
     {
-        pushButton_TaskSelection_notAttaskd=new QPushButton("Sans attache");
-        hLayout->addWidget(pushButton_TaskSelection_notAttaskd);
-        QObject::connect(pushButton_TaskSelection_notAttaskd,SIGNAL(clicked()),this,SLOT(sendNotAttaskd()));
+        pushButton_TaskSelection_notAttached=new QPushButton("Sans attache");
+        hLayout->addWidget(pushButton_TaskSelection_notAttached);
+        QObject::connect(pushButton_TaskSelection_notAttached,SIGNAL(clicked()),this,SLOT(sendNotAttaskd()));
     }
     vLayout->addWidget(treeView);
     vLayout->addLayout(hLayout);

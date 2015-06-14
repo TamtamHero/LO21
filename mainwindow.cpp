@@ -238,21 +238,6 @@ void MainWindow::creation_prerequisiteSelection()
 
         if(selection->getSelectedTask()!=NULL)
         {
-            if(m_listModel_creation_attachedTo->item(0)!=0)
-            {
-                if(!checkCoherence(m_listModel_creation_attachedTo->item(0)->data(Qt::UserRole+2).value<Task*>(),selection->getSelectedTask()))
-                {
-                     return;
-                }
-            }
-            else if(m_reply==QMessageBox::No)
-            {
-                m_reply=QMessageBox::question(this,"Erreur","Êtes-vous sur de ne pas vouloir rattacher la nouvelle tache ?",QMessageBox::Yes|QMessageBox::No);
-                if(m_reply==QMessageBox::No)
-                {
-                    return;
-                }
-            }
             QStandardItem *item;
             item=new QStandardItem(selection->getSelectedTask()->getTitle());
             item->setData(QVariant::fromValue((selection->getSelectedTask())),Qt::UserRole+2);
@@ -478,6 +463,23 @@ void MainWindow::createElement()
             }
             else // UniqueTask
             {
+                if(m_listModel_creation_attachedTo->item(0)!=0)
+                {
+                    if(!checkCoherence(m_listModel_creation_attachedTo->item(0)->data(Qt::UserRole+2).value<Task*>(),m_listModel_creation_attachedTo->item(0)->data(Qt::UserRole+2).value<Task*>()))
+                    {
+                        throw CalendarException("Erreur, la tache mère n'est pas conforme");
+                        return;
+                    }
+                }
+                else
+                {
+                    m_reply=QMessageBox::question(this,"Attention","Êtes-vous sur de ne pas vouloir rattacher la nouvelle tache ?",QMessageBox::Yes|QMessageBox::No);
+                    if(m_reply==QMessageBox::No)
+                    {
+                        return;
+                    }
+                }
+
                 UniqueTask *newTask=new UniqueTask(ui->lineEdit_creation_title->text(),ui->dateTimeEdit_creation_disponibility->dateTime(),ui->dateTimeEdit_creation_deadline->dateTime(),ui->timeEdit_creation_length->time(),ui->comboBox_creation_preemptability->currentText()=="Oui");
                 for(int i=0;m_listModel_creation_prerequisite->item(i)!=0;newTask->addPrerequisite(m_listModel_creation_prerequisite->item(i++)->data(Qt::UserRole+2).value<Task *>()));
 
@@ -739,7 +741,6 @@ void MainWindow::updateScheduler()
 
     int row,column;
     QDateTime endOfWeek=m_firstDayOfWeek.addDays(7);
-    //endOfWeek=endOfWeek.addSecs(24*3600);
     QTableWidgetItem *item;
     for(list<Scheduling *>::iterator it=scheduleManager.getList().begin();it!=scheduleManager.getList().end();++it)
     {
