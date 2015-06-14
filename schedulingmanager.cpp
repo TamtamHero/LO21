@@ -67,10 +67,10 @@ void SchedulingManager::addElement(QDateTime date,QTime duration,QString title) 
             throw CalendarException("Une task est déjà programmée sur cet intervalle");
         }
     }
-    /*if(date.time().addSecs(QTime(0, 0, 0).secsTo(duration))<QTime::fromString("08:00:00"))
+    if(date.time().addSecs(QTime(0, 0, 0).secsTo(duration))<date.time())
     {
-        throw CalendarException("Vous ne pouvez pas programmer une tache après minuit");
-    }*/
+        throw CalendarException("Vous ne pouvez pas programmer une tache sur plusieurs jours consécutifs");
+    }
     Scheduling *new_prog=new Scheduling(date,duration,title);
     AbstractContainer::addElement(new_prog);
 }
@@ -131,10 +131,10 @@ void SchedulingManager::addElement(QDateTime date,QTime duration,UniqueTask* tas
             throw CalendarException("Une task est déjà programmée sur cet intervalle");
         }
     }
-   /* if(date.time().addSecs(QTime(0, 0, 0).secsTo(duration))<QTime::fromString("08:00:00"))
+    if(date.time().addSecs(QTime(0, 0, 0).secsTo(duration))<date.time())
     {
-        throw CalendarException("Vous ne pouvez pas programmer une task après minuit");
-    }*/
+        throw CalendarException("Vous ne pouvez pas programmer une tache sur plusieurs jours consécutifs");
+    }
     Scheduling *new_prog=new Scheduling(date,duration,task);
 
     task->setDuree(task->getDuree().addSecs(-QTime(0, 0, 0).secsTo(new_prog->getDuration())));
