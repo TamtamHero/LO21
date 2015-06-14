@@ -38,8 +38,10 @@ void BlendTask::display(QStandardItem * parent)
         item=new QStandardItem((*it)->getTitle());
         item->setData(QVariant::fromValue((*it)),Qt::UserRole+2);
         parent->appendRow(item);
-        (*it)->display(item);
-
+        if(dynamic_cast<BlendTask*>((*it))!=NULL)
+        {
+            dynamic_cast<BlendTask*>((*it))->display(item);
+        }
     }
 }
 

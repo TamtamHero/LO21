@@ -41,7 +41,6 @@ public:
     void setStatus(bool status){m_status=status;}
     bool getStatus(){return m_status;}
     void addPrerequisite(Task * prerequisite);
-    virtual void display(QStandardItem * parent)=0;
     bool arePrerequisiteScheduled();
 
     static bool checkPrerequisite(Task* task,Task * prerequisiteTask);

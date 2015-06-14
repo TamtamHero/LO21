@@ -20,7 +20,6 @@ public:
     bool getPreemptability(){return m_preemptable;}
     void setDuree(QTime duration);
     void setPreemptability(bool choice);
-    void display(QStandardItem * parent);
     list<Task *> getAllUniquePrerequisite();
 
     virtual ~UniqueTask();
