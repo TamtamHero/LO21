@@ -581,11 +581,11 @@ void MainWindow::scheduler_save()
 
         if(isTask)
         {
-            scheduleManager.addElement(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),m_scheduleTask);
+            scheduleManager.addElement(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),m_scheduleTask,false);
         }
         else
         {
-            scheduleManager.addElement(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),ui->lineEdit_scheduler_title->text());
+            scheduleManager.addElement(ui->dateTimeEdit_scheduler_datetime->dateTime(),ui->timeEdit_scheduler_duration->time(),ui->lineEdit_scheduler_title->text(),false);
         }
 
         m_scheduleTask=NULL;
@@ -739,7 +739,7 @@ void MainWindow::updateScheduler()
 
     int row,column;
     QDateTime endOfWeek=m_firstDayOfWeek.addDays(7);
-    endOfWeek=endOfWeek.addSecs(24*3600);
+    //endOfWeek=endOfWeek.addSecs(24*3600);
     QTableWidgetItem *item;
     for(list<Scheduling *>::iterator it=scheduleManager.getList().begin();it!=scheduleManager.getList().end();++it)
     {
