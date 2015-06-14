@@ -43,7 +43,7 @@ private:
     QStandardItemModel *m_treeModel; //! Modele de donnée pour l'affichage du projet
     QTreeView *treeView;  //! Vue pour l'affichage des données
     QPushButton *pushButton_TaskSelection_selection; //! Boutton de validation de la selection
-    QPushButton *pushButton_TaskSelection_notAttaskd; //! Boutton d'annulation de la selection (permet de créer une tache sommet)
+    QPushButton *pushButton_TaskSelection_notAttached; //! Boutton d'annulation de la selection (permet de créer une tache sommet)
     Task *m_selectedTask; //! Un pointeur vers la tache selectionnée
     m_selectedTaskType m_type; //! Attribut indicateur de la nature de la tache que l'on veux sélectionner
 
